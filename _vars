@@ -2,4 +2,4 @@ NAME=cow
 VERSION=0.3dev
 LIB=cow
 SYNTAX="pa_cow"
-DEPS="dyntype.syntax dyntype"
+DEPS="dyntype.syntax dyntype re ulex"

@@ -192,7 +192,7 @@ let ocaml str : Html.t =
         let str = Ulexing.utf8_lexeme lexbuf in
         comments (str :: accu) lexbuf in
 
-  <:html<<div class="ocaml"><pre><code>$main [] (Ulexing.from_utf8_string str)$</code></pre></div>&>>
+  <:xml<<div class="ocaml"><pre><code>$main [] (Ulexing.from_utf8_string str)$</code></pre></div>&>>
 
 let ocaml_css = <:css<
   .ocaml {
