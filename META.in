@@ -1,0 +1,13 @@
+version = "@VERSION@"
+description = "Caml on the Web"
+archive(byte) = "cow.cma"
+archive(native) = "cow.cmxa"
+exists_if = "cow.cma"
+requires = "dyntype dyntype.syntax"
+package "syntax" (
+ description = "Syntax extension for COW"
+ requires = "camlp4"
+ archive(syntax, preprocessor) = "pa_cow.cma"
+ archive(syntax, toploop) = "pa_cow.cma"
+ exists_if = "pa_cow.cma"
+)
