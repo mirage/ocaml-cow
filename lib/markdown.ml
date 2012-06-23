@@ -327,13 +327,15 @@ and scan_past ~delim s ~max n =
   let re = Re_str.regexp_string delim in
   let rec loop m ~max =
     if m >= max then None else
-      match Re_str.search_forward re s m with
+      try begin
+        match Re_str.search_forward re s m with
         (*what if m = 0 ?*)
         | m when m < max && s.[m-1] <> '\\'
           -> Some (m + String.length delim)
         | m when m < max
           -> loop (m + 1) ~max
-        | _ -> None (* no match or >= max  *)
+        | _ -> None (* >= max *)
+      end with Not_found -> None  (* no match *)
   in loop n ~max
 
 (* returns None or offset of char after the reference
