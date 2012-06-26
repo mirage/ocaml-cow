@@ -391,8 +391,7 @@ and para = function
     Normal pt        -> <:xml<$par_text pt$>>
   | Html html        -> <:xml<<p>$html$</p>&>>
   (* XXX: we assume that this is ocaml code *)
-(*  | Pre (t,kind)     -> <:xml<$ Code.ocaml t$>>  *)
-  | Pre (t,kind)     -> <:xml<<pre>$par_text [Text t]$</pre>&>> 
+  | Pre (t,kind)     -> <:xml<$ Code.ocaml t$>>
   | Heading (1,pt)   -> <:xml<<h1>$par_text pt$</h1>&>>
   | Heading (2,pt)   -> <:xml<<h2>$par_text pt$</h2>&>>
   | Heading (3,pt)   -> <:xml<<h3>$par_text pt$</h3>&>>
