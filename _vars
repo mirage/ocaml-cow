@@ -1,5 +1,5 @@
 NAME=cow
-VERSION=0.3dev
+VERSION=0.3.0
 LIB=cow
 SYNTAX="pa_cow"
 DEPS="dyntype.syntax dyntype re ulex"
