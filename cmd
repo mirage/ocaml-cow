@@ -1,7 +1,7 @@
-#!/bin/sh -ex
+#!/bin/sh -e
 # Script that invokes ocamlbuild commands for various targets
 
-njobs=8
+njobs=2
 
 cmd=$1
 shift
