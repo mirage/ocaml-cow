@@ -84,8 +84,11 @@ module Configure = struct
     flag ["ocaml"; "compile"] & S [config_sh "flags.ocaml"];
     flag ["ocaml"; "link"] & S [config_sh "flags.ocaml"];
     (* Include the -cclib for any C bindings being built *)
-    let ccinc = (A"-ccopt")::(A"-Lruntime"):: 
-      (List.flatten (List.map (fun x -> [A"-cclib"; A("-l"^x)]) (config "clibs"))) in
+    let ccinc = match config "clibs" with
+     |[] -> []
+     |clibs -> (A"-ccopt")::(A"-Lruntime"):: 
+      (List.flatten (List.map (fun x -> [A"-cclib"; A("-l"^x)]) clibs))
+    in
     let clibs_files = List.map (sprintf "runtime/lib%s.a") (config "clibs") in
     dep ["link"; "library"; "ocaml"] clibs_files;
     flag ["link"; "library"; "ocaml"] & S ccinc
@@ -206,7 +209,7 @@ module Xen = struct
   (** Link to a standalone Xen microkernel *)
   let cc_xen_link bc tags arg out env =
     (* XXX check ocamlfind path here *)
-    let xenlib = (Util.run_and_read "ocamlfind query mirage") ^ "/include/xen" in
+    let xenlib = Util.run_and_read "ocamlfind query mirage" in
     let jmp_obj = Px (xenlib / "longjmp.o") in
     let head_obj = Px (xenlib / "x86_64.o") in
     let ocamllib = match bc with |true -> "ocamlbc" |false -> "ocaml" in
