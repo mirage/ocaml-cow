@@ -1,5 +1,8 @@
 ===== 0.3.2 (unreleased) =====
 
+* Add <:html< quotation, based on the XML generator,
+  but with all the XHTML entities also supplied.
+
 ===== 0.3.1 (04-Sep-2012) =====
 
 * Fix the OCamlfind META file.
