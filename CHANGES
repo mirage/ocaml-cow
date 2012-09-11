@@ -1,4 +1,4 @@
-===== 0.3.2 (unreleased) =====
+===== 0.3.2 (11-Sep-2012) =====
 
 * Add <:html< quotation, based on the XML generator,
   but with all the XHTML entities also supplied.
