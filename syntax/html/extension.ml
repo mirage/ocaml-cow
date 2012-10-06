@@ -147,7 +147,7 @@ let gen_html (_loc, n, t_exp) =
 
 let () =
   Pa_type_conv.add_generator "html"
-    (fun tds ->
+    (fun _ tds ->
       try
         let _loc = Ast.loc_of_ctyp tds in
         <:str_item<

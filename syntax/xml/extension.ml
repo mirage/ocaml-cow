@@ -127,7 +127,7 @@ let gen_xml (_loc, n, (t_exp:Dyntype.Type.t)) =
 
 let () =
   Pa_type_conv.add_generator "xml"
-    (fun tds ->
+    (fun _ tds ->
       try
         let _loc = Ast.loc_of_ctyp tds in
         <:str_item<
