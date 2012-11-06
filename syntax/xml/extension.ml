@@ -63,7 +63,7 @@ let gen_xml (_loc, n, (t_exp:Dyntype.Type.t)) =
       <:expr< [`Data (Bigint.to_string $id$)] >>
     | List t   ->
       let pid, eid = new_id _loc () in
-      <:expr< List.fold_left (fun accu $pid$ -> $aux eid t$ @ accu) [] $id$ >>
+      <:expr< List.rev (List.fold_left (fun accu $pid$ -> $aux eid t$ @ accu) [] $id$) >>
     | Array t  ->
       let pid, eid = new_id _loc () in
       let array = <:expr< Array.map (fun $pid$ -> $aux eid t$) $id$ >> in
