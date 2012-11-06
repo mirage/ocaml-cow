@@ -75,13 +75,13 @@ let gen_xml (_loc, n, (t_exp:Dyntype.Type.t)) =
       <:expr<
         let $Pa_dyntype.P4_helpers.patt_tuple_of_list _loc patts$ = $id$ in
         List.flatten $expr_list_of_list _loc exprs$
-        >>
+      >>
     | Dict(k,d) ->
       let new_id n = match k with
         | `R -> <:expr< $id$.$lid:n$ >>
         | `O -> <:expr< $id$#$lid:n$ >> in
       let exprs =
-        List.map (fun (n,_,t) -> create_tag _loc n (aux (new_id n) t)) d in
+        List.map (fun (n,_,t) -> create_tag _loc n (aux (new_id n) t)) (List.rev d) in
       let expr = expr_list_of_list _loc exprs in
       <:expr< List.flatten $expr$ >>
     | Sum (k, s) ->
