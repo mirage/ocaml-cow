@@ -20,7 +20,7 @@ let expr_list_of_list _loc exprs =
   match List.rev exprs with
   | []   -> <:expr< [] >>
   | h::t ->
-    List.fold_left (fun accu x -> <:expr< [ $x$ :: $accu$ ] >>) <:expr< [ $h$ ] >> t 
+    List.fold_left (fun accu x -> <:expr< [ $x$ :: $accu$ ] >>) <:expr< [ $h$ ] >> t
 
 let xml_of t = "xml_of_" ^ t
 
@@ -73,7 +73,7 @@ let gen_xml (_loc, n, (t_exp:Dyntype.Type.t)) =
       let patts,exprs = List.split ids in
       let exprs = List.map2 aux exprs t in
       <:expr<
-        let $tup:Ast.paCom_of_list patts$ = $id$ in
+        let $Pa_dyntype.P4_helpers.patt_tuple_of_list _loc patts$ = $id$ in
         List.flatten $expr_list_of_list _loc exprs$
         >>
     | Dict(k,d) ->
@@ -92,12 +92,11 @@ let gen_xml (_loc, n, (t_exp:Dyntype.Type.t)) =
           | []  -> <:expr< [] >>
           | [h] -> <:expr< $aux (List.hd exprs) h$ >>
           | _   -> <:expr< List.flatten $expr_list_of_list _loc (List.map2 aux exprs args)$ >> in
-        let patt = Ast.paCom_of_list patts in
-        let patt = match k, args with
-          | `N, [] -> <:patt< $uid:n$ >>
-          | `P, [] -> <:patt< `$uid:n$ >>
-          | `N, _ -> <:patt< $uid:n$ $tup:patt$ >>
-          | `P, _ -> <:patt< `$uid:n$ $tup:patt$ >> in
+         let patt = match k, args with
+          | `N, []  -> <:patt< $uid:n$ >>
+          | `P, []  -> <:patt< `$uid:n$ >>
+          | `N, _   -> <:patt< $uid:n$ $Pa_dyntype.P4_helpers.patt_tuple_of_list _loc patts$ >>
+          | `P, _   -> <:patt< `$uid:n$ $Pa_dyntype.P4_helpers.patt_tuple_of_list _loc patts$ >> in
         <:match_case< $patt$ -> $exprs$ >> in
       <:expr< match $id$ with [ $list:List.map mc s$ ] >>
     | Option o ->
