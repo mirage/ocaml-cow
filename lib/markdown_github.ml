@@ -26,35 +26,7 @@
 *)
 
 open Printf
-
-type ref = { src : string; desc : string }
-
-type paragraph =
-    Normal of par_text
-  | Html of Html.t
-  | Pre of string * string option
-  | Heading of int * par_text
-  | Quote of paragraph list
-  | Ulist of paragraph list * paragraph list list
-  | Olist of paragraph list * paragraph list list
-
-and par_text = text list
-
-and text =
-    Text of string
-  | Emph of string
-  | Bold of string
-  | Struck of par_text
-  | Code of string
-  | Link of href
-  | Anchor of string
-  | Image of img_ref
-
-and href = { href_target : string; href_desc : string; }
-
-and img_ref = { img_src : string; img_alt : string; }
-
-type t = paragraph list
+open Markdown
 
 type parse_state = { max : int; current : Buffer.t; fragments : text list; }
 
@@ -108,6 +80,18 @@ let unescape_slice s ~first ~last =
 let snd_is s c = String.length s > 1 && s.[1] = c
 let snd_is_space s = snd_is s ' ' || snd_is s '\t'
 
+(* let range i j = *)
+(*   let rec aux acc n = *)
+(*     if n < i then acc else aux (n :: acc) (n-1) *)
+(*   in aux [] j *)
+
+let n_is n s c = String.length s > n && s.[n] = c
+
+let range_is (i, j) s c = String.length s > j &&
+  let rec aux n =
+    if n > j then true else s.[n] = c && aux (n+1)
+  in aux i
+
 let collect f x =
   let rec loop acc = match f x with
       None -> List.rev acc
@@ -149,18 +133,20 @@ and skip_blank_line e = match Enum.peek e with
   | Some (_, _, true) -> Enum.junk e; skip_blank_line e
 
 and read_nonempty indent e s = match s.[0] with
-    '!' -> read_heading s
+    '#' -> read_heading s
   | '<' -> read_html e s
-  | '*' when snd_is_space s -> push_remainder indent s e; read_ul indent e
-  | '#' when snd_is_space s -> push_remainder indent s e; read_ol indent e
-  | '{' when snd_is s '{' -> read_pre (slice s ~first:2) e
+  | '*' | '+' | '-' when snd_is_space s ->
+      push_remainder indent s e; read_ul indent e
+  (* | '#' when snd_is_space s -> push_remainder indent s e; read_ol indent e *)
+  | '{' when snd_is s '{' -> read_pre ~delim:"}}" (slice s ~first:2) e
+  | '`' when range_is (1,2) s '`' -> read_pre ~delim:"```" (slice s ~first:3) e
   | '>' when snd_is_space s || s = ">" ->
       (* last check needed because "> " becomes ">" *)
       Enum.push e (indent, s, false); read_quote indent e
   | _ -> Enum.push e (indent, s, false); read_normal e
 
 and read_heading s =
-  let s' = strip ~chars:"!" s in
+  let s' = strip ~chars:"#" s in
   let level = String.length s - (String.length s') in
     Some (Heading (level, parse_text s'))
 
@@ -204,21 +190,22 @@ and read_list f is_item indent e =
       | None | Some _ -> f fst (List.rev others)
   in Some (read_all (read_item indent []) [])
 
-and read_pre kind e =
+and read_pre ~delim kind e =
   let kind = match kind with "" -> None | s -> Some s in
-  let re = Re_str.regexp_string "^\\\\+}}$" in
+  let re_str = Printf.sprintf "^\\\\+%s$" delim in
+  let re = Re_str.regexp_string re_str in
   let unescape = function
       s when Re_str.string_match re s 0 -> slice ~first:1 s
     | s -> s in
   (*  don't forget the last \n *)
   let ret ls = Some (Pre (String.concat "\n" (List.rev ("" :: ls)), kind)) in
   let rec read_until_end fstindent ls = match Enum.get e with
-      None | Some (_, "}}", _) -> ret ls
-    | Some (indentation, s, _) ->
+    | None -> ret ls
+    | Some (indentation, s, _) -> if s = delim then ret ls else
         let spaces = String.make (max 0 (indentation - fstindent)) ' ' in
           read_until_end fstindent ((spaces ^ unescape s) :: ls)
   in match Enum.get e with
-      None | Some (_, "}}", _) -> ret []
+      None | Some (_, "}}", _) | Some (_, "```", _) -> ret []
     | Some (indentation, s, _) -> read_until_end indentation [s]
 
 and read_quote indent e =
@@ -263,6 +250,9 @@ and scan s st n =
   if n >= max then List.rev (push_current st)
 
   else match s.[n] with
+    | '`' when n_is (n+1) s '`' ->
+        delimited (fun ~first ~last -> Code (unescape_slice s ~first ~last)) "``"
+          s st n
     | '`' ->
         delimited (fun ~first ~last -> Code (unescape_slice s ~first ~last)) "`"
           s st n
@@ -378,94 +368,42 @@ let parse_lines ls = parse_enum (Enum.of_list ls)
 let parse_text s = parse_lines ((Re_str.split_delim (Re_str.regexp_string "\n") s))
 
 let rec text = function
-    Text t    -> <:xml<$str:t$&>>
-  | Emph t    -> <:xml<<i>$str:t$</i>&>>
-  | Bold t    -> <:xml<<b>$str:t$</b>&>>
-  | Struck pt -> <:xml<<del>$par_text pt$</del>&>>
-  | Code t    -> <:xml<<code>$str:t$</code>&>>
-  | Link href -> <:xml<<a href=$str:href.href_target$>$str:href.href_desc$</a>&>>
-  | Anchor a  -> <:xml<<a name=$str:a$/>&>>
-  | Image img -> <:xml<<img src=$str:img.img_src$ alt=$str:img.img_alt$/>&>>
+    Text t    -> <:html<$str:t$&>>
+  | Emph t    -> <:html<<i>$str:t$</i>&>>
+  | Bold t    -> <:html<<b>$str:t$</b>&>>
+  | Struck pt -> <:html<<del>$par_text pt$</del>&>>
+  | Code t    -> <:html<<code>$str:t$</code>&>>
+  | Link href -> <:html<<a href=$str:href.href_target$>$str:href.href_desc$</a>&>>
+  | Anchor a  -> <:html<<a name=$str:a$/>&>>
+  | Image img -> <:html<<img src=$str:img.img_src$ alt=$str:img.img_alt$/>&>>
 
-and para = function
-    Normal pt        -> <:xml<$par_text pt$>>
-  | Html html        -> <:xml<<p>$html$</p>&>>
+and para p =
+  let heading_content h pt =
+    <:html<$par_text pt$<a name="$str: id_of_heading h$" class="anchor-toc"> </a>&>>
+  in
+  match p with
+    Normal pt        -> <:html<$par_text pt$>>
+  | Html html        -> <:html<<p>$html$</p>&>>
   (* XXX: we assume that this is ocaml code *)
-  | Pre (t,kind)     -> <:xml<$ Code.ocaml t$>>
-  | Heading (1,pt)   -> <:xml<<h1>$par_text pt$</h1>&>>
-  | Heading (2,pt)   -> <:xml<<h2>$par_text pt$</h2>&>>
-  | Heading (3,pt)   -> <:xml<<h3>$par_text pt$</h3>&>>
-  | Heading (_,pt)   -> <:xml<<h4>$par_text pt$</h4>&>>
-  | Quote pl         -> <:xml<<blockquote>$paras pl$</blockquote>&>>
-  | Ulist (pl,pll)   -> let l = pl :: pll in <:xml<<ul>$li l$</ul>&>>
-  | Olist (pl,pll)   -> let l = pl :: pll in <:xml<<ol>$li l$</ol>&>>
+  | Pre (t,kind)     -> <:html<$ Code.ocaml t$>>
+  | Heading (1,pt) as h -> <:html<<h1>$heading_content h pt$</h1>&>>
+  | Heading (2,pt) as h -> <:html<<h2>$heading_content h pt$</h2>&>>
+  | Heading (3,pt) as h -> <:html<<h3>$heading_content h pt$</h3>&>>
+  | Heading (_,pt) as h -> <:html<<h4>$heading_content h pt$</h4>&>>
+  | Quote pl         -> <:html<<blockquote>$paras pl$</blockquote>&>>
+  | Ulist (pl,pll)   -> let l = pl :: pll in <:html<<ul>$li l$</ul>&>>
+  | Olist (pl,pll)   -> let l = pl :: pll in <:html<<ol>$li l$</ol>&>>
 
-and par_text pt = <:xml<$list:List.map text pt$>>
+and par_text pt = <:html<$list:List.map text pt$>>
 
 and li pl =
-  let aux p = <:xml<<li>$paras p$</li>&>> in
-  <:xml< $list:List.map aux pl$ >>
+  let aux p = <:html<<li>$paras p$</li>&>> in
+  <:html< $list:List.map aux pl$ >>
 
 and paras ps =
-  let aux p = <:xml<<p>$para p$</p>&>> in
-  <:xml< $list:List.map aux  ps$ >>
+  let aux p = <:html<<p>$para p$</p>&>> in
+  <:html< $list:List.map aux  ps$ >>
 
 let to_html ps = paras ps
 
 let of_string = parse_text
-
-(* Create a suitable ID given a Header element *)
-let id_of_heading (h: paragraph): string =
-  let rec str_of_pt pt =
-    let replace s = Str.global_replace (Str.regexp "[ ]+") "" s in
-    String.concat "-" (List.map (fun t -> replace (str_of_text t)) pt)
-  and str_of_text = function
-    | Text s | Emph s | Bold s | Code s | Anchor s -> s
-    | Struck pt -> str_of_pt pt
-    | Link href -> href.href_desc
-    | Image ref -> ref.img_alt
-  in
-  match h with
-  | Heading (n,pt) ->
-    let pt_str = str_of_pt pt in
-    Printf.sprintf "h%d-%s" n pt_str
-  | _ -> failwith "id_of_heading: input element is not a heading!"
-
-
-(* Default html creation functions for table of contents *)
-let wrap_li ~depth c =
-  <:html<<li>$c$</li>&>>
-
-let wrap_a ~depth ~heading c =
-  let href = "#" ^ id_of_heading heading in
-  wrap_li ~depth <:html<<a href="$str: href$">$c$</a>&>>
-
-let wrap_ul ~depth l =
-  if depth = 0 then
-    <:html<<ul class="nav nav-list bs-docs-sidenav">$l$</ul>&>>
-  else
-    wrap_li ~depth <:html<<ul>$l$</ul>&>>
-
-(* Extract a HTML table of contents from markdown elements. Depth can be
-   modified with the corresponding optional argument. *)
-let to_html_toc ?(wrap_list=wrap_ul) ?(wrap_item=wrap_a) ?(depth=2) ps =
-  let rec aux level ps = match ps with
-    | [] -> [], []
-    | h :: t -> match h with
-      | Heading (n,pt) ->
-        begin
-          match n with
-          | n when n = level ->
-              let acc, r = aux level t in
-              wrap_item ~depth:level ~heading:h (par_text pt) :: acc, r
-          | n when n > level && n <= depth ->
-              let acc, r = aux (level+1) ps in
-              let racc, rr = aux level r in
-              wrap_list ~depth:level <:html< $list: acc$ >> :: racc, rr
-          | n when n < level -> [], ps
-          | _ -> aux level t
-        end
-      | _ -> aux level t
-  in
-  wrap_list ~depth:0 <:html< $list: fst (aux 1 ps)$ >>
-
