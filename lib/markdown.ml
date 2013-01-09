@@ -377,43 +377,6 @@ let parse_enum e =
 let parse_lines ls = parse_enum (Enum.of_list ls)
 let parse_text s = parse_lines ((Re_str.split_delim (Re_str.regexp_string "\n") s))
 
-let rec text = function
-    Text t    -> <:xml<$str:t$&>>
-  | Emph t    -> <:xml<<i>$str:t$</i>&>>
-  | Bold t    -> <:xml<<b>$str:t$</b>&>>
-  | Struck pt -> <:xml<<del>$par_text pt$</del>&>>
-  | Code t    -> <:xml<<code>$str:t$</code>&>>
-  | Link href -> <:xml<<a href=$str:href.href_target$>$str:href.href_desc$</a>&>>
-  | Anchor a  -> <:xml<<a name=$str:a$/>&>>
-  | Image img -> <:xml<<img src=$str:img.img_src$ alt=$str:img.img_alt$/>&>>
-
-and para = function
-    Normal pt        -> <:xml<$par_text pt$>>
-  | Html html        -> <:xml<<p>$html$</p>&>>
-  (* XXX: we assume that this is ocaml code *)
-  | Pre (t,kind)     -> <:xml<$ Code.ocaml t$>>
-  | Heading (1,pt)   -> <:xml<<h1>$par_text pt$</h1>&>>
-  | Heading (2,pt)   -> <:xml<<h2>$par_text pt$</h2>&>>
-  | Heading (3,pt)   -> <:xml<<h3>$par_text pt$</h3>&>>
-  | Heading (_,pt)   -> <:xml<<h4>$par_text pt$</h4>&>>
-  | Quote pl         -> <:xml<<blockquote>$paras pl$</blockquote>&>>
-  | Ulist (pl,pll)   -> let l = pl :: pll in <:xml<<ul>$li l$</ul>&>>
-  | Olist (pl,pll)   -> let l = pl :: pll in <:xml<<ol>$li l$</ol>&>>
-
-and par_text pt = <:xml<$list:List.map text pt$>>
-
-and li pl =
-  let aux p = <:xml<<li>$paras p$</li>&>> in
-  <:xml< $list:List.map aux pl$ >>
-
-and paras ps =
-  let aux p = <:xml<<p>$para p$</p>&>> in
-  <:xml< $list:List.map aux  ps$ >>
-
-let to_html ps = paras ps
-
-let of_string = parse_text
-
 (* Create a suitable ID given a Header element *)
 let id_of_heading (h: paragraph): string =
   let rec str_of_pt pt =
@@ -431,6 +394,46 @@ let id_of_heading (h: paragraph): string =
     Printf.sprintf "h%d-%s" n pt_str
   | _ -> failwith "id_of_heading: input element is not a heading!"
 
+let rec text = function
+    Text t    -> <:html<$str:t$&>>
+  | Emph t    -> <:html<<i>$str:t$</i>&>>
+  | Bold t    -> <:html<<b>$str:t$</b>&>>
+  | Struck pt -> <:html<<del>$par_text pt$</del>&>>
+  | Code t    -> <:html<<code>$str:t$</code>&>>
+  | Link href -> <:html<<a href=$str:href.href_target$>$str:href.href_desc$</a>&>>
+  | Anchor a  -> <:html<<a name=$str:a$/>&>>
+  | Image img -> <:html<<img src=$str:img.img_src$ alt=$str:img.img_alt$/>&>>
+
+and para p =
+  let heading_content h pt =
+    <:html<<a name="$str:id_of_heading h$" class="anchor-toc"/>$par_text pt$>>
+  in
+  match p with
+    Normal pt        -> <:html<$par_text pt$>>
+  | Html html        -> <:html<<p>$html$</p>&>>
+  (* XXX: we assume that this is ocaml code *)
+  | Pre (t,kind)     -> <:html<$ Code.ocaml t$>>
+  | Heading (1,pt) as h -> <:html<<h1>$heading_content h pt$</h1>&>>
+  | Heading (2,pt) as h -> <:html<<h2>$heading_content h pt$</h2>&>>
+  | Heading (3,pt) as h -> <:html<<h3>$heading_content h pt$</h3>&>>
+  | Heading (_,pt) as h -> <:html<<h4>$heading_content h pt$</h4>&>>
+  | Quote pl         -> <:html<<blockquote>$paras pl$</blockquote>&>>
+  | Ulist (pl,pll)   -> let l = pl :: pll in <:html<<ul>$li l$</ul>&>>
+  | Olist (pl,pll)   -> let l = pl :: pll in <:html<<ol>$li l$</ol>&>>
+
+and par_text pt = <:html<$list:List.map text pt$>>
+
+and li pl =
+  let aux p = <:html<<li>$paras p$</li>&>> in
+  <:html< $list:List.map aux pl$ >>
+
+and paras ps =
+  let aux p = <:html<<p>$para p$</p>&>> in
+  <:html< $list:List.map aux  ps$ >>
+
+let to_html ps = paras ps
+
+let of_string = parse_text
 
 (* Default html creation functions for table of contents *)
 let wrap_li ~depth c =

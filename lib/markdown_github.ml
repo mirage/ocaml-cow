@@ -1,7 +1,8 @@
 (*
   Copyright (c) 2009 Mauricio Fernández <mfp@acm.org>
   Copyright (c) 2009-2010 Anil Madhavapeddy <anil@recoil.org>
-  Copyright (c) 2010 Thomas Gazagnaire <thomas@gazagnaire.org>
+  Copyright (c) 2010-2013 Thomas Gazagnaire <thomas@gazagnaire.org>
+  Copyright (c) 2012 Guillem Rieu <guillem.rieu@ocamlpro.com>
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
@@ -366,44 +367,5 @@ let parse_enum e =
 
 let parse_lines ls = parse_enum (Enum.of_list ls)
 let parse_text s = parse_lines ((Re_str.split_delim (Re_str.regexp_string "\n") s))
-
-let rec text = function
-    Text t    -> <:html<$str:t$&>>
-  | Emph t    -> <:html<<i>$str:t$</i>&>>
-  | Bold t    -> <:html<<b>$str:t$</b>&>>
-  | Struck pt -> <:html<<del>$par_text pt$</del>&>>
-  | Code t    -> <:html<<code>$str:t$</code>&>>
-  | Link href -> <:html<<a href=$str:href.href_target$>$str:href.href_desc$</a>&>>
-  | Anchor a  -> <:html<<a name=$str:a$/>&>>
-  | Image img -> <:html<<img src=$str:img.img_src$ alt=$str:img.img_alt$/>&>>
-
-and para p =
-  let heading_content h pt =
-    <:html<$par_text pt$<a name="$str: id_of_heading h$" class="anchor-toc"> </a>&>>
-  in
-  match p with
-    Normal pt        -> <:html<$par_text pt$>>
-  | Html html        -> <:html<<p>$html$</p>&>>
-  (* XXX: we assume that this is ocaml code *)
-  | Pre (t,kind)     -> <:html<$ Code.ocaml t$>>
-  | Heading (1,pt) as h -> <:html<<h1>$heading_content h pt$</h1>&>>
-  | Heading (2,pt) as h -> <:html<<h2>$heading_content h pt$</h2>&>>
-  | Heading (3,pt) as h -> <:html<<h3>$heading_content h pt$</h3>&>>
-  | Heading (_,pt) as h -> <:html<<h4>$heading_content h pt$</h4>&>>
-  | Quote pl         -> <:html<<blockquote>$paras pl$</blockquote>&>>
-  | Ulist (pl,pll)   -> let l = pl :: pll in <:html<<ul>$li l$</ul>&>>
-  | Olist (pl,pll)   -> let l = pl :: pll in <:html<<ol>$li l$</ol>&>>
-
-and par_text pt = <:html<$list:List.map text pt$>>
-
-and li pl =
-  let aux p = <:html<<li>$paras p$</li>&>> in
-  <:html< $list:List.map aux pl$ >>
-
-and paras ps =
-  let aux p = <:html<<p>$para p$</p>&>> in
-  <:html< $list:List.map aux  ps$ >>
-
-let to_html ps = paras ps
 
 let of_string = parse_text

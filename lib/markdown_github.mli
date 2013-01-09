@@ -1,7 +1,8 @@
 (*
   Copyright (c) 2009 Mauricio Fernández <mfp@acm.org>
   Copyright (c) 2009-2010 Anil Madhavapeddy <anil@recoil.org>
-  Copyright (c) 2010 Thomas Gazagnaire <thomas@gazagnaire.org>
+  Copyright (c) 2010-2013 Thomas Gazagnaire <thomas@gazagnaire.org>
+  Copyright (c) 2012 Guillem Rieu <guillem.rieu@ocamlpro.com>
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
@@ -24,7 +25,5 @@
   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
   OTHER DEALINGS IN THE SOFTWARE.
 *)
-
-val to_html : Markdown.t -> Html.t
 
 val of_string : string -> Markdown.t
