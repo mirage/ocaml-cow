@@ -406,7 +406,7 @@ let rec text = function
 
 and para p =
   let heading_content h pt =
-    <:html<<a name="$str:id_of_heading h$" class="anchor-toc"/>$par_text pt$>>
+    <:html<$par_text pt$<a name="$str:id_of_heading h$" class="anchor-toc">&nbsp;</a>&>>
   in
   match p with
     Normal pt        -> <:html<$par_text pt$>>
