@@ -380,7 +380,7 @@ let parse_text s = parse_lines ((Re_str.split_delim (Re_str.regexp_string "\n") 
 (* Create a suitable ID given a Header element *)
 let id_of_heading (h: paragraph): string =
   let rec str_of_pt pt =
-    let replace s = Str.global_replace (Str.regexp "[ ]+") "" s in
+    let replace s = Re_str.global_replace (Re_str.regexp "[ ]+") "" s in
     String.concat "-" (List.map (fun t -> replace (str_of_text t)) pt)
   and str_of_text = function
     | Text s | Emph s | Bold s | Code s | Anchor s -> s
