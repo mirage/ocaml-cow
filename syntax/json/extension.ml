@@ -316,9 +316,11 @@ module Of_json = struct
                   None >>
             | _ ->
               <:class_str_item< method $lid:f$ =
-                match List.mem_assoc $`str:f$ $eid$ with [
-                  True -> let $pid2$ = List.assoc $`str:f$ $eid$ in $aux eid2 t$
-                | $runtime_error _loc f id ("Looking for key "^n)$ ] >> in
+                if List.mem_assoc $`str:f$ $eid$ then
+                  let $pid2$ = List.assoc $`str:f$ $eid$ in $aux eid2 t$
+                else
+                  $runtime_error_key_not_found _loc f id n$
+              >> in
         <:expr< match $id$ with [
           Json.Object $pid$ -> object $Ast.crSem_of_list (List.map field d)$ end
         | $runtime_error _loc n id "Object"$ ] >>
