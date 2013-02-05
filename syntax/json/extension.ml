@@ -83,7 +83,7 @@ module Json_of = struct
 
     | Int (Some i) when i + 1 = Sys.word_size ->
       <:expr< Json.Int (Int64.of_int $id$) >>
-      
+
     | Int (Some i) when i <= 32 ->
       <:expr< Json.Int (Int64.of_int32 $id$) >>
 
@@ -96,7 +96,7 @@ module Json_of = struct
     | List (Tuple [String; t ]) -> (* XXX: deal with `type a = string type t = (a * int) list` *)
       let pid, eid = new_id _loc () in
       <:expr< Json.Object (List.map (fun (s, $pid$) -> (s, $aux eid t$)) t) >>
-                               
+
     | List t   ->
       let pid, eid = new_id _loc () in
       <:expr< Json.Array (List.map (fun $pid$ -> $aux eid t$) $id$) >>
@@ -104,7 +104,7 @@ module Json_of = struct
     | Array (Tuple [String; t ]) -> (* XXX: deal with `type a = string type t = (a * int) array` *)
       let pid, eid = new_id _loc () in
       <:expr< Json.Object (Array.to_list (Array.map (fun (s, $pid$) -> (s, $aux eid t$)) $id$)) >>
-                               
+
     | Array t   ->
       let pid, eid = new_id _loc () in
       <:expr< Json.Array (Array.to_list (Array.map (fun $pid$ -> $aux eid t$) $id$)) >>
@@ -273,7 +273,7 @@ module Of_json = struct
         <:expr< match $id$ with [
           Json.Object d -> Array.of_list (List.map (fun (key, $pid$) -> (key, $aux eid t$)) d)
         | $runtime_error _loc n id "Object"$ ] >>
-            
+
       | Array t ->
         let pid, eid = new_id _loc () in
         <:expr< match $id$ with [
@@ -293,7 +293,7 @@ module Of_json = struct
                 else
                   None >>
             | _ ->
-              <:rec_binding< $lid:f$ = 
+              <:rec_binding< $lid:f$ =
                 if List.mem_assoc $`str:f$ $eid$ then
                   let $pid2$ = List.assoc $`str:f$ $eid$ in $aux eid2 t$
                 else
@@ -315,7 +315,7 @@ module Of_json = struct
                 else
                   None >>
             | _ ->
-              <:class_str_item< method $lid:f$ = 
+              <:class_str_item< method $lid:f$ =
                 match List.mem_assoc $`str:f$ $eid$ with [
                   True -> let $pid2$ = List.assoc $`str:f$ $eid$ in $aux eid2 t$
                 | $runtime_error _loc f id ("Looking for key "^n)$ ] >> in
