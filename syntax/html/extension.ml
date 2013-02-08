@@ -112,10 +112,12 @@ let gen_html (_loc, n, t_exp) =
           | _   -> <:expr< List.flatten $expr_list_of_list _loc (List.map2 aux exprs args)$ >> in
         let patt = Ast.paCom_of_list patts in
         let patt = match k, args with
-          | `N, [] -> <:patt< $uid:n$ >>
-          | `P, [] -> <:patt< `$uid:n$ >>
-          | `N, _ -> <:patt< $uid:n$ $tup:patt$ >>
-          | `P, _ -> <:patt< `$uid:n$ $tup:patt$ >> in
+          | `N, []  -> <:patt< $uid:n$ >>
+          | `P, []  -> <:patt< `$uid:n$ >>
+          | `N, [h] -> <:patt< $uid:n$ $patt$ >>
+          | `P, [h] -> <:patt< `$uid:n$ $patt$ >>
+          | `N, _   -> <:patt< $uid:n$ $tup:patt$ >>
+          | `P, _   -> <:patt< `$uid:n$ $tup:patt$ >> in
         <:match_case< $patt$ -> $exprs$ >> in
       <:expr< match $id$ with [ $list:List.map mc s$ ] >>
     | Option o ->

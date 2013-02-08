@@ -13,5 +13,8 @@ all: $(TEST) $(PP)
 %_pp.ml: %.ml ../_build/syntax/pa_cow.cma
 	camlp4o $(P4OPTS) -I ../_build/syntax pa_cow.cma $< -o $@
 
-%: %_pp.ml
-	ocamlc $(OPTS) -I ../_build/lib cow.cma $^ -o $@
+%: %.ml ../_build/syntax/pa_cow.cma
+	ocamlc -pp 'camlp4o $(P4OPTS) -I ../_build/syntax pa_cow.cma' $(OPTS) -I ../_build/lib cow.cma $^ -o $@
+
+clean:
+	rm -f $(TEST) $(PP)

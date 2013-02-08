@@ -26,10 +26,10 @@ and t = {
   f4: int64;
   f5: char array;
 } and tu = ( int  * f * pp )
-with xml,json
+with xml,json,html
 
 type o = < x: f; y: string; z: int option >
-with xml,json
+with xml,json,html
 
 open OUnit
 
