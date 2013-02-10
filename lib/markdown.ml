@@ -416,7 +416,9 @@ and para p =
   | Heading (1,pt) as h -> <:html<<h1>$heading_content h pt$</h1>&>>
   | Heading (2,pt) as h -> <:html<<h2>$heading_content h pt$</h2>&>>
   | Heading (3,pt) as h -> <:html<<h3>$heading_content h pt$</h3>&>>
-  | Heading (_,pt) as h -> <:html<<h4>$heading_content h pt$</h4>&>>
+  | Heading (4,pt) as h -> <:html<<h4>$heading_content h pt$</h4>&>>
+  | Heading (5,pt) as h -> <:html<<h5>$heading_content h pt$</h5>&>>
+  | Heading (_,pt) as h -> <:html<<h6>$heading_content h pt$</h6>&>>
   | Quote pl         -> <:html<<blockquote>$paras pl$</blockquote>&>>
   | Ulist (pl,pll)   -> let l = pl :: pll in <:html<<ul>$li l$</ul>&>>
   | Olist (pl,pll)   -> let l = pl :: pll in <:html<<ol>$li l$</ol>&>>
