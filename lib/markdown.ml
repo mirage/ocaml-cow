@@ -409,7 +409,7 @@ and para p =
     <:html<$par_text pt$<a name="$str:id_of_heading h$" class="anchor-toc">&nbsp;</a>&>>
   in
   match p with
-    Normal pt        -> <:html<$par_text pt$>>
+    Normal pt        -> <:html<<p>$par_text pt$</p>&>>
   | Html html        -> <:html<<p>$html$</p>&>>
   (* XXX: we assume that this is ocaml code *)
   | Pre (t,kind)     -> <:html<$ Code.ocaml t$>>
@@ -428,7 +428,7 @@ and li pl =
   <:html< $list:List.map aux pl$ >>
 
 and paras ps =
-  let aux p = <:html<<p>$para p$</p>&>> in
+  let aux p = <:html<$para p$&>> in
   <:html< $list:List.map aux  ps$ >>
 
 let to_html ps = paras ps
