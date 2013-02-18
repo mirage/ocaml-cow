@@ -1,7 +1,11 @@
-0.5.2 (15-01-2013)
+0.5.3 (18-Feb-2013):
+* Fix error with unary sum types for HTML generation.
+* Support JSON marshalling for `option` types.
+
+0.5.2 (15-Jan-2013):
 * Remove dependency towards the Str module
 
-0.5.1 (10-01-2013)
+0.5.1 (10-Jan-2013):
 * Fix bugs in `Markdown_github` and factorize html serialization functions
 * New antiquotation kinds for CSS
 * Add xhtml quotations (which are identical to html from now on)
