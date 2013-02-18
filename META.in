@@ -7,7 +7,7 @@ requires = "dyntype dyntype.syntax re re.str ulex"
 package "syntax" (
  description = "Syntax extension for COW"
  requires = "camlp4 str dyntype.syntax"
- archive(syntax, preprocessor) = "str.cma pa_cow.cma"
- archive(syntax, toploop) = "str.cma pa_cow.cma"
+ archive(syntax, preprocessor) = "pa_cow.cma"
+ archive(syntax, toploop) = "pa_cow.cma"
  exists_if = "pa_cow.cma"
 )
