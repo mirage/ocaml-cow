@@ -409,14 +409,16 @@ and para p =
     <:html<$par_text pt$<a name="$str:id_of_heading h$" class="anchor-toc">&nbsp;</a>&>>
   in
   match p with
-    Normal pt        -> <:html<$par_text pt$>>
+    Normal pt        -> <:html<<p>$par_text pt$</p>&>>
   | Html html        -> <:html<<p>$html$</p>&>>
   (* XXX: we assume that this is ocaml code *)
   | Pre (t,kind)     -> <:html<$ Code.ocaml t$>>
   | Heading (1,pt) as h -> <:html<<h1>$heading_content h pt$</h1>&>>
   | Heading (2,pt) as h -> <:html<<h2>$heading_content h pt$</h2>&>>
   | Heading (3,pt) as h -> <:html<<h3>$heading_content h pt$</h3>&>>
-  | Heading (_,pt) as h -> <:html<<h4>$heading_content h pt$</h4>&>>
+  | Heading (4,pt) as h -> <:html<<h4>$heading_content h pt$</h4>&>>
+  | Heading (5,pt) as h -> <:html<<h5>$heading_content h pt$</h5>&>>
+  | Heading (_,pt) as h -> <:html<<h6>$heading_content h pt$</h6>&>>
   | Quote pl         -> <:html<<blockquote>$paras pl$</blockquote>&>>
   | Ulist (pl,pll)   -> let l = pl :: pll in <:html<<ul>$li l$</ul>&>>
   | Olist (pl,pll)   -> let l = pl :: pll in <:html<<ol>$li l$</ol>&>>
@@ -428,7 +430,7 @@ and li pl =
   <:html< $list:List.map aux pl$ >>
 
 and paras ps =
-  let aux p = <:html<<p>$para p$</p>&>> in
+  let aux p = <:html<$para p$&>> in
   <:html< $list:List.map aux  ps$ >>
 
 let to_html ps = paras ps
