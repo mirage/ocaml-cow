@@ -1,3 +1,6 @@
+0.5.4 (trunk)
+* Fix atom feed
+
 0.5.3 (18-Feb-2013):
 * Correct META file for `cow.syntax` to not repeat the `Str` module loading.
 * Fix error with unary sum types for HTML generation.
