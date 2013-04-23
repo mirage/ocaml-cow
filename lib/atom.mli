@@ -25,13 +25,20 @@ type date = int * int * int * int * int
 
 val compare : date -> date -> int
 
+type link = {
+  rel : [`self|`alternate];
+  href: string;
+  typ : string option;
+}
+
 type meta = {
-  id           : string;
-  title        : string;
-  subtitle     : string option;
-  author       : author option;
-  rights       : string option;
-  updated      : date;
+  id      : string;
+  title   : string;
+  subtitle: string option;
+  author  : author option;
+  rights  : string option;
+  updated : date;
+  links   : link list;
 }
 
 type summary = string option
@@ -48,4 +55,3 @@ type feed = {
 }
 
 val xml_of_feed : ?self:string -> feed -> Xml.t
-

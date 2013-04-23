@@ -33,14 +33,56 @@ let xml_of_date (year,month,day,hour,min) =
   let str = Printf.sprintf "%.4d-%.2d-%.2dT%.2d:%.2d:00Z" year month day hour min in
   <:xml<$str:str$>>
 
+type link = {
+  rel : [`self|`alternate];
+  href: string;
+  typ : string option;
+}
+
+let tag t ?(attributes=[]) body : Xml.t =
+  let attributes = List.map (fun (k,v) -> ("",k), v) attributes in
+  [`El ((("",t), attributes), body)]
+
+let data body : Xml.t = [`Data body]
+
+let empty: Xml.t = []
+
+let xml_of_link l =
+  let attributes = [
+    ("rel" , match l.rel with `self -> "self" | `alternate -> "alternate");
+    ("href", l.href)
+  ] @ match l.typ with
+      | None   -> []
+      | Some t -> ["type", t] in
+  tag "link" ~attributes empty
+
 type meta = {
-  id: string;
-  title: string;
+  id      : string;
+  title   : string;
   subtitle: string option;
-  author: author option;
-  rights: string option;
-  updated: date;
-} with xml
+  author  : author option;
+  rights  : string option;
+  updated : date;
+  links   : link list;
+}
+
+let xml_of_meta m =
+  let open Xml in
+  let body = [
+    tag "id"    (data m.id);
+    tag "title" (data m.title);
+    (match m.subtitle with
+     | None   -> empty
+     | Some s -> tag "subtitle" (data s));
+    (match m.author with
+     | None   -> empty
+     | Some a -> tag "author" (xml_of_author a));
+    (match m.rights with
+     | None   -> empty
+     | Some r -> tag "rights" (data r));
+    tag "updated" (xml_of_date m.updated);
+  ] in
+  List.flatten (body @ List.map xml_of_link m.links)
 
 type content = Xml.t
 
@@ -84,7 +126,7 @@ let xml_of_contributor c =
   <:xml<<contributor>$xml_of_author c$</contributor>&>>
 
 type feed = {
-  feed: meta;
+  feed   : meta;
   entries: entry list;
 }
 
