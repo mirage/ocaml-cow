@@ -36,6 +36,11 @@ type link = {
   typ : string option;
 }
 
+(** [mk_link ~rel ~typ uri] builds a {!link}. [rel] defaults to [`self],
+    and [typ] represents the optional MIME type (e.g. [text/html]).
+    The [uri] should usually be a fully qualified URI. *)
+val mk_link : ?rel:[`self|`alternate] -> ?typ:string -> Uri.t -> link
+
 type meta = {
   id      : string;
   title   : string;

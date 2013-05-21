@@ -39,6 +39,9 @@ type link = {
   typ : string option;
 }
 
+let mk_link ?(rel=`self) ?typ href =
+  { rel; typ; href }
+
 let tag t ?(attributes=[]) body : Xml.t =
   let attributes = List.map (fun (k,v) -> ("",k), v) attributes in
   [`El ((("",t), attributes), body)]
