@@ -14,8 +14,21 @@ these web formats by:
 
 See more explanation at: http://www.openmirage.org/wiki/cow
 
-This library is in beta, and full documentation is still being written.  Some
-repositories which use it include:
+This library is in beta, and full documentation is still being written.
+Some repositories which use it include:
 
 * Mirage website: http://github.com/mirage/mirage-www
-* Mirage tutorial: http://github.com/mirage/mirage-tutorial
+* Opam2web: http://github.com/OCamlpro/opam2web
+
+Usage
+-----
+
+Cow installs two ocamlfind packages:
+
+* `cow` which is a packed `Cow` module that contains JSON, XML, etc.
+* `cow.syntax` which has the camlp4 support.
+
+The syntax extension assumes that `Cow` is opened in the environment 
+where you use the quotations, but you can pass `-cow-no-open` to in the camlp4
+command-line to prevent this behaviour.  This is for legacy compatibility
+reasons, and we may change the default behaviour before the 1.0 release.
