@@ -66,12 +66,38 @@ let rec to_fct t f =
 		                  (fun () -> f ", ") a;
 		f "}"
 
+let rec to_fct_hum t f =
+	match t with
+	| Int i    -> f (Printf.sprintf "%Ld" i)
+	| Bool b   -> f (string_of_bool b)
+	| Float r  -> f (Printf.sprintf "%g" r)
+	| String s -> f (escape_string s)
+	| Null     -> f "null"
+	| Array a   ->
+		f "[ ";
+		list_iter_between (fun i -> to_fct i f) (fun () -> f ", ") a;
+		f " ]\n";
+	| Object a   ->
+		f "{";
+		list_iter_between (fun (k, v) -> to_fct (String k) f; f ": "; to_fct v f)
+		                  (fun () -> f ", ") a;
+		f "}\n"
+
+
 let to_buffer t buf =
 	to_fct t (fun s -> Buffer.add_string buf s)
 
 let to_string t =
-	let buf = Buffer.create 2048 in
+	let buf = Buffer.create 1024 in
 	to_buffer t buf;
+	Buffer.contents buf
+
+let to_buffer_hum t buf =
+	to_fct_hum t (fun s -> Buffer.add_string buf s)
+
+let to_string_hum t =
+	let buf = Buffer.create 1024 in
+	to_buffer_hum t buf;
 	Buffer.contents buf
 
 let new_id =
