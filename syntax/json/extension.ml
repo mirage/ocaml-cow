@@ -366,16 +366,33 @@ module Of_json = struct
 
 end
 
-let () =
-  Pa_type_conv.add_generator "json"
-    (fun _ tds ->
-       try
-         let _loc = Ast.loc_of_ctyp tds in
-         <:str_item<
-           value rec $Ast.biAnd_of_list (List.map Json_of.gen (Pa_dyntype.P4_type.create tds))$;
-           value rec $Ast.biAnd_of_list (List.map Of_json.gen (Pa_dyntype.P4_type.create tds))$;
-         >>
+let json_gen name fn =
+  Pa_type_conv.add_generator name
+    (fun _ tds -> 
+       try fn tds
        with Not_found ->
-         Printf.eprintf "[Internal Error]\n";
+         Printf.eprintf "[Internal Error in pa_json %s]\n" name;
          Printexc.print_backtrace stderr;
-         exit (-1))
+         exit (-1)
+    )
+
+let () =
+  json_gen "json" (fun tds ->
+    let _loc = Ast.loc_of_ctyp tds in
+    <:str_item<
+      value rec $Ast.biAnd_of_list (List.map Json_of.gen (Pa_dyntype.P4_type.create tds))$;
+      value rec $Ast.biAnd_of_list (List.map Of_json.gen (Pa_dyntype.P4_type.create tds))$;
+    >>
+  );
+  json_gen "of_json" (fun tds ->
+    let _loc = Ast.loc_of_ctyp tds in
+    <:str_item<
+      value rec $Ast.biAnd_of_list (List.map Of_json.gen (Pa_dyntype.P4_type.create tds))$;
+    >>
+  );
+  json_gen "json_of" (fun tds ->
+    let _loc = Ast.loc_of_ctyp tds in
+    <:str_item<
+      value rec $Ast.biAnd_of_list (List.map Json_of.gen (Pa_dyntype.P4_type.create tds))$;
+    >>
+  )

@@ -1,4 +1,5 @@
 0.5.4 (21-May-2013)
+* Add `json_of` and `of_json` type-conv providers (#6).
 * Add `Json.to_string_hum` which adds more newlines for human-readable output (#7).
 * Document the `-cow-no-open` camlp4 flag (#9).
 * Be compatible with Core by using `List.concat` instead of `List.flatten` (#2).

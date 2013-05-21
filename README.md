@@ -32,3 +32,34 @@ The syntax extension assumes that `Cow` is opened in the environment
 where you use the quotations, but you can pass `-cow-no-open` to in the camlp4
 command-line to prevent this behaviour.  This is for legacy compatibility
 reasons, and we may change the default behaviour before the 1.0 release.
+
+Syntax extension
+----------------
+
+This provides the following type-conv providers:
+
+```
+# require "cow";;
+# require "cow.syntax";;
+# open Cow
+# type t = { foo: int; bar: string } with json ;;
+type t = { foo : int; bar : string; }
+val json_of_t : t -> Cow.Json.t = <fun>
+val t_of_json : Cow.Json.t -> t = <fun>
+
+# type t = { foo: int; bar: string } with of_json ;;
+type t = { foo : int; bar : string; }
+val t_of_json : t -> Cow.Json.t = <fun>
+
+# type t = { foo: int; bar: string } with json_of ;;
+type t = { foo : int; bar : string; }
+val json_of_t : t -> Cow.Json.t = <fun>
+
+# type t = { foo: int; bar: string } with xml ;;
+type t = { foo : int; bar : string; }
+val xml_of_t : t -> Cow.Xml.t = <fun>
+
+# type t = { foo: int; bar: string } with html ;;
+type t = { foo : int; bar : string; }
+val html_of_t : ?id:string -> t -> Cow.Html.t = <fun>
+```
