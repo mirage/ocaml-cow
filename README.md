@@ -63,3 +63,11 @@ val xml_of_t : t -> Cow.Xml.t = <fun>
 type t = { foo : int; bar : string; }
 val html_of_t : ?id:string -> t -> Cow.Html.t = <fun>
 ```
+
+HTML
+----
+
+The HTML library is actually an XML-based one (based on xmlm:
+http://erratique.ch/software/xmlm).  You should be careful to use it for
+fragments of HTML, but you may hit various limitations with HTML input parsing.
+We hope to solve this before Cow 1.0, but it isn't there yet...
