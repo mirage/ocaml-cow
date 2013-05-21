@@ -15,6 +15,8 @@
  *
  *)
 
+(** The Atom Syndication format. See RFC4287 for the full specification *)
+
 type author = {
   name  : string;
   uri   : string option;
@@ -25,9 +27,12 @@ type date = int * int * int * int * int
 
 val compare : date -> date -> int
 
+(** An Atom URI. There are lots of rules on which combinations of links
+    are permitted in one feed. See RFC4287 Sec 4.1.1 for the gory details.
+  *)
 type link = {
   rel : [`self|`alternate];
-  href: string;
+  href: Uri.t;
   typ : string option;
 }
 

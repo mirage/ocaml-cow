@@ -35,7 +35,7 @@ let xml_of_date (year,month,day,hour,min) =
 
 type link = {
   rel : [`self|`alternate];
-  href: string;
+  href: Uri.t;
   typ : string option;
 }
 
@@ -50,7 +50,7 @@ let empty: Xml.t = []
 let xml_of_link l =
   let attributes = [
     ("rel" , match l.rel with `self -> "self" | `alternate -> "alternate");
-    ("href", l.href)
+    ("href", Uri.to_string l.href)
   ] @ match l.typ with
       | None   -> []
       | Some t -> ["type", t] in

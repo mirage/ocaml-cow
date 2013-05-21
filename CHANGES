@@ -1,5 +1,7 @@
-0.5.4 (trunk)
-* Fix atom feed
+0.5.4 (21-May-2013)
+* Fix Atom feed by adding a `link` field.
+* Install `.mli` files with the library binaries (#11).
+* New dependency on the `Uri` library.
 
 0.5.3 (18-Feb-2013):
 * Correct META file for `cow.syntax` to not repeat the `Str` module loading.
