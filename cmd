@@ -65,7 +65,7 @@ install()  {
   if [ ! -z "${DESTDIR}" ]; then
     OCAMLFIND_FLAGS="${OCAMLFIND_FLAGS} -destdir ${DESTDIR}"
   fi
-  ${OCAMLFIND} install ${OCAMLFIND_FLAGS} ${NAME} _config/META ${t}
+  ${OCAMLFIND} install ${OCAMLFIND_FLAGS} ${NAME} _config/META ${t} lib/*.mli
 }
 
 # tests also include the built syntax extensions (if any)
