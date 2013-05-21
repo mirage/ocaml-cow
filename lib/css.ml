@@ -89,7 +89,7 @@ module Css = struct
     | [], [] -> []
     | [p],[]
     | [],[p] -> [p]
-    | p1,p2  -> List.map (fun e2 -> List.flatten (List.map (fun e1 -> e1 @ e2) p1)) p2
+    | p1,p2  -> List.map (fun e2 -> List.concat (List.map (fun e1 -> e1 @ e2) p1)) p2
 
   let shift p = function
     | [ Decl (path, body) ] -> Decl (concat_paths p path, body)

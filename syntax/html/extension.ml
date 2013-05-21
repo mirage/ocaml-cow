@@ -85,14 +85,14 @@ let gen_html (_loc, n, t_exp) =
     | Array t  ->
       let pid, eid = new_id _loc () in
       let array = <:expr< Array.map (fun $pid$ -> $aux eid t$) $id$ >> in
-      <:expr< List.flatten (Array.to_list $array$) >>
+      <:expr< List.concat (Array.to_list $array$) >>
     | Tuple t  ->
       let ids = List.map (new_id _loc) t in
       let patts,exprs = List.split ids in
       let exprs = List.map2 aux exprs t in
       <:expr<
         let $tup:Ast.paCom_of_list patts$ = $id$ in
-        List.flatten $expr_list_of_list _loc exprs$
+        List.concat $expr_list_of_list _loc exprs$
         >>
     | Dict(k,d) ->
       let new_id n = match k with
@@ -109,7 +109,7 @@ let gen_html (_loc, n, t_exp) =
         let exprs = match args with
           | []  -> <:expr< [] >>
           | [h] -> <:expr< $aux (List.hd exprs) h$ >>
-          | _   -> <:expr< List.flatten $expr_list_of_list _loc (List.map2 aux exprs args)$ >> in
+          | _   -> <:expr< List.concat $expr_list_of_list _loc (List.map2 aux exprs args)$ >> in
         let patt = Ast.paCom_of_list patts in
         let patt = match k, args with
           | `N, []  -> <:patt< $uid:n$ >>

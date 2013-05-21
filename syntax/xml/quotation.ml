@@ -48,7 +48,7 @@ object
           | "flo"   -> <:expr< [`Data (string_of_float $e$)] >>
           | "str"   -> <:expr< [`Data $e$] >>
           | "alist" -> <:expr< List.map (fun (k,v) -> (("",k),v)) $e$ >> 
-          | "list"  -> <:expr< List.flatten $e$ >>
+          | "list"  -> <:expr< List.concat $e$ >>
           | "attrs" ->
 
             <:expr<

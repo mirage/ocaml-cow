@@ -85,7 +85,7 @@ let xml_of_meta m =
      | Some r -> tag "rights" (data r));
     tag "updated" (xml_of_date m.updated);
   ] in
-  List.flatten (body @ List.map xml_of_link m.links)
+  List.concat (body @ List.map xml_of_link m.links)
 
 type content = Xml.t
 

@@ -1226,7 +1226,7 @@ let to_string t =
 (* XXX: do a proper input_subtree integration *)
 (*** XHTML parsing (using Xml) ***)
 let _input_tree (templates : (string * t) list) input : t =
-  let el (name, attrs) body : t = [ `El ((name, attrs), List.flatten body) ] in
+  let el (name, attrs) body : t = [ `El ((name, attrs), List.concat body) ] in
   let data str : t =
     if List.mem_assoc str templates then
       List.assoc str templates

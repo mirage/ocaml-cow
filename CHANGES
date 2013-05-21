@@ -1,4 +1,6 @@
 0.5.4 (21-May-2013)
+* Document the `-cow-no-open` camlp4 flag (#9).
+* Be compatible with Core by using `List.concat` instead of `List.flatten` (#2).
 * Fix Atom feed by adding a `link` field.
 * Install `.mli` files with the library binaries (#11).
 * New dependency on the `Uri` library.

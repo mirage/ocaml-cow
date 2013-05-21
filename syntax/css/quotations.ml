@@ -43,7 +43,7 @@ object
             | "int"  -> <:expr< Css.Exprs [[Css.Str (string_of_int $e$)]] >>
             | "float"-> <:expr< Css.Exprs [[Css.Str (string_of_float $e$)]] >>
             | "str"  -> <:expr< Css.Exprs [[Css.Str $e$]] >>
-            | "expr" -> <:expr< Css.Exprs [List.flatten (List.map Css.expr $e$)] >>
+            | "expr" -> <:expr< Css.Exprs [List.concat (List.map Css.expr $e$)] >>
             | "prop" -> <:expr< Css.Props $e$ >>
             | "" -> e
             | t ->

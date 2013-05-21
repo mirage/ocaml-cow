@@ -67,7 +67,7 @@ let rec meta_t _loc = function
     let la = list_of_t a [] in
     let lb = list_of_t b [] in
     let l = List.map (meta_t _loc) (la @ lb) in
-    <:expr< List.flatten $expr_list_of_list _loc l$ >> 
+    <:expr< List.concat $expr_list_of_list _loc l$ >> 
 
   | Nil         ->
     <:expr< [] >>

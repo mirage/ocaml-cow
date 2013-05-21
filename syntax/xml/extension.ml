@@ -67,14 +67,14 @@ let gen_xml (_loc, n, (t_exp:Dyntype.Type.t)) =
     | Array t  ->
       let pid, eid = new_id _loc () in
       let array = <:expr< Array.map (fun $pid$ -> $aux eid t$) $id$ >> in
-      <:expr< List.flatten (Array.to_list $array$) >>
+      <:expr< List.concat (Array.to_list $array$) >>
     | Tuple t  ->
       let ids = List.map (new_id _loc) t in
       let patts,exprs = List.split ids in
       let exprs = List.map2 aux exprs t in
       <:expr<
         let $Pa_dyntype.P4_helpers.patt_tuple_of_list _loc patts$ = $id$ in
-        List.flatten $expr_list_of_list _loc exprs$
+        List.concat $expr_list_of_list _loc exprs$
       >>
     | Dict(k,d) ->
       let new_id n = match k with
@@ -83,7 +83,7 @@ let gen_xml (_loc, n, (t_exp:Dyntype.Type.t)) =
       let exprs =
         List.map (fun (n,_,t) -> create_tag _loc n (aux (new_id n) t)) (List.rev d) in
       let expr = expr_list_of_list _loc exprs in
-      <:expr< List.flatten $expr$ >>
+      <:expr< List.concat $expr$ >>
     | Sum (k, s) ->
       let mc (n, args) =
         let ids = List.map (new_id _loc) args in
@@ -91,7 +91,7 @@ let gen_xml (_loc, n, (t_exp:Dyntype.Type.t)) =
         let exprs = match args with
           | []  -> <:expr< [] >>
           | [h] -> <:expr< $aux (List.hd exprs) h$ >>
-          | _   -> <:expr< List.flatten $expr_list_of_list _loc (List.map2 aux exprs args)$ >> in
+          | _   -> <:expr< List.concat $expr_list_of_list _loc (List.map2 aux exprs args)$ >> in
          let patt = match k, args with
           | `N, []  -> <:patt< $uid:n$ >>
           | `P, []  -> <:patt< `$uid:n$ >>
