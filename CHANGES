@@ -1,5 +1,5 @@
 0.6.0 (trunk):
-* URI anti-quotation expander "uri"
+* URI anti-quotation expander that maps `$uri:u$` to `Uri.to_string u`.
 
 0.5.5 (12-June-2013):
 * Markdown to HTML now generates header titles inside the anchor (previously, a space was anchored).
