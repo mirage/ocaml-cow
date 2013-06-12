@@ -47,6 +47,7 @@ object
           | "int"   -> <:expr< [`Data (string_of_int $e$)] >> 
           | "flo"   -> <:expr< [`Data (string_of_float $e$)] >>
           | "str"   -> <:expr< [`Data $e$] >>
+          | "uri"   -> <:expr< [`Data (Uri.to_string $e$)] >>
           | "alist" -> <:expr< List.map (fun (k,v) -> (("",k),v)) $e$ >> 
           | "list"  -> <:expr< List.concat $e$ >>
           | "attrs" ->
@@ -86,7 +87,7 @@ object
 
                 | "" -> <:expr< $e$ >>
                 | x  ->
-                  Printf.eprintf "[ERROR] %s is not a valid tag.\nAllowed tags are [opt|int|flo|str|list|alist|attrs] or the empty one." x;
+                  Printf.eprintf "[ERROR] %s is not a valid tag.\nAllowed tags are [opt|int|flo|str|uri|list|alist|attrs] or the empty one." x;
                   Loc.raise _loc Parsing.Parse_error
         end
       | e -> super#expr e
