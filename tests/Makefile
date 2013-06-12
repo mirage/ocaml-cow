@@ -1,6 +1,6 @@
 P4OPTS = $(shell ocamlfind query str dyntype dyntype.syntax re re.str ulex -predicates syntax,preprocessor,byte -r -format "-I %d %a")
 OPTS   = $(shell ocamlfind query dyntype re re.str ulex oUnit uri -predicates archives,byte -r -format "-I %d %a")
-TEST = test
+TEST = $(patsubst %.ml,%,$(wildcard *.ml))
 
 PP   = $(TEST:%=%_pp.ml)
 CMO  = $(TEST:%=%_pp.cmo)
