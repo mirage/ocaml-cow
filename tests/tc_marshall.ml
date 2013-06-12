@@ -105,25 +105,46 @@ let check n (f1) (f2,g2) x =
   check_xml n f1 x;
   check_json n f2 g2 x
 
-let test_marshal () =
+let test_tuple_marshal () =
   for i = 1 to 200 do begin
-    let p = p () in
-    let pp = pp () in
-    let t = t () in
-    let x = x () in
     let f = f () in
     let tu = tu () in
-    let o = o () in
-    check "p" (xml_of_p) (json_of_p, p_of_json) p;
-    check "pp" (xml_of_pp) (json_of_pp, pp_of_json) pp;
-    check "t" (xml_of_t) (json_of_t, t_of_json) t;
-    check "x" (xml_of_x) (json_of_x, x_of_json) x;
     check "f" (xml_of_f) (json_of_f, f_of_json) f;
     check "tu" (xml_of_tu) (json_of_tu, tu_of_json) tu;
   end done
 
+let test_rec_marshal () =
+  for i = 1 to 200 do begin
+    let t = t () in
+    let x = x () in
+    check "t" (xml_of_t) (json_of_t, t_of_json) t;
+    check "x" (xml_of_x) (json_of_x, x_of_json) x;
+  end done
+
+let test_variant_marshal () =
+  for i = 1 to 200 do begin
+    let p = p () in
+    check "p" (xml_of_p) (json_of_p, p_of_json) p;
+  end done
+
+let test_polyvar_marshal () =
+  for i = 1 to 200 do begin
+    let pp = pp () in
+    check "pp" (xml_of_pp) (json_of_pp, pp_of_json) pp;
+  end done
+
+let test_object_marshal () =
+  for i = 1 to 200 do begin
+    let o = o () in
+    check "o" (xml_of_o) (json_of_o, o_of_json) o;
+  end done
+
 let suite = [
-  "value_marshal" >::  test_marshal
+  "variant_marshal" >:: test_variant_marshal;
+  "polyvar_marshal" >:: test_polyvar_marshal;
+  "tuple_marshal"   >:: test_tuple_marshal;
+  "rec_marshal"     >:: test_rec_marshal;
+  "object_marshal"  >:: test_object_marshal;
 ]
 
 let _ =
