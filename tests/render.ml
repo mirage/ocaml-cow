@@ -14,7 +14,10 @@ let str = "str"
 let uri = Uri.of_string "https://github.com/mirage/ocaml-cow?q1=a&q2=b"
 let alist = ["hello","world"; "class","a b"]
 let list = [a; b; c]
-let attrs = <:xml<hello="world" class="a b">>
+let attrs = <:xml<hello="world" class="ab">>
+let attrs' = <:xml<hello="world"  class="ab">>
+let attrs'' = <:xml<hello="world" class="a b">>
+
 let xml_expanders = [
   "opt",  <:xml<<z>$opt:opt$</z>&>>, "<z><a>a</a></z>";
   "opt'", <:xml<<z>$opt:opt'$</z>&>>, "<z/>";
@@ -24,7 +27,9 @@ let xml_expanders = [
   "uri",  <:xml<$uri:uri$>>, "https://github.com/mirage/ocaml-cow?q1=a&amp;q2=b";
   "alist", <:xml<<tag $alist:alist$/>&>>, "<tag hello=\"world\" class=\"a b\"/>";
   "list", <:xml<$list:list$>>, "<a>a</a><b/><c><a>a</a> <b/> <a>a</a></c>";
-  "attrs", <:xml<<tag $attrs:attrs$/>&>>, "";
+  "attrs", <:xml<<tag $attrs:attrs$/>&>>, "<tag hello=\"world\" class=\"ab\"/>";
+  "attrs'", <:xml<<tag $attrs:attrs'$/>&>>, "";
+  "attrs''", <:xml<<tag $attrs:attrs''$/>&>>, "";
 ]
 
 let suite =
