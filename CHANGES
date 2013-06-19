@@ -1,5 +1,7 @@
 0.6.0 (trunk):
 * URI anti-quotation expander that maps `$uri:u$` to `Uri.to_string u`.
+* Xmlm is now a dependency
+* Remove ?templates from Html.of_string and Xml.of_string
 
 0.5.5 (12-June-2013):
 * Markdown to HTML now generates header titles inside the anchor (previously, a space was anchored).
