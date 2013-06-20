@@ -19,7 +19,6 @@ type t = (('a Xml.frag as 'a) Xml.frag) list
 val to_string : t -> string
 
 val of_string :
-  ?templates:( (string * t) list ) ->
   ?enc:Xml.encoding ->
   string -> t
 
