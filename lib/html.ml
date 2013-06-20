@@ -18,8 +18,8 @@ type t = Xml.t
 
 let to_string = Xml.to_string
 
-let of_string ?templates ?enc str =
-  Xml.of_string ~entity:Xhtml.entity ?templates ?enc str
+let of_string ?enc str =
+  Xml.of_string ~entity:Xhtml.entity ?enc str
 
 type link = {
   text : string;
