@@ -11,7 +11,7 @@ let opt' = None
 let int = 3
 let flo = 5.
 let str = "str"
-let uri = Uri.of_string "https://github.com/mirage/ocaml-cow"
+let uri = Uri.of_string "https://github.com/mirage/ocaml-cow?q1=a&q2=b"
 (*let alist = ["hello","world"; "key","value"] in*)
 let list = [a; b; c]
 (*let attrs = *)
@@ -21,7 +21,7 @@ let xml_expanders = [
   "int",  <:xml<$int:int$>>, string_of_int int;
   "flo",  <:xml<$flo:flo$>>, string_of_float flo;
   "str",  <:xml<$str:str$>>, str;
-  "uri",  <:xml<$uri:uri$>>, Uri.to_string uri;
+  "uri",  <:xml<$uri:uri$>>, "https://github.com/mirage/ocaml-cow?q1=a&amp;q2=b";
   (*"alist", <:xml< $alist:alist$ >>, "";*)
   "list", <:xml<$list:list$>>, "<a>a</a><b/><c><a>a</a> <b/> <a>a</a></c>";
   (*"attrs", <:xml< <tag $attrs:attrs$></tag> >>, "";*)
