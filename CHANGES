@@ -1,4 +1,5 @@
 0.6.1 (trunk):
+* Expose a `decl` option to make the `Xml.to_string` declaration prefix optional.
 * Do not output a `<?xml` declaration in `Html.to_string`.
 
 0.6.0 (21-June-2013):

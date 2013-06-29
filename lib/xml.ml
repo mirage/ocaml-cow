@@ -14,9 +14,9 @@ let rec output_t o = function
     output_t o t
   | [] -> ()
 
-let to_string t =
+let to_string ?decl t =
   let buf = Buffer.create 1024 in
-  let o = make_output (`Buffer buf) in
+  let o = make_output ?decl (`Buffer buf) in
   output o (`Dtd (Some ""));
   output_t o t;
   Buffer.contents buf
