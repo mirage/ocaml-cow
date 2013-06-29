@@ -1,3 +1,6 @@
+0.6.1 (trunk):
+* Do not output a `<?xml` declaration in `Html.to_string`.
+
 0.6.0 (21-June-2013):
 * Add URI anti-quotation expander that maps `$uri:u$` to `Uri.to_string u`.
 * Xmlm is now an external dependency instead of being bundled with Cow.

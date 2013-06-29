@@ -1,5 +1,6 @@
 (*
  * Copyright (c) 2010 Thomas Gazagnaire <thomas@gazagnaire.org>
+ * Copyright (c) 2013 Anil Madhavapeddy <anil@recoil.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +17,22 @@
 
 type t = Xml.t
 
-let to_string = Xml.to_string
+let rec output_t o = function
+  | (`Data _ as d) :: t ->
+    Xmlm.output o d;
+    output_t o t
+  | (`El _ as e) :: t ->
+    Xmlm.output_tree (fun x -> x) o e;
+    Xmlm.output o (`Dtd None);
+    output_t o t
+  | [] -> ()
+
+let to_string t =
+  let buf = Buffer.create 1024 in
+  let o = Xmlm.make_output ~decl:false (`Buffer buf) in
+  Xmlm.output o (`Dtd (Some ""));
+  output_t o t;
+  Buffer.contents buf
 
 let of_string ?enc str =
   Xml.of_string ~entity:Xhtml.entity ?enc str
