@@ -17,6 +17,7 @@
 let regexp lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
 let regexp uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
 let regexp identchar = ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9' ]
+let regexp backtick  = ['`']
 let regexp ident = (lowercase|uppercase) identchar*
 
 let regexp blank = [' ' '\n' '\t']
@@ -46,6 +47,7 @@ let regexp keywords1 =
   | "mutable"
   | "private"
   | "raise"
+  | "open"
   | "<:" identchar+ "<"
   | ">>"
 
@@ -107,7 +109,6 @@ let regexp keywords4 =
   | "type"
   | "val"
   | "virtual"
-  | "open"
   | "begin"
   | "end"
   | "object"
@@ -115,11 +116,12 @@ let regexp keywords4 =
   | "struct"
 
 let regexp keywords5 =
-    "false"
-  | "true"
+     uppercase identchar* '.'
+  | (uppercase identchar* '.')* uppercase identchar* blank
 
 let regexp keywords6 =
-  uppercase identchar* '.'
+    uppercase identchar* blank
+  | backtick uppercase identchar* blank
 
 let regexp keywords7 =
     '"'    ("\\\"" | [^ '"']   )* '"'
@@ -136,7 +138,7 @@ let html_of_keyword i str =
 let html_of_comments str =
   <:xml<<span class="comments">$str:str$</span>&>>
 
-let ocaml str : Html.t =
+let ocaml_fragment str : Html.t =
 
   let rec main accu = lexer
   | "(*"               ->
@@ -191,8 +193,10 @@ let ocaml str : Html.t =
       | _    ->
         let str = Ulexing.utf8_lexeme lexbuf in
         comments (str :: accu) lexbuf in
+  main [] (Ulexing.from_utf8_string str)
 
-  <:xml<<div class="ocaml"><pre><code>$main [] (Ulexing.from_utf8_string str)$</code></pre></div>&>>
+let ocaml str =
+  <:xml<<div class="ocaml"><pre><code>$ocaml_fragment str$</code></pre></div>&>>
 
 let ocaml_css = <:css<
   .ocaml {
@@ -205,6 +209,6 @@ let ocaml_css = <:css<
     .keyword6 { display: inline; color: #347C17; }
     .keyword7 { display: inline; color: #8BB381; }
     .keyword8 { display: inline; color: #EE9A4D; }
-    .comments { display: inline; color: #990000; }
+    .comments { display: inline; color: #668866; font-style: italic; }
   }
 >>

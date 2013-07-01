@@ -1,4 +1,6 @@
 0.6.1 (trunk):
+* Tweak CSS syntax highlighting of OCaml code to fit Anil's superior colour taste.
+* Add a `Code.ocaml_fragment` to get just the syntax highlighted bits without the wrapper tags.
 * Expose a `decl` option to make the `Xml.to_string` declaration prefix optional.
 * Do not output a `<?xml` declaration in `Html.to_string`.
 

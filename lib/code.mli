@@ -14,9 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-(** Convert a string into an xHTML fragment, where keywords have been classified
-    in different classes *)
+(** Convert a string into an xHTML <code> block, where keywords have been
+    classified in different classes *)
 val ocaml : string -> Html.t
+
+(** Convert a string into an xHTML fragment, where keywords have been classified
+    in different classes. *)
+val ocaml_fragment : string -> Html.t
 
 (** CSS fragment to colorize the keywords, depending on their class *)
 val ocaml_css : Css.t
