@@ -19,9 +19,9 @@ fi
 
 OCAMLBUILD=${OCAMLBUILD:-`which ocamlbuild`}
 OCAMLFIND=${OCAMLFIND:-`which ocamlfind`}
-OCAMLBUILD_FLAGS="-classic-display -j ${njobs}"
+OCAMLBUILD_FLAGS="-classic-display -j ${njobs} -X tests"
 
-# create entries in the _config/ directory 
+# create entries in the _config/ directory
 configure() {
   # initialise _config directory
   rm -rf _config && mkdir -p _config
@@ -38,7 +38,7 @@ configure() {
   # _config/syntax has flags to build p4 extensions in syntax/
   ${OCAMLFIND} query -r -predicates syntax,preprocessor -format '-I %d' camlp4.quotations.o camlp4.lib camlp4.extend > _config/syntax.build
   ${OCAMLFIND} query -r -predicates syntax,preprocessor -format '-I %d' camlp4.quotations.r camlp4.lib camlp4.extend ${SYNTAX_DEPS} > _config/syntax.build.r
- 
+
   echo ${NAME} > _config/name
   echo ${DEPS} > _config/deps
   echo ${SYNTAX} > _config/syntax
