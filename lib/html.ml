@@ -21,7 +21,7 @@ let to_string t =
   Xml.to_string ~decl:false t
 
 let of_string ?enc str =
-  Xml.of_string ~decl:false ~entity:Xhtml.entity ?enc str
+  Xml.of_string ~entity:Xhtml.entity ?enc str
 
 type link = {
   text : string;
