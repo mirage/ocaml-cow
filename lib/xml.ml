@@ -1,25 +1,20 @@
 include Xmlm
+
 type t = (('a frag as 'a) frag) list
 
-(* XXX: add a proper output_subtree function*)
 let id x = x
 
-let rec output_t o = function
-  | (`Data _ as d) :: t ->
-    output o d;
-    output_t o t
-  | (`El _ as e) :: t ->
-    output_tree id o e;
-    output o (`Dtd None);
-    output_t o t
-  | [] -> ()
-
-let to_string ?decl t =
-  let buf = Buffer.create 1024 in
-  let o = make_output ?decl (`Buffer buf) in
-  output o (`Dtd (Some ""));
-  output_t o t;
-  Buffer.contents buf
+let to_string ?(decl=false) = function
+  | []   -> ""
+  | h::t ->
+    let buf = Buffer.create 1024 in
+    let append decl elt =
+      let o = make_output ~decl (`Buffer buf) in
+      output o (`Dtd None);
+      output_tree id o elt in
+    append decl h;
+    List.iter (append false) t;
+    Buffer.contents buf
 
 (* XXX: do a proper input_subtree integration *)
 (*** XHTML parsing (using Xml) ***)
