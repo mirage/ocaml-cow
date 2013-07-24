@@ -44,11 +44,11 @@ object
         let e = AQ.parse_expr _loc c in
         begin match n with
           | "opt"   -> <:expr< match $e$ with [ Some xml -> xml | None -> [] ] >>
-          | "int"   -> <:expr< [`Data (string_of_int $e$)] >> 
+          | "int"   -> <:expr< [`Data (string_of_int $e$)] >>
           | "flo"   -> <:expr< [`Data (string_of_float $e$)] >>
           | "str"   -> <:expr< [`Data $e$] >>
           | "uri"   -> <:expr< [`Data (Uri.to_string $e$)] >>
-          | "alist" -> <:expr< List.map (fun (k,v) -> (("",k),v)) $e$ >> 
+          | "alist" -> <:expr< List.map (fun (k,v) -> (("",k),v)) $e$ >>
           | "list"  -> <:expr< List.concat $e$ >>
           | "attrs" ->
 

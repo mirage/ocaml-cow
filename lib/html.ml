@@ -64,5 +64,5 @@ let html_of_table ?(headings=false) t =
       List.map Array.to_list (Array.to_list t) in
   let tl = List.map (fun l -> tr (List.map td l)) tl in
   <:xml<<table>$opt:hd$ $list:tl$</table>&>>
-    
+
 let nil : t = []
