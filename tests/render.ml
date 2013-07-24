@@ -2,7 +2,7 @@ open Cow
 
 open OUnit
 
-let xml_decl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n"
+let xml_decl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 let a = <:xml<<a>a</a>&>>
 let b = <:xml<<b/>&>>
 let c = <:xml<<c>$a$ $b$ $a$</c>&>>
@@ -28,16 +28,29 @@ let xml_expanders = [
   "alist", <:xml<<tag $alist:alist$/>&>>, "<tag hello=\"world\" class=\"a b\"/>";
   "list", <:xml<$list:list$>>, "<a>a</a><b/><c><a>a</a> <b/> <a>a</a></c>";
   "attrs", <:xml<<tag $attrs:attrs$/>&>>, "<tag hello=\"world\" class=\"ab\"/>";
-  "attrs'", <:xml<<tag $attrs:attrs'$/>&>>, "";
-  "attrs''", <:xml<<tag $attrs:attrs''$/>&>>, "";
+  "attrs'", <:xml<<tag $attrs:attrs'$/>&>>, "<tag hello=\"world\" class=\"ab\"/>";
+  "attrs''", <:xml<<tag $attrs:attrs''$/>&>>, "<tag hello=\"world\" class=\"a b\"/>";
 ]
 
-let suite =
-  (List.map (fun (n, x, s) ->
-    let xml_str = Xml.to_string x in
-    ("xml_expanders."^n) >:: (fun () ->
-      ((xml_str^"\nis not equal to\n"^xml_decl^s) @? (xml_str = xml_decl^s))
-     )) xml_expanders)
+let suite name decl prefix =
+  List.map (fun (n, x, s) ->
+      let name = Printf.sprintf "%s-%s" name n in
+      let xml_str = Xml.to_string ~decl x in
+      let error =
+        Printf.sprintf
+          "\n\n\
+           %s\n\
+           is not equal to\n\
+           %s\n\
+          ----------------"
+          xml_str (prefix^s) in
+      let test () =
+        error @? (xml_str = prefix^s) in
+      name >:: test
+    ) xml_expanders
 
 let _ =
-  run_test_tt_main ("COW" >::: suite)
+  let with_dtd = suite "xml_expander+dtd" true xml_decl in
+  let without_dtd  = suite "xml_expander" false "" in
+  run_test_tt_main
+    ("COW" >::: (with_dtd @ without_dtd))
