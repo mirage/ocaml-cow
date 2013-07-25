@@ -1,3 +1,7 @@
+0.6.2
+* Fix XML parsing and printing for fragments and full documents
+* Fix handling of whitespaces in antiquotation attributes
+
 0.6.1 (03-July-2013):
 * Tweak CSS syntax highlighting of OCaml code to fit Anil's superior colour taste.
 * Add a `Code.ocaml_fragment` to get just the syntax highlighted bits without the wrapper tags.

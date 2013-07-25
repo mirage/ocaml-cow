@@ -37,7 +37,7 @@ let find_antiquotation i =
 
 let add_antiquotation i aq =
   Hashtbl.add antiquotations i aq
-  
+
 let mem_antiquotation i = Hashtbl.mem antiquotations i
 
 let is_alist str =
@@ -48,7 +48,8 @@ let is_attrs str =
   try String.sub str 0 6 = "attrs:"
   with _ -> false
 
-let antiquotation_encoding = Str.regexp "\\$[^$]+\\$" (* only one level of quotations *)
+let antiquotation_encoding =
+  Str.regexp "\\$[^$]+\\$" (* only one level of quotations *)
 
 let count = ref 0
 let encoding str =
@@ -61,7 +62,7 @@ let encoding str =
       Printf.sprintf "alist=%s" r1
     else if is_attrs c then
       Printf.sprintf "attrs=%s" r1
-    else        
+    else
       r1 in
   incr count;
   add_antiquotation r0 c;
@@ -75,7 +76,8 @@ let encode str =
 
 open Qast
 
-let antiquotation_decoding = Str.regexp "'\\$[0-9]*\\$'"
+let antiquotation_decoding =
+  Str.regexp "'\\$[0-9]+\\$'"
 
 let decode loc input str =
   let split = Str.full_split antiquotation_decoding str in
@@ -104,7 +106,7 @@ let input_tree loc input =
   let data str =
     decode loc input str in
   Xml.input_tree ~el ~data input
-  
+
 let parse loc ?entity ?enc str =
   (* It is illegal to write <:html<<b>foo</b>>> so we use a small trick and write
      <:html<<b>foo</b>&>> *)
@@ -128,4 +130,3 @@ let parse loc ?entity ?enc str =
   with Xml.Error (pos, e) ->
     Printf.eprintf "[XMLM:%d-%d] %s: %s\n"(fst pos) (snd pos) str (Xml.error_message e);
     Location.raise loc pos Parsing.Parse_error
-
