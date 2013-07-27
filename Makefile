@@ -1,6 +1,6 @@
 .PHONY: all clean depend install
 
-all: 
+all:
 	@./cmd configure
 	@./cmd build
 
@@ -9,3 +9,9 @@ install:
 
 clean:
 	@./cmd clean
+	make -C tests clean
+
+tests: all
+	make -C tests clean
+	make -C tests
+	tests/render

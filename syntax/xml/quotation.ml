@@ -44,45 +44,57 @@ object
         let e = AQ.parse_expr _loc c in
         begin match n with
           | "opt"   -> <:expr< match $e$ with [ Some xml -> xml | None -> [] ] >>
-          | "int"   -> <:expr< [`Data (string_of_int $e$)] >> 
+          | "int"   -> <:expr< [`Data (string_of_int $e$)] >>
           | "flo"   -> <:expr< [`Data (string_of_float $e$)] >>
           | "str"   -> <:expr< [`Data $e$] >>
           | "uri"   -> <:expr< [`Data (Uri.to_string $e$)] >>
-          | "alist" -> <:expr< List.map (fun (k,v) -> (("",k),v)) $e$ >> 
+          | "alist" -> <:expr< List.map (fun (k,v) -> (("",k),v)) $e$ >>
           | "list"  -> <:expr< List.concat $e$ >>
           | "attrs" ->
 
             <:expr<
-              let key_value str =
-                try
-                  let pos = String.index str '=' in
-                  let k = String.sub str 0 pos in
-                  let v = String.sub str (pos+1) (String.length str - pos - 1) in
-                  let v =
-                    if   (v.[0] = '"' && v.[String.length v - 1] = '"')
-                      || (v.[0] = '\'' && v.[String.length v - 1] = '\'') then
-                      String.sub v 1 (String.length v - 2)
-                    else
-                      raise Parsing.Parse_error in
-                  (("",k),v)
-                with _ ->
-                  raise Parsing.Parse_error in
-              
-              let rec split ?(accu=[]) c s =
-                try
-                  let i = String.index s c in
-                  let prefix = String.sub s 0 i in
-                  let suffix =
-                    if i = String.length s - 1 then
-                      ""
-                    else
-                      String.sub s (i+1) (String.length s - i - 1) in
-                  split ~accu:[prefix :: accu] c suffix
-                with _ ->
-                  List.rev [s :: accu] in
-              
+              let split_key_values str =
+
+              let rec read_key i =
+                if i >= String.length str then None
+                else match str.[i] with [
+                    ' '   -> read_key (i+1)
+                  | _     ->
+                    try
+                      let j = String.index_from str i '=' in
+                      Some (j+1, ("",String.sub str i (j-i)))
+                    with _ -> None
+                  ] in
+
+              let rec read_value i =
+                if i >= String.length str then None
+                else match str.[i] with [
+                    ' '             -> read_value (i+1)
+                  | '\'' | '"' as c ->
+                    begin try
+                      let j = String.index_from str (i+1) c in
+                      let str = String.sub str (i+1) (j-i-1) in
+                      Some (j+1, str)
+                    with _ ->
+                      None
+                    end
+                  | _ -> raise Parsing.Parse_error
+                ] in
+
+              let rec aux acc i =
+                match read_key i with [
+                  None          -> List.rev acc
+                | Some (i, key) ->
+                  match read_value i with [
+                    None  -> raise Parsing.Parse_error
+                  | Some x-> aux [(key, snd x)::acc] (fst x)
+                  ]
+                ] in
+
+              aux [] 0 in
+
               match $e$ with [
-                [`Data str] -> List.map (fun x -> key_value x) (split ' ' str) 
+                [`Data str] -> split_key_values str
               | _ -> raise Parsing.Parse_error ] >>
 
                 | "" -> <:expr< $e$ >>
