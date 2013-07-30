@@ -1,4 +1,4 @@
-0.6.2 (trunk):
+0.6.2 (30-July-2013):
 * Fix code highlighting of integer literals with underscores.
 * Fix XML parsing and printing for fragments and full documents.
 * Fix handling of whitespaces in antiquotation attributes.
