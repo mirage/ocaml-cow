@@ -128,8 +128,8 @@ let regexp keywords7 =
   | '#' identchar+
 
 let regexp keywords8 =
-        ['0' - '9']+
-  | '-' ['0' - '9']+
+        ( ['0' - '9' ] | '_' )+
+  | '-' ( ['0' - '9' ] | '_' )+
 
 let html_of_keyword i str =
   let k = "keyword" ^ string_of_int i in
