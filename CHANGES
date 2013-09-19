@@ -1,5 +1,6 @@
-0.6.3 (trunk):
+0.7.0 (trunk):
 * Make native dynlink optional if not supported by the toolchain.
+* Add support for `<xml:base>` in Atom feeds.
 
 0.6.2 (30-July-2013):
 * Fix code highlighting of integer literals with underscores.

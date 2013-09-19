@@ -89,13 +89,21 @@ let xml_of_meta m =
 
 type content = Xml.t
 
-let xml_of_content c = <:xml<
-  <content type="xhtml">
-   <div xmlns="http://www.w3.org/1999/xhtml">
-     $c$
+let xml_of_content base c =
+  let div = <:xml<<content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      $c$
    </div>
-  </content>
->>
+  </content>&>>
+  in
+  match base with
+  | None -> div
+  | Some base -> begin
+     match div with
+     | [`El ((("","content"),[("","type"),"xhtml"]),childs)] ->
+         [ `El ((("","content"),[(("","type"),"xhtml");(("","xml:base"),base)]),childs) ]
+     | _ -> assert false
+  end
 
 type summary = string option
 
@@ -107,13 +115,14 @@ type entry = {
   entry: meta;
   summary: summary;
   content: content;
+  base: string option;
 }
 
 let xml_of_entry e = <:xml<
   <entry>
     $xml_of_meta e.entry$
     $xml_of_summary e.summary$
-    $xml_of_content e.content$
+    $xml_of_content e.base e.content$
   </entry>
 >>
 

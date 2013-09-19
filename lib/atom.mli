@@ -23,6 +23,7 @@ type author = {
   email : string option;
 }
 
+(** year, month, date, hour, minute *)
 type date = int * int * int * int * int
 
 val compare : date -> date -> int
@@ -57,6 +58,7 @@ type entry = {
   entry   : meta;
   summary : summary;
   content : Xml.t;
+  base    : string option;
 }
 
 type feed = {
