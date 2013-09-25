@@ -1,24 +1,25 @@
-0.7.0 (trunk):
+0.7.0 (25-Sep-2013):
+* Add an OPAM script that installs the right dependencies.
 * Make native dynlink optional if not supported by the toolchain.
 * Add support for `<xml:base>` in Atom feeds.
 
-0.6.2 (30-July-2013):
+0.6.2 (30-Jul-2013):
 * Fix code highlighting of integer literals with underscores.
 * Fix XML parsing and printing for fragments and full documents.
 * Fix handling of whitespaces in antiquotation attributes.
 
-0.6.1 (03-July-2013):
+0.6.1 (03-Jul-2013):
 * Tweak CSS syntax highlighting of OCaml code to fit Anil's superior colour taste.
 * Add a `Code.ocaml_fragment` to get just the syntax highlighted bits without the wrapper tags.
 * Expose a `decl` option to make the `Xml.to_string` declaration prefix optional.
 * Do not output a `<?xml` declaration in `Html.to_string`.
 
-0.6.0 (21-June-2013):
+0.6.0 (21-Jun-2013):
 * Add URI anti-quotation expander that maps `$uri:u$` to `Uri.to_string u`.
 * Xmlm is now an external dependency instead of being bundled with Cow.
 * Remove `?templates` from `Html.of_string` and `Xml.of_string`.
 
-0.5.5 (12-June-2013):
+0.5.5 (12-Jun-2013):
 * Markdown to HTML now generates header titles inside the anchor (previously, a space was anchored).
 
 0.5.4 (21-May-2013):

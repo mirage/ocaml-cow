@@ -54,6 +54,9 @@ type meta = {
 
 type summary = string option
 
+(** A single entry in the Atom feed.  The [base] represents the base
+    href for the contents of the feed, in case it has relative links. *)
+    
 type entry = {
   entry   : meta;
   summary : summary;
