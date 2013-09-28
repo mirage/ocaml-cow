@@ -1,4 +1,4 @@
-OPAM_DEPENDS=`cat OPAM`
+OPAM_DEPENDS="re ulex uri xmlm"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
