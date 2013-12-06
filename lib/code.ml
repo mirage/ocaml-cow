@@ -182,7 +182,7 @@ let ocaml_fragment str : Html.t =
 
   | eof               ->
     List.rev accu
-      
+
   and comments accu = lexer
       | "*)" ->
         String.concat "" (List.rev ("*)" :: accu))
