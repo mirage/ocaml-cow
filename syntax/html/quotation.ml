@@ -25,4 +25,3 @@ let () =
   Q.add "html" Q.DynAst.str_item_tag (Pa_xml.Quotation.expand_str_item entity);
   Q.add "xhtml" Q.DynAst.expr_tag (Pa_xml.Quotation.expand_expr entity);
   Q.add "xhtml" Q.DynAst.str_item_tag (Pa_xml.Quotation.expand_str_item entity)
-
