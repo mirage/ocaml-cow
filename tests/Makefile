@@ -1,5 +1,5 @@
-P4OPTS = $(shell ocamlfind query str dyntype dyntype.syntax re re.str ulex xmlm omd -predicates syntax,preprocessor,byte -r -format "-I %d %a")
-OPTS   = $(shell ocamlfind query dyntype re re.str ulex oUnit uri xmlm -predicates archives,byte -r -format "-I %d %a")
+P4OPTS = $(shell ocamlfind query str dyntype dyntype.syntax re re.str ulex xmlm -predicates syntax,preprocessor,byte -r -format "-I %d %a")
+OPTS   = $(shell ocamlfind query dyntype re re.str ulex oUnit uri xmlm omd -predicates archives,byte -r -format "-I %d %a")
 TEST = render #tc_marshall
 
 PP   = $(TEST:%=%_pp.ml)
