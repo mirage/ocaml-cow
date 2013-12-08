@@ -22,21 +22,6 @@ opam --version
 opam --git-version
 
 opam init
-## opam.ocamlpro.org appears to be default repo but appears to be having issues
-## at the moment, so change it. but it's version of opam.1.0.0 is broken, so
-## don't change if that's the test.
-case "$OPAM_VERSION" in
-    1.1.0)
-        opam remote remove default
-        opam remote add default http://opam.ocaml.org
-        opam update -u
-        ;;
-    *)
-        echo "using default..."
-        opam remote
-        ;;
-esac
-
 opam install ${OPAM_DEPENDS}
 
 eval `opam config env`
