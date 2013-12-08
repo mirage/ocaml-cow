@@ -1,5 +1,5 @@
 (*
- * Copyright (c) 2010 Thomas Gazagnaire <thomas@gazagnaire.org>
+ * Copyright (c) 2013 Richard Mortier <mort@cantab.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,14 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-open Camlp4.PreCast
+type t = Html.t
 
-module Q = Syntax.Quotation
+let to_string = Html.to_string
 
-let entity = Some Xhtml.entity
-
-let () =
-  Q.add "html" Q.DynAst.expr_tag (Pa_xml.Quotation.expand_expr entity);
-  Q.add "html" Q.DynAst.str_item_tag (Pa_xml.Quotation.expand_str_item entity);
-  Q.add "xhtml" Q.DynAst.expr_tag (Pa_xml.Quotation.expand_expr entity);
-  Q.add "xhtml" Q.DynAst.str_item_tag (Pa_xml.Quotation.expand_str_item entity)
+let of_string s =
+  let omd =  Omd.of_string s in
+  let html = Omd.to_html omd in
+  Html.of_string html

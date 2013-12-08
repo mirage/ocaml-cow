@@ -473,4 +473,3 @@ let to_html_toc ?(wrap_list=wrap_ul) ?(wrap_item=wrap_a) ?(depth=2) ps =
       | _ -> aux level t
   in
   wrap_list ~depth:0 <:html< $list: fst (aux 1 ps)$ >>
-

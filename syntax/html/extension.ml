@@ -21,7 +21,7 @@ let expr_list_of_list _loc exprs =
   match List.rev exprs with
     | []   -> <:expr< [] >>
     | h::t ->
-      List.fold_left (fun accu x -> <:expr< [ $x$ :: $accu$ ] >>) <:expr< [ $h$ ] >> t 
+      List.fold_left (fun accu x -> <:expr< [ $x$ :: $accu$ ] >>) <:expr< [ $h$ ] >> t
 
 let html_of t = "html_of_" ^ t
 
@@ -129,7 +129,7 @@ let gen_html (_loc, n, t_exp) =
         ] >>
 
     | Arrow _  -> failwith "arrow type is not yet supported"
-            
+
     | Ext ("Cow.Html.t",_)
     | Var "Cow.Html.t"
     | Ext ("Html.t",_)
