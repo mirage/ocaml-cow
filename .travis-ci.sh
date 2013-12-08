@@ -25,7 +25,7 @@ opam init
 ## opam.ocamlpro.org appears to be default repo but appears to be having issues
 ## at the moment, so change it.
 opam remote remove default
-opam remote add http://opam.ocaml.org
+opam remote add default http://opam.ocaml.org
 opam update -u
 opam install ${OPAM_DEPENDS}
 
