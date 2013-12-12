@@ -1,5 +1,7 @@
-0.7.1 (trunk):
+0.8.0 (12-Dec-2013):
 * Add Travis continuous integration scripts.
+* Add `Omd_markdown` module based on the `omd` library.
+* Note: The `Markdown` and `Markdown_github` modules are now deprecated and will be removed before 1.0.
 
 0.7.0 (25-Sep-2013):
 * Add an OPAM script that installs the right dependencies.
