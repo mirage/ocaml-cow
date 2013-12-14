@@ -71,3 +71,11 @@ The HTML library is actually an XML-based one (based on xmlm:
 http://erratique.ch/software/xmlm).  You should be careful to use it for
 fragments of HTML, but you may hit various limitations with HTML input parsing.
 We hope to solve this before Cow 1.0, but it isn't there yet...
+
+Markdown
+--------
+
+The recommended Markdown library to use is `Omd_markdown`, which is based on
+the [Omd](https://github.com/pw374/omd) library and tries to be as faithful to
+the Markdown standard as possible.  The alternate modules available in Cow
+are deprecated and will be removed before 1.0.
