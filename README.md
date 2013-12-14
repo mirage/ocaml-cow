@@ -64,6 +64,25 @@ type t = { foo : int; bar : string; }
 val html_of_t : ?id:string -> t -> Cow.Html.t = <fun>
 ```
 
+It also provides the follow quotation expanders. In a toplevel such as 
+`utop`, activate the syntax extension and:
+
+```
+# #require "cow.syntax";;
+# <:xml< <foo>bar</foo> >>
+- : Cow.Xml.t = [`Data " "; `El ((("", "foo"), []), [`Data "bar"]); `Data " "]
+#  <:xml< <foo>bar</foo>&>>;;
+- : Cow.Xml.t = [`Data " "; `El ((("", "foo"), []), [`Data "bar"])]
+```
+
+Note the second example terminates the quotation with `&>>` which prevents a
+trailing space from showing up.  This is required since `>>>` would be a syntax
+error in `camlp4`.
+
+There are also quotation expanders available for `<:xhtml< >>`, `<:css< >>`,
+and `<:html< >>` which let you construct values of their respective types by
+directly entering them in their native syntaxes.
+
 HTML
 ----
 
