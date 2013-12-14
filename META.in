@@ -3,7 +3,7 @@ description = "Caml on the Web"
 archive(byte) = "cow.cma"
 archive(native) = "cow.cmxa"
 exists_if = "cow.cma"
-requires = "dyntype dyntype.syntax re re.str ulex uri xmlm"
+requires = "dyntype dyntype.syntax re re.str ulex uri xmlm omd"
 package "syntax" (
  description = "Syntax extension for COW"
  requires = "camlp4 str dyntype.syntax xmlm"

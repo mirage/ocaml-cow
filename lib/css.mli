@@ -26,7 +26,6 @@ and expr = elt list
 type prop_decl =
   (** Property: {v `background-color: blue, red;` v} *)
   | Prop of string * expr list
-
   | Decl of expr list * prop_decl list
 
 (** The type of CSS fragment *)
@@ -34,6 +33,7 @@ type t =
   | Props of prop_decl list
   | Exprs of expr list
 
+(** Print CSS to a [string] suitable for rendering *)
 val to_string : t -> string
 
 (** {2 Getters} *)
@@ -51,9 +51,20 @@ val unroll : t -> t
 
 (** {2 CSS library} *)
 
+(** Emit a CSS gradient style that linearly interpolates
+    between the [low] and [high] colors *)
 val gradient : low:t -> high:t -> t
 
+(** Emit a border style that rounds off the top border by
+    [0.5em] pixels. *)
 val top_rounded : t
+
+(** Emit a border style that rounds off the bottom border by
+    [0.5em] pixels. *)
+val top_rounded : t
+
+(** Emit a border style that rounds off all the borders by
+    [0.5em] pixels. *)
 val bottom_rounded : t
 val rounded : t
 
@@ -62,4 +73,11 @@ val text_shadow : t
 
 val no_padding : t
 val reset_padding : t
+val bottom_rounded : t
+val rounded : t
 
+val box_shadow : t
+val text_shadow : t
+
+val no_padding : t
+val reset_padding : t
