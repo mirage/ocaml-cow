@@ -1,3 +1,6 @@
+0.8.1 (14-Dec-2013):
+* Fix META file to include `omd`.
+
 0.8.0 (12-Dec-2013):
 * Add Travis continuous integration scripts.
 * Add `Omd_markdown` module based on the `omd` library.
