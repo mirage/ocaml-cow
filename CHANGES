@@ -1,4 +1,4 @@
-0.8.1 (14-Dec-2013):
+0.8.1 (15-Dec-2013):
 * Fix META file to include `omd`.
 * Improve ocamldoc in CSS module and document quotations in README.
 * Add `merlin` editor file.
