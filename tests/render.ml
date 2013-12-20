@@ -7,6 +7,8 @@ let xml_decl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 let a = <:xml<<a>a</a>&>>
 let b = <:xml<<b/>&>>
 let c = <:xml<<c>$a$ $b$ $a$</c>&>>
+let d = <:xml<<a foo=""></a>&>>
+let _d = Xml.to_string d
 let opt = Some a
 let opt' = None
 let int = 3

@@ -44,6 +44,7 @@ let rec list_of_t x acc =
 let get_string _loc m =
   match m with
   | <:expr< [ `Data $str:x$ ] >> -> <:expr< $str:x$ >>
+  | <:expr< [] >> -> <:expr< $str:""$ >>
   | _ ->
     <:expr< match $m$ with [ [`Data str] -> str | _ -> raise Parsing.Parse_error ] >>
 
