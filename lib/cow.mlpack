@@ -1,6 +1,4 @@
 Xml
-# XXX: remove Enum
-Enum
 Xhtml
 Html
 Css
@@ -8,5 +6,3 @@ Code
 Atom
 Markdown
 Json
-Markdown_github
-Markdown_omd
