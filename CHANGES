@@ -1,4 +1,4 @@
-0.9.0 (trunk):
+0.9.0 (20-Dec-2013):
 * Remove all the Markdown variants except `Omd`, which now claims the `Cow.Markdown` module name.
 * Clarify the repository license as ISC.
 * Run some modules through `ocp-indent`.
