@@ -75,20 +75,20 @@ module Json_of = struct
   let gen (_loc, n, t_exp) =
     let t = match t_exp with Ext (_,t) | Rec (_,t) -> t | _ -> assert false in
     let rec aux id = function
-    | Unit     -> <:expr< Json.Null >>
-    | Bool     -> <:expr< Json.Bool $id$ >>
-    | Float    -> <:expr< Json.Float $id$ >>
-    | Char     -> <:expr< Json.Int (Int64.of_int (Char.code $id$)) >>
-    | String   -> <:expr< Json.String $id$ >>
+    | Unit     -> <:expr< `Null >>
+    | Bool     -> <:expr< `Bool $id$ >>
+    | Float    -> <:expr< `Float $id$ >>
+    | Char     -> <:expr< `Float (float_of_int (Char.code $id$)) >>
+    | String   -> <:expr< `String $id$ >>
 
     | Int (Some i) when i + 1 = Sys.word_size ->
-      <:expr< Json.Int (Int64.of_int $id$) >>
+      <:expr< `Float (float_of_int $id$) >>
 
     | Int (Some i) when i <= 32 ->
-      <:expr< Json.Int (Int64.of_int32 $id$) >>
+      <:expr< `Float (float_of_int $id$) >>
 
     | Int (Some i) when i <= 64 ->
-      <:expr< Json.Int $id$ >>
+      <:expr< `Float (Int64.to_float $id$) >>
 
     | Int _ ->
       <:expr< `String (Bigint.to_string $id$) >>
@@ -206,20 +206,20 @@ module Of_json = struct
 
       | Int (Some i) when i + 1 = Sys.word_size ->
         <:expr< match $id$ with [
-          Json.Int x    -> Int64.to_int x
-        | Json.String s -> int_of_string s
+          `Float x    -> int_of_float x
+        | `String s -> int_of_string s
         | $runtime_error _loc n id "Int(int)"$ ] >>
 
       | Int (Some i) when i <= 32 ->
         <:expr< match $id$ with [
-          Json.Int x    -> Int64.to_int32 x
-        | Json.String s -> Int32.of_string s
+          `Float x    -> Int32.of_float x
+        | `String s -> Int32.of_string s
         | $runtime_error _loc n id "Int(int32)"$ ] >>
 
       | Int (Some i) when i <= 64 ->
         <:expr< match $id$ with [
-          Json.Int x    -> x
-        | Json.String s -> Int64.of_string s
+          `Float x    -> Int64.of_float x
+        | `String s -> Int64.of_string s
         | $runtime_error _loc n id "Int(int64)"$ ] >>
 
       | Int _ ->
@@ -229,15 +229,14 @@ module Of_json = struct
 
       | Float ->
         <:expr< match $id$ with [
-          Json.Float x  -> x
-        | Json.Int x    -> Int64.to_float x
-        | Json.String s -> float_of_string s
+          `Float x  -> x
+        | `String s -> float_of_string s
         | $runtime_error _loc n id "Float"$ ] >>
 
       | Char ->
         <:expr< match $id$ with [
-          Json.Int x    -> Char.chr (Int64.to_int x)
-        | Json.String s -> Char.chr (int_of_string s)
+          `Float x    -> Char.chr (int_of_float (x))
+        | `String s -> Char.chr (int_of_string s)
         | $runtime_error _loc n id "Int(char)"$ ] >>
 
       | String -> <:expr< match $id$ with [
