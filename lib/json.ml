@@ -88,3 +88,5 @@ let to_buffer_hum t buf =
 let to_string_hum = Ezjsonm.to_string ~minify:false
 
 let of_string = Ezjsonm.from_string
+
+exception Runtime_error of string * t
