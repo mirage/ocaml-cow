@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 *)
 
-type t = Ezjsonm.t
+include Ezjsonm
 
 let rec list_iter_between f o = function
   | []   -> ()

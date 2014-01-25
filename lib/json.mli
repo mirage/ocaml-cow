@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t = Ezjsonm.t
+include module type of Ezjsonm
 
 val to_buffer : t -> Buffer.t -> unit
 val to_string : t -> string
