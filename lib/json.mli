@@ -15,14 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t =
-  | Int of int64
-  | Bool of bool
-  | Float of float
-  | String of string
-  | Array of t list
-  | Object of (string * t) list
-  | Null
+type t = Ezjsonm.t
 
 val to_buffer : t -> Buffer.t -> unit
 val to_string : t -> string
@@ -31,5 +24,3 @@ val to_buffer_hum : t -> Buffer.t -> unit
 val to_string_hum : t -> string
 
 val of_string : string -> t
-
-exception Runtime_error of string * t
