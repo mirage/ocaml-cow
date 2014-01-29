@@ -15,14 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t =
-  | Int of int64
-  | Bool of bool
-  | Float of float
-  | String of string
-  | Array of t list
-  | Object of (string * t) list
-  | Null
+include module type of Ezjsonm
 
 val to_buffer : t -> Buffer.t -> unit
 val to_string : t -> string

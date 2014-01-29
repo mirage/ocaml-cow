@@ -1,4 +1,4 @@
-OPAM_DEPENDS="re ulex uri xmlm dyntype ounit omd"
+OPAM_DEPENDS="re ulex uri xmlm ezjsonm dyntype ounit omd"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
