@@ -27,3 +27,6 @@ opam install ${OPAM_DEPENDS}
 eval `opam config env`
 make
 cd tests && make
+cd ..
+opam pin .
+opam install mirage-www
