@@ -29,4 +29,5 @@ make
 cd tests && make
 cd ..
 opam pin cow .
+opam update
 opam install mirage-www
