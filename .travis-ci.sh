@@ -28,7 +28,5 @@ eval `opam config env`
 make
 cd tests && make
 cd ..
-pwd
-ocamlfind list
 opam pin cow .
 opam install mirage-www
