@@ -1,4 +1,4 @@
-OPAM_DEPENDS="re ulex uri xmlm ezjsonm dyntype ounit omd ssl"
+OPAM_DEPENDS="re ulex uri xmlm ezjsonm dyntype ounit omd"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
@@ -25,8 +25,10 @@ opam init
 opam install ${OPAM_DEPENDS}
 
 eval `opam config env`
+opam pin cow .
+opam update
 make
 cd tests && make
-cd ..
-opam pin cow .
+
+opam install lwt ssl ezjsonm
 opam install mirage-www
