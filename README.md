@@ -94,7 +94,12 @@ We hope to solve this before Cow 1.0, but it isn't there yet...
 Markdown
 --------
 
-The recommended Markdown library to use is `Omd_markdown`, which is based on
-the [Omd](https://github.com/pw374/omd) library and tries to be as faithful to
-the Markdown standard as possible.  The alternate modules available in Cow
-are deprecated and will be removed before 1.0.
+The Markdown library used is based on the [Omd](https://github.com/pw374/omd)
+library and tries to be as faithful to the Markdown standard as possible.
+
+JSON
+----
+
+The JSON library used is based on [Jsonm](http://erratique.ch/software/jsonm),
+with a higher-level set of combinators via the
+[Ezjsonm](https://github.com/samoht/ezjsonm) library.
