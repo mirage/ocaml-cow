@@ -1,7 +1,7 @@
 (*
- * Copyright (c) 2013 David Sheets <sheets@alum.mit.edu>
  * Copyright (c) 2011-2013 Thomas Gazagnaire <thomas@gazagnaire.org>
  * Copyright (c) 2012 Anil Madhavapeddy <anil@recoil.org>
+ * Copyright (c) 2013-2014 David Sheets <sheets@alum.mit.edu>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -69,10 +69,10 @@ let of_string ?entity ?enc str =
   (* It is illegal to write <:html<<b>foo</b>>> so we use a small trick
      and write <:html<<b>foo</b>&>> *)
   let remove_trailing_amp str =
-    if str.[String.length str - 1] = '&' then
-      String.sub str 0 (String.length str - 1)
-    else
-      str in
+    let len = String.length str in
+    if len = 0 || str.[len - 1] <> '&' then str
+    else String.sub str 0 (String.length str - 1)
+  in
 
   try root (remove_trailing_amp (remove_dtd str))
   with Error (pos, e) ->
