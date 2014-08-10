@@ -1,4 +1,4 @@
-0.10.1 (trunk):
+0.10.1 (10-Aug-2014):
 * Fix Xml.of_string "" invalid argument bug
 
 0.10.0 (26-Apr-2014):
