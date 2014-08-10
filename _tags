@@ -11,4 +11,4 @@
 "syntax/pp_cow.cma" or "syntax/pp_cow.cmx": for-pack(Pa_cow)
 <syntax/pp_cow.*>: build_syntax_r, camlp4orf
 <syntax>: include
-true: annot, bin_annot, short_paths
+true: annot, bin_annot, short_paths, debug
