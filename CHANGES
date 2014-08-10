@@ -1,3 +1,6 @@
+0.10.1 (10-Aug-2014):
+* Fix Xml.of_string "" invalid argument bug
+
 0.10.0 (26-Apr-2014):
 * Remove JSON parsing in favour of using `jsonm` instead.
 * Stop testing OCaml 3.12.1 (although it may continue to work).
