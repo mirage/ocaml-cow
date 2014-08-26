@@ -1,3 +1,12 @@
+1.0.0 (26-Aug-2014):
+* Fix OCaml 4.02 compatibility by not exposing a `Location` module
+  in syntax extensions to avoid a namespace clash. We now rename them
+  to `Xml_location` and `Css_location` and pack those instead.
+* Fix BSD compatibility using `$(MAKE)` instead of `make` (since the
+  GNU make binary is actually `gmake` on Free/Net/OpenBSD).
+* Reduce the verbosity of the build by default.
+* Travis: Add OCaml 4.02 and OPAM 1.2.0 tests
+
 0.10.1 (10-Aug-2014):
 * Fix Xml.of_string "" invalid argument bug
 

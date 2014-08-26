@@ -2,17 +2,23 @@ OPAM_DEPENDS="re ulex uri xmlm ezjsonm dyntype ounit omd"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
-3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
+3.12.1,1.1.*) ppa=avsm/ocaml312+opam11 ;;
 4.00.1,1.0.0) ppa=avsm/ocaml40+opam10 ;;
-4.00.1,1.1.0) ppa=avsm/ocaml40+opam11 ;;
+4.00.1,1.1.*) ppa=avsm/ocaml40+opam11 ;;
 4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
-4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
+4.01.0,1.1.*) ppa=avsm/ocaml41+opam11 ;;
+4.02.0,1.2.*) ppa=avsm/ppa-opam-experimental ;;
 *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
 esac
 
 echo "yes" | sudo add-apt-repository ppa:$ppa
 sudo apt-get update -qq
-sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam libssl-dev
+sudo apt-get install -qq ocaml ocaml-native-compilers opam libssl-dev
+
+if [ "$OCAML_VERSION" != "4.02.0" ]; then
+  sudo apt-get install -qq camlp4-extra
+fi
+
 export OPAMYES=1
 export OPAMVERBOSE=1
 echo OCaml version

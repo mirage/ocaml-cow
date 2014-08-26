@@ -83,7 +83,7 @@ let decode loc input str =
   let split = Str.full_split antiquotation_decoding str in
   let aux = function
     | Str.Text s  -> String s
-    | Str.Delim s -> Ant (Location.add loc (Xml.pos input), find_antiquotation s) in
+    | Str.Delim s -> Ant (Xml_location.add loc (Xml.pos input), find_antiquotation s) in
   t_of_list (List.map aux split)
 
 let decode_quoted loc input str =
@@ -126,7 +126,7 @@ let parse loc ?entity ?enc str =
     (* Remove the dummy root tag *)
     match input_tree loc input with
       | Tag (String "xxx", Nil, body) -> body
-      | _ -> Location.raise loc (0,1) Parsing.Parse_error
+      | _ -> Xml_location.raise loc (0,1) Parsing.Parse_error
   with Xml.Error (pos, e) ->
     Printf.eprintf "[XMLM:%d-%d] %s: %s\n"(fst pos) (snd pos) str (Xml.error_message e);
-    Location.raise loc pos Parsing.Parse_error
+    Xml_location.raise loc pos Parsing.Parse_error

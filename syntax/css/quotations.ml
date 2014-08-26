@@ -54,7 +54,7 @@ object
 end
 
 let parse_quot_string fn _loc s =
-  Location.set _loc;
+  Css_location.set _loc;
   let res = fn QLexer.token (Lexing.from_string s) in
   res
 
