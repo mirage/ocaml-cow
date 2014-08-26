@@ -224,7 +224,7 @@ let rec elt tokens =
       | [STRING s1; EQ; DOLLAR aq] ->
         ef "%s=$%s$" s1 aq;
         seek 3 tokens;
-        ESeq(String s1, ESeq(String "=", Ant (Location.get (), aq)))
+        ESeq(String s1, ESeq(String "=", Ant (Css_location.get (), aq)))
       | [STRING s1; LEFT; _ ] ->
         ef "%s(" s1;
         seek 2 tokens;
@@ -239,7 +239,7 @@ let rec elt tokens =
       | [DOLLAR aq; _; _  ] ->
         ef "$%s$ " aq;
         seek 1 tokens;
-        Ant (Location.get (), aq)
+        Ant (Css_location.get (), aq)
       | _ ->
         ef "--\n";
         parse_error ())
@@ -295,7 +295,7 @@ and prop tokens =
               ef "      DOLLAR: %s\n" aq;
               seek 1 tokens;
               maybe SEMI tokens;
-              Ant (Location.get (), aq)
+              Ant (Css_location.get (), aq)
             | _ -> raise e)
 
 and props tokens =
@@ -340,4 +340,4 @@ let main lexer lexbuf =
     main tokens
   with Parse_error pt ->
     pp_error pt;
-    Camlp4.PreCast.Loc.raise (Location.get ()) Parsing.Parse_error
+    Camlp4.PreCast.Loc.raise (Css_location.get ()) Parsing.Parse_error

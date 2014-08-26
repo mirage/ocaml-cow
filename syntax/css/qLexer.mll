@@ -26,10 +26,10 @@
       Printf.kprintf (fun s -> ()) fmt
         
   let update lexbuf =
-    Location.shift (String.length (Lexing.lexeme lexbuf))
+    Css_location.shift (String.length (Lexing.lexeme lexbuf))
 
   let newline lexbuf =
-    Location.newline ()
+    Css_location.newline ()
 }
 
 let all = [^ ' ' '\t' '\r' '\n' '{' '}' '(' ')' ';' ',' '$' '"' '\'' '=']
