@@ -21,4 +21,5 @@ depends: [
   "xmlm" {>= "1.1.1"}
   "omd" {>= "0.8.2"}
   "ezjsonm"
+  "camlp4"
 ]
