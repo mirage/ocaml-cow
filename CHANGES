@@ -5,6 +5,7 @@
 * Fix BSD compatibility using `$(MAKE)` instead of `make` (since the
   GNU make binary is actually `gmake` on Free/Net/OpenBSD).
 * Reduce the verbosity of the build by default.
+* Travis: Add OCaml 4.02 and OPAM 1.2.0 tests
 
 0.10.1 (10-Aug-2014):
 * Fix Xml.of_string "" invalid argument bug
