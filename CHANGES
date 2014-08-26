@@ -4,6 +4,7 @@
   to `Xml_location` and `Css_location` and pack those instead.
 * Fix BSD compatibility using `$(MAKE)` instead of `make` (since the
   GNU make binary is actually `gmake` on Free/Net/OpenBSD).
+* Reduce the verbosity of the build by default.
 
 0.10.1 (10-Aug-2014):
 * Fix Xml.of_string "" invalid argument bug
