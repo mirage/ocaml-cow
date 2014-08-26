@@ -13,7 +13,12 @@ esac
 
 echo "yes" | sudo add-apt-repository ppa:$ppa
 sudo apt-get update -qq
-sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam libssl-dev
+sudo apt-get install -qq ocaml ocaml-native-compilers opam libssl-dev
+
+if [ "$OCAML_VERSION" != "4.02.0" ]; then
+  sudo apt-get install -qq camlp4-extra
+fi
+
 export OPAMYES=1
 export OPAMVERBOSE=1
 echo OCaml version
