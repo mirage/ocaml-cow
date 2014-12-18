@@ -44,7 +44,7 @@ let escape_string s =
   Buffer.add_string buf "\"";
   Buffer.contents buf
 
-let rec to_fct (t : t) f =
+let rec to_fct t f =
   match t with
   | `Bool b   -> f (string_of_bool b)
   | `Float r  -> f (Printf.sprintf "%g" r)
@@ -60,7 +60,7 @@ let rec to_fct (t : t) f =
       (fun () -> f ", ") a;
     f "}"
 
-let rec to_fct_hum (t : t) f =
+let rec to_fct_hum t f =
   match t with
   | `Bool b   -> f (string_of_bool b)
   | `Float r  -> f (Printf.sprintf "%g" r)
@@ -78,7 +78,7 @@ let rec to_fct_hum (t : t) f =
 
 
 let to_buffer t buf =
-  to_fct t (fun s -> Buffer.add_string buf s)
+  to_fct (t :> Ezjsonm.value) (fun s -> Buffer.add_string buf s)
 
 let to_string = Ezjsonm.to_string ~minify:true
 
