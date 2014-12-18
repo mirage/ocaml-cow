@@ -3,3 +3,4 @@ B _build/lib
 PKG findlib
 PKG cow
 PKG omd
+PKG ezjsonm
