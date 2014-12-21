@@ -32,5 +32,4 @@ opam update
 make
 cd tests && make
 
-opam install lwt ssl ezjsonm
-opam install mirage-www
+opam install lwt ssl ezjsonm cowabloga
