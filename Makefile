@@ -18,11 +18,11 @@ tests: all
 
 VERSION = $(shell grep 'VERSION=' _vars | sed 's/VERSION=//')
 NAME    = $(shell grep 'LIB=' _vars    | sed 's/LIB=//')
-ARCHIVE = https://github.com/mirage/ocaml-$(NAME)/archive/$(VERSION).tar.gz
+ARCHIVE = https://github.com/mirage/ocaml-$(NAME)/archive/v$(VERSION).tar.gz
 
 release:
-	git tag -a $(VERSION) -m "Version $(VERSION)."
-	git push upstream $(VERSION)
+	git tag -a v$(VERSION) -m "Version $(VERSION)."
+	git push upstream v$(VERSION)
 	$(MAKE) pr
 
 pr:
