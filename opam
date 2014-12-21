@@ -3,7 +3,12 @@ opam-version: "1.2"
 name: "cow"
 maintainer: "anil@recoil.org"
 license: "ISC"
-
+authors:  [
+  "Anil Madhavapeddy"
+  "Thomas Gazagnaire"
+  "David Sheets"
+  "Rudi Grinberg"
+]
 homepage: "https://github.com/mirage/ocaml-cow"
 dev-repo: "https://github.com/mirage/ocaml-cow.git"
 bug-reports: "https://github.com/mirage/ocaml-cow/issues"
@@ -13,12 +18,9 @@ tags: [
   "org:xapi-project"
 ]
 
-build: [
-  [make "all"]
-]
-
+build: [make "all"]
 install: [make "install"]
-remove: [["ocamlfind" "remove" "cow"]]
+remove: ["ocamlfind" "remove" "cow"]
 
 depends: [
   "ocamlfind" {build}
