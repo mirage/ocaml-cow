@@ -1,5 +1,6 @@
 (*
  * Copyright (c) 2010 Thomas Gazagnaire <thomas@gazagnaire.org>
+ * Copyright (c) 2015 David Sheets <sheets@alum.mit.edu>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,12 +16,44 @@
  *)
 
 type t = (('a Xml.frag as 'a) Xml.frag) list
+(** A sequence of (X)HTML trees. *)
+
+val doctype : string
+(**
+   @see <http://www.w3.org/TR/html5/syntax.html#the-doctype> The (X)HTML5 DOCTYPE.
+*)
 
 val to_string : t -> string
+(** [to_string html] is a valid (X)HTML5 polyglot string corresponding
+    to the [html] structure.
+*)
 
-val of_string :
-  ?enc:Xml.encoding ->
-  string -> t
+val of_string : ?enc:Xml.encoding -> string -> t
+(** [of_string ?enc html_str] is the tree representation of [html_str]
+    as decoded by [enc]. For more information about the default
+    encoding, see {!Xmlm.inenc}. *)
+
+val output :
+  ?nl:bool ->
+  ?indent:int option ->
+  ?ns_prefix:(string -> string option) -> Xmlm.dest -> t -> unit
+(** Outputs valid (X)HTML5 polyglot text from a {!t}. Only non-void
+    element handling is implemented so far.
+    For more information about the parameters, see {!Xmlm.make_output}.
+
+    @see <http://www.w3.org/TR/html-polyglot/> Polyglot Markup
+*)
+
+val output_doc :
+  ?nl:bool ->
+  ?indent:int option ->
+  ?ns_prefix:(string -> string option) -> Xmlm.dest -> t -> unit
+(** Outputs a valid (X)HTML5 polyglot document from a {!t}. Only
+    non-void element handling and HTML5 DOCTYPE is implemented so far.
+    For more information about the parameters, see {!Xmlm.make_output}.
+
+    @see <http://www.w3.org/TR/html-polyglot/> Polyglot Markup
+*)
 
 (** {2 HTML library} *)
 
