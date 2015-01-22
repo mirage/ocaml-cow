@@ -1,6 +1,7 @@
 (*
  * Copyright (c) 2010 Thomas Gazagnaire <thomas@gazagnaire.org>
  * Copyright (c) 2013 Anil Madhavapeddy <anil@recoil.org>
+ * Copyright (c) 2015 David Sheets <sheets@alum.mit.edu>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,8 +18,64 @@
 
 type t = Xml.t
 
+type tree = [ `Data of string | `El of Xmlm.tag * 'a list ] as 'a
+
+let void_elements = [
+  "img";
+  "input";
+  "link";
+  "meta";
+  "br";
+  "hr";
+  "source";
+  "wbr";
+  "param";
+  "embed";
+  "base";
+  "area";
+  "col";
+  "track";
+  "keygen";
+]
+
+let doctype = "<!DOCTYPE html>"
+
+let rec generate_signals signals = function
+  | `Data s -> (`Data s)::signals
+  | `El (tag, children) ->
+    let signals = (`El_start tag)::signals in
+    let signals = List.fold_left generate_signals signals children in
+    match signals with
+    | `El_start ((_, tag),_) :: _ when List.mem tag void_elements ->
+      `El_end::signals
+    | [] | (`Data _ | `Dtd _ | `El_end)::_ -> `El_end::signals
+    | `El_start _ :: _ -> `El_end::(`Data "")::signals
+
+let output ?(nl=false) ?(indent=None) ?(ns_prefix=fun _ -> None) dest t =
+  let append tree =
+    let signals = generate_signals [] tree in
+    let out = Xml.make_output ~decl:false ~nl ~indent ~ns_prefix dest in
+    Xml.output out (`Dtd None);
+    List.(iter (Xml.output out) (rev signals))
+  in
+  List.iter append t
+
+let output_doc ?(nl=false) ?(indent=None) ?(ns_prefix=fun _ -> None) dest t =
+  (* This could build an Xmlm.output and use `Dtd to set the DOCTYPE. *)
+  let doctype = doctype ^ "\n" in
+  begin match dest with
+  | `Buffer buf -> Buffer.add_string buf doctype
+  | `Channel oc -> output_string oc doctype
+  | `Fun f ->
+    let len = String.length doctype in
+    for i = 0 to len - 1 do f (int_of_char doctype.[i]) done
+  end;
+  output ~nl ~indent ~ns_prefix dest t
+
 let to_string t =
-  Xml.to_string ~decl:false t
+  let buf = Buffer.create 4096 in
+  output_doc (`Buffer buf) t;
+  Buffer.contents buf
 
 let of_string ?enc str =
   Xml.of_string ~entity:Xhtml.entity ?enc str
