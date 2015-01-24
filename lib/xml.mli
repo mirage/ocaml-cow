@@ -26,3 +26,14 @@ val of_string :
   ?entity:(string -> string option) ->
   ?enc:encoding ->
   string -> t
+(** [of_string s] returns the XML tree described by [s].
+
+    @param entity is called to resolve non predefined entity
+    references such as "&amp;".  It must return an UTF-8 string
+    corresponding to the replacement character data.  By default, only
+    {{:http://www.w3.org/TR/REC-xml/#sec-predefined-ent}predefined
+    entities}, i.e., "&lt;", "&gt;", "&amp;", "&apos;", and "&quot;",
+    are recognized.
+
+    @param enc The encoding of the document.  Default [None] which
+    means that one does not know the encoding. *)

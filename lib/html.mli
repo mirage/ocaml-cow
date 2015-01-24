@@ -31,7 +31,11 @@ val to_string : t -> string
 val of_string : ?enc:Xml.encoding -> string -> t
 (** [of_string ?enc html_str] is the tree representation of [html_str]
     as decoded by [enc]. For more information about the default
-    encoding, see {!Xmlm.inenc}. *)
+    encoding, see {!Xmlm.inenc}.
+
+    Note that this function converts all
+    {{:https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references}
+    standard entities} into their corresponding UTF-8 symbol. *)
 
 val output :
   ?nl:bool ->
