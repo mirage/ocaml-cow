@@ -15,7 +15,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t = (('a Xml.frag as 'a) Xml.frag) list
+type element = 'a Xml.frag constraint 'a = element
+(** A (X)HTML tree. *)
+
+type t = element list
 (** A sequence of (X)HTML trees. *)
 
 val doctype : string
@@ -31,7 +34,11 @@ val to_string : t -> string
 val of_string : ?enc:Xml.encoding -> string -> t
 (** [of_string ?enc html_str] is the tree representation of [html_str]
     as decoded by [enc]. For more information about the default
-    encoding, see {!Xmlm.inenc}. *)
+    encoding, see {!Xmlm.inenc}.
+
+    Note that this function converts all
+    {{:https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references}
+    standard entities} into their corresponding UTF-8 symbol. *)
 
 val output :
   ?nl:bool ->
@@ -60,9 +67,39 @@ val output_doc :
 type link = {
   text : string;
   href: string;
+  (** The URI of the link.  You must take care of properly
+      percent-encode the URI. *)
 }
 
 val html_of_link : link -> t
+
+val link : ?hreflang: string ->
+           ?rel: [ `alternate | `author | `bookmark | `help | `license
+                 | `next | `nofollow | `noreferrer | `prefetch
+                 | `prev | `search | `tag ] ->
+           ?target: [ `blank | `parent | `self | `top | `Frame of string ] ->
+           ?ty: string ->
+           ?title: string ->
+           ?cls: string ->
+           href:Uri.t -> t -> element
+(** [link href html] generate a link from [html] to [href].
+
+    @param title specifies extra information about the element that is
+                 usually as a tooltip text when the mouse moves over
+                 the element.  Default: [None].
+    @pram target Specifies where to open the linked document.
+    @param rel Specifies the relationship between the current document
+               and the linked document.  Default: [None].
+    @param hreflang the language of the linked document.  Default: [None].
+    @param ty Specifies the media type of the linked document.  *)
+
+val img : ?alt: string ->
+          ?width: int ->
+          ?height: int ->
+          ?ismap: Uri.t ->
+          ?title: string ->
+          ?cls: string ->
+          Uri.t -> element
 
 val interleave : string array -> t list -> t list
 
