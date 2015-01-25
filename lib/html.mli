@@ -81,8 +81,8 @@ val link : ?hreflang: string ->
            ?ty: string ->
            ?title: string ->
            ?cls: string ->
-           t -> Uri.t -> element
-(** [link html href] generate a link from [html] to [href].
+           href:Uri.t -> t -> element
+(** [link href html] generate a link from [html] to [href].
 
     @param title specifies extra information about the element that is
                  usually as a tooltip text when the mouse moves over
