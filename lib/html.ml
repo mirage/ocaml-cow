@@ -89,7 +89,7 @@ type link = {
 let html_of_link l : t =
   <:xml<<a href=$str:l.href$>$str:l.text$</a>&>>
 
-let link ?hreflang ?rel ?target ?ty ?title html l =
+let link ?hreflang ?rel ?target ?ty ?title ?cls html l =
   let attrs = [(("", "href"), Uri.to_string l)] in
   let attrs = match hreflang with
     | Some h -> (("", "hreflang"), h) :: attrs
@@ -126,6 +126,9 @@ let link ?hreflang ?rel ?target ?ty ?title html l =
     | None -> attrs in
   let attrs = match title with
     | Some t -> (("", "title"), t) :: attrs
+    | None -> attrs in
+  let attrs = match cls with
+    | Some c -> (("", "class"), c) :: attrs
     | None -> attrs in
   `El((("", "a"), attrs), html)
 

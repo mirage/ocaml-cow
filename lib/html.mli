@@ -80,6 +80,7 @@ val link : ?hreflang: string ->
            ?target: [ `blank | `parent | `self | `top | `Frame of string ] ->
            ?ty: string ->
            ?title: string ->
+           ?cls: string ->
            t -> Uri.t -> element
 (** [link html href] generate a link from [html] to [href].
 
