@@ -16,6 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
+type element = ('a Xml.frag as 'a) Xml.frag
 type t = Xml.t
 
 type tree = [ `Data of string | `El of Xmlm.tag * 'a list ] as 'a
@@ -126,7 +127,7 @@ let link ?hreflang ?rel ?target ?ty ?title html l =
   let attrs = match title with
     | Some t -> (("", "title"), t) :: attrs
     | None -> attrs in
-  [ `El((("", "a"), attrs), html) ]
+  `El((("", "a"), attrs), html)
 
 (* color tweaks for lists *)
 let interleave classes l =

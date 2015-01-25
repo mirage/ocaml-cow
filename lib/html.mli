@@ -15,7 +15,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t = (('a Xml.frag as 'a) Xml.frag) list
+type element = 'a Xml.frag constraint 'a = element
+(** A (X)HTML tree. *)
+
+type t = element list
 (** A sequence of (X)HTML trees. *)
 
 val doctype : string
@@ -77,7 +80,7 @@ val link : ?hreflang: string ->
            ?target: [ `blank | `parent | `self | `top | `Frame of string ] ->
            ?ty: string ->
            ?title: string ->
-           t -> Uri.t -> t
+           t -> Uri.t -> element
 (** [link html href] generate a link from [html] to [href].
 
     @param title specifies extra information about the element that is
