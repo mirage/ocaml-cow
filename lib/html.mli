@@ -93,6 +93,14 @@ val link : ?hreflang: string ->
     @param hreflang the language of the linked document.  Default: [None].
     @param ty Specifies the media type of the linked document.  *)
 
+val img : ?alt: string ->
+          ?width: int ->
+          ?height: int ->
+          ?ismap: Uri.t ->
+          ?title: string ->
+          ?cls: string ->
+          Uri.t -> element
+
 val interleave : string array -> t list -> t list
 
 val html_of_string : string -> t

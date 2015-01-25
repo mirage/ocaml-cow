@@ -132,6 +132,28 @@ let link ?hreflang ?rel ?target ?ty ?title ?cls html l =
     | None -> attrs in
   `El((("", "a"), attrs), html)
 
+let img ?alt ?width ?height ?ismap ?title ?cls src =
+  let attrs = [("", "src"), Uri.to_string src] in
+  let attrs = match alt with
+    | Some t -> (("", "alt"), t) :: attrs
+    | None -> attrs in
+  let attrs = match width with
+    | Some w -> (("", "width"), string_of_int w) :: attrs
+    | None -> attrs in
+  let attrs = match height with
+    | Some h -> (("", "height"), string_of_int h) :: attrs
+    | None -> attrs in
+  let attrs = match title with
+    | Some t -> (("", "title"), t) :: attrs
+    | None -> attrs in
+  let attrs = match cls with
+    | Some c -> (("", "class"), c) :: attrs
+    | None -> attrs in
+  match ismap with
+  | Some u -> link [`El((("", "img"), (("", "ismap"), "") ::attrs), [])] u
+                  ~target:`self
+  | None -> `El((("", "img"), attrs), [])
+
 (* color tweaks for lists *)
 let interleave classes l =
   let i = ref 0 in
