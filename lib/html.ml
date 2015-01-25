@@ -88,6 +88,46 @@ type link = {
 let html_of_link l : t =
   <:xml<<a href=$str:l.href$>$str:l.text$</a>&>>
 
+let link ?hreflang ?rel ?target ?ty ?title html l =
+  let attrs = [(("", "href"), Uri.to_string l)] in
+  let attrs = match hreflang with
+    | Some h -> (("", "hreflang"), h) :: attrs
+    | None -> attrs in
+  let attrs = match rel with
+    | Some rel ->
+       let rel = match rel with
+         | `alternate  -> "alternate"
+         | `author     -> "author"
+         | `bookmark   -> "bookmark"
+         | `help       -> "help"
+         | `license    -> "license"
+         | `next       -> "next"
+         | `nofollow   -> "nofollow"
+         | `noreferrer -> "noreferrer"
+         | `prefetch   -> "prefetch"
+         | `prev       -> "prev"
+         | `search     -> "search"
+         | `tag        -> "tag" in
+       (("", "rel"), rel) :: attrs
+    | None -> attrs in
+  let attrs = match target with
+    | Some t ->
+       let target = match t with
+         | `blank  -> "_blank"
+         | `parent -> "_parent"
+         | `self   -> "_self"
+         | `top    -> "_top"
+         | `Frame n -> n in
+       (("", "target"), target) :: attrs
+    | None -> attrs in
+  let attrs = match ty with
+    | Some t -> (("", "type"), t) :: attrs
+    | None -> attrs in
+  let attrs = match title with
+    | Some t -> (("", "title"), t) :: attrs
+    | None -> attrs in
+  [ `El((("", "a"), attrs), html) ]
+
 (* color tweaks for lists *)
 let interleave classes l =
   let i = ref 0 in

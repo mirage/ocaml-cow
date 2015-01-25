@@ -64,9 +64,30 @@ val output_doc :
 type link = {
   text : string;
   href: string;
+  (** The URI of the link.  You must take care of properly
+      percent-encode the URI. *)
 }
 
 val html_of_link : link -> t
+
+val link : ?hreflang: string ->
+           ?rel: [ `alternate | `author | `bookmark | `help | `license
+                 | `next | `nofollow | `noreferrer | `prefetch
+                 | `prev | `search | `tag ] ->
+           ?target: [ `blank | `parent | `self | `top | `Frame of string ] ->
+           ?ty: string ->
+           ?title: string ->
+           t -> Uri.t -> t
+(** [link html href] generate a link from [html] to [href].
+
+    @param title specifies extra information about the element that is
+                 usually as a tooltip text when the mouse moves over
+                 the element.  Default: [None].
+    @pram target Specifies where to open the linked document.
+    @param rel Specifies the relationship between the current document
+               and the linked document.  Default: [None].
+    @param hreflang the language of the linked document.  Default: [None].
+    @param ty Specifies the media type of the linked document.  *)
 
 val interleave : string array -> t list -> t list
 
