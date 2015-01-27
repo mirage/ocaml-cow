@@ -64,6 +64,7 @@ val output_doc :
 
 (** {2 HTML library} *)
 
+(** @deprecated *)
 type link = {
   text : string;
   href: string;
@@ -72,6 +73,7 @@ type link = {
 }
 
 val html_of_link : link -> t
+(** @deprecated Use [a] instead. *)
 
 val a : ?hreflang: string ->
         ?rel: [ `alternate | `author | `bookmark | `help | `license
