@@ -73,16 +73,16 @@ type link = {
 
 val html_of_link : link -> t
 
-val link : ?hreflang: string ->
-           ?rel: [ `alternate | `author | `bookmark | `help | `license
-                 | `next | `nofollow | `noreferrer | `prefetch
-                 | `prev | `search | `tag ] ->
-           ?target: [ `blank | `parent | `self | `top | `Frame of string ] ->
-           ?ty: string ->
-           ?title: string ->
-           ?cls: string ->
-           href:Uri.t -> t -> element
-(** [link href html] generate a link from [html] to [href].
+val a : ?hreflang: string ->
+        ?rel: [ `alternate | `author | `bookmark | `help | `license
+              | `next | `nofollow | `noreferrer | `prefetch
+              | `prev | `search | `tag ] ->
+        ?target: [ `blank | `parent | `self | `top | `Frame of string ] ->
+        ?ty: string ->
+        ?title: string ->
+        ?cls: string ->
+        href:Uri.t -> t -> element
+(** [a href html] generate a link from [html] to [href].
 
     @param title specifies extra information about the element that is
                  usually as a tooltip text when the mouse moves over

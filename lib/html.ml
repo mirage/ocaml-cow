@@ -89,7 +89,7 @@ type link = {
 let html_of_link l : t =
   <:xml<<a href=$str:l.href$>$str:l.text$</a>&>>
 
-let link ?hreflang ?rel ?target ?ty ?title ?cls ~href html =
+let a ?hreflang ?rel ?target ?ty ?title ?cls ~href html =
   let attrs = [(("", "href"), Uri.to_string href)] in
   let attrs = match hreflang with
     | Some h -> (("", "hreflang"), h) :: attrs
@@ -150,8 +150,8 @@ let img ?alt ?width ?height ?ismap ?title ?cls src =
     | Some c -> (("", "class"), c) :: attrs
     | None -> attrs in
   match ismap with
-  | Some u -> link ~href:u ~target:`self
-                  [`El((("", "img"), (("", "ismap"), "") ::attrs), [])]
+  | Some u -> a ~href:u ~target:`self
+               [`El((("", "img"), (("", "ismap"), "") ::attrs), [])]
   | None -> `El((("", "img"), attrs), [])
 
 (* color tweaks for lists *)
