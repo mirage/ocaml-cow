@@ -2,6 +2,8 @@
 * When serializing HTML, only self-close void elements.
 * New `Html.doctype` value of the HTML5 DOCTYPE.
 * New `Html.output` and `Html.output_doc` functions for generic polyglot output.
+* Atom support is now deprecated in favor of Syndic
+* New `Html.img` constructor for easy creation of <img> tags
 
 1.1.0 (20-Dec-2014):
 * Add OPAM 1.2 compatible description file (#53).
