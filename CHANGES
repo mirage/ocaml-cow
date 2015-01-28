@@ -4,6 +4,8 @@
 * New `Html.output` and `Html.output_doc` functions for generic polyglot output.
 * Atom support is now deprecated in favor of Syndic
 * New `Html.img` constructor for easy creation of <img> tags
+* New `Html.a` constructor for easy creation of <a> tags
+* Deprecate function `Html.html_of_link` and type `Html.link`
 
 1.1.0 (20-Dec-2014):
 * Add OPAM 1.2 compatible description file (#53).
