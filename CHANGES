@@ -1,4 +1,4 @@
-1.2.0 (trunk):
+1.2.0 (06-Feb-2015):
 * When serializing HTML, only self-close void elements.
 * New `Html.doctype` value of the HTML5 DOCTYPE.
 * New `Html.output` and `Html.output_doc` functions for generic polyglot output.
