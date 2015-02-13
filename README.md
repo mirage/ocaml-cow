@@ -39,8 +39,10 @@ Syntax extension
 This provides the following type-conv providers:
 
 ```
-# require "cow";;
-# require "cow.syntax";;
+# #use "topfind";;
+# #camlp4o;;
+# #require "cow";;
+# #require "cow.syntax";;
 # open Cow
 # type t = { foo: int; bar: string } with json ;;
 type t = { foo : int; bar : string; }
@@ -82,6 +84,25 @@ error in `camlp4`.
 There are also quotation expanders available for `<:xhtml< >>`, `<:css< >>`,
 and `<:html< >>` which let you construct values of their respective types by
 directly entering them in their native syntaxes.
+
+Use `$type:expr$` to evaluate `expr` and insert it into a quotation:
+
+```
+# let item x = <:html< <li>$str:x$</li> >>
+  and klass = "items" in
+  <:html<
+    <ul class=$str:klass$>
+      $list:List.map item ["foo";"bar"]$
+    </ul>
+  >>
+  |> Xml.to_string
+  |> print_string;;
+
+  <ul class="items">
+     <li>foo</li>  <li>bar</li> 
+  </ul>
+  - : unit = ()
+```
 
 HTML
 ----
