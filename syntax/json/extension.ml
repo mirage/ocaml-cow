@@ -69,7 +69,7 @@ let new_id _loc _ =
   <:patt< $lid:v$ >>, <:expr< $lid:v$ >>
 ;;
 
-(* Conversion ML value -> Json.t value *)
+(* Conversion ML value -> Json.value *)
 module Json_of = struct
 
   let gen (_loc, n, t_exp) =
@@ -158,8 +158,8 @@ module Json_of = struct
 
       | Arrow _ -> failwith "arrow type is not supported"
 
-      | Ext ("Json.t",_)
-      | Var "Json.t"     -> <:expr< $id$ >>
+      | Ext ("Json.value",_)
+      | Var "Json.value"     -> <:expr< $id$ >>
 
       | Ext (n,_)
       | Rec (n,_)
@@ -168,12 +168,12 @@ module Json_of = struct
         <:expr< $Pa_dyntype.P4_type.gen_ident _loc json_of n$ $id$ >> in
 
     let id = <:expr< $lid:n$ >> in
-    <:binding<$lid:json_of n$ $lid:n$ : Json.t = $aux id t$>>
+    <:binding<$lid:json_of n$ $lid:n$: Json.$lid:"value"$ = $aux id t$>>
 
 end
 
 
-(* Conversion Json.t value -> ML value *)
+(* Conversion Json.value -> ML value *)
 module Of_json = struct
 
   let str_of_id id = match id with <:expr@loc< $lid:s$ >> -> <:expr@loc< $str:s$ >> | _ -> assert false
@@ -351,8 +351,8 @@ module Of_json = struct
 
       | Arrow _  -> failwith "arrow type is not yet supported"
 
-      | Ext ("Json.t",_)
-      | Var "Json.t"     -> <:expr< $id$ >>
+      | Ext ("Json.value",_)
+      | Var "Json.value"     -> <:expr< $id$ >>
 
       | Ext (n,_)
       | Rec (n,_)
@@ -367,7 +367,7 @@ end
 
 let json_gen name fn =
   Pa_type_conv.add_generator name
-    (fun _ tds -> 
+    (fun _ tds ->
        try fn tds
        with Not_found ->
          Printf.eprintf "[Internal Error in pa_json %s]\n" name;

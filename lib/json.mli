@@ -17,12 +17,12 @@
 
 include module type of Ezjsonm
 
-val to_buffer : t -> Buffer.t -> unit
-val to_string : t -> string
+val to_buffer : value -> Buffer.t -> unit
+val to_string : value -> string
 
-val to_buffer_hum : t -> Buffer.t -> unit
-val to_string_hum : t -> string
+val to_buffer_hum : value -> Buffer.t -> unit
+val to_string_hum : value -> string
 
-val of_string : string -> t
+val of_string : string -> value
 
-exception Runtime_error of string * t
+exception Runtime_error of string * value

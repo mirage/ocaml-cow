@@ -77,16 +77,10 @@ let rec to_fct_hum t f =
     f "}\n"
 
 
-let to_buffer t buf =
-  to_fct (t :> Ezjsonm.value) (fun s -> Buffer.add_string buf s)
+let to_buffer v buf = to_fct v (fun s -> Buffer.add_string buf s)
+let to_string v = Ezjsonm.to_string ~minify:true (wrap v)
+let to_buffer_hum v buf = to_fct_hum v (fun s -> Buffer.add_string buf s)
+let to_string_hum v = Ezjsonm.to_string ~minify:false (wrap v)
+let of_string s = unwrap (Ezjsonm.from_string s)
 
-let to_string = Ezjsonm.to_string ~minify:true
-
-let to_buffer_hum t buf =
-  to_fct_hum t (fun s -> Buffer.add_string buf s)
-
-let to_string_hum = Ezjsonm.to_string ~minify:false
-
-let of_string = Ezjsonm.from_string
-
-exception Runtime_error of string * t
+exception Runtime_error of string * value
