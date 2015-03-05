@@ -57,8 +57,6 @@ let suite name decl prefix =
     ) [] xml_expanders in
   List.rev suite
 
-let _ =
-  let with_dtd     = suite "xml_expander+dtd" true  xml_decl in
-  let without_dtd  = suite "xml_expander"     false "" in
-  run_test_tt_main
-    ("COW" >::: (with_dtd @ without_dtd))
+let suite =
+  suite "xml_expander+dtd" true  xml_decl @
+  suite "xml_expander"     false ""

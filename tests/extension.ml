@@ -1,9 +1,5 @@
+open Printf
 open Cow
-
-type broken = {
-  foo: string option;
-  bar: string;
-} with xml,json
 
 type p =
   | One of string * int array * char * bool * (float list)
@@ -26,10 +22,10 @@ and t = {
   f4: int64;
   f5: char array;
 } and tu = ( int  * f * pp )
-with xml,json,html
+with xml, html, json
 
-type o = < x: f; y: string; z: int option >
-with xml,json,html
+type o = < x: f; y: string; z: tu >
+with xml, html, json
 
 open OUnit
 
@@ -44,15 +40,15 @@ let bool () = Random.int 1 = 0
 
 let string () =
   let len = Random.int 30 in
-  let s = String.create len in
+  let s = Bytes.create len in
   for i = 0 to len - 1 do
-    String.set s i (char ())
+    Bytes.set s i (char ())
   done;
   s
 
 let array v =
   let len = Random.int 30 in
-  let s = Array.create len (v()) in
+  let s = Array.make len (v()) in
   for i = 0 to len - 1 do
     s.(i) <- v ()
   done;
@@ -78,74 +74,88 @@ and pp () =
   | 2 -> `Poly3 (int ())
   | _ -> assert false
 
-and t () = if Random.int 10 > 1 then t1 else { t1 = int (); t2 = string (); t3 = x () }
+and t () = if Random.int 100 > 1 then t1 else { t1 = int (); t2 = string (); t3 = x () }
 
 and x () = if Random.int 10 > 1 then x1 else { x1 = array t; x2 = int64 () }
 
 and f () = { f1 = int (); f2 = list string; f3 = string (); f4 = int64 (); f5 = array char }
 
-and tu ()  = ( int (), f (), pp ())
+and tu () = ( int (), f (), pp ())
 
-let o () : o = object method x = f () method y = string () method z = option int end
+let o () : o = object
+  method x = f ()
+  method y = string ()
+  method z = tu ()
+end
+
+let buf = Buffer.create 1024
 
 let check_xml n f x =
   let v1 = f x in
-  Printf.printf "%s(v1): %s\n%!" n (Xml.to_string v1)
+  Printf.bprintf buf "%s(v1): %s\n%!" n (Xml.to_string v1)
+
+let check_html n f x =
+  let v1 = f x in
+  Printf.bprintf buf "%s(v1): %s\n%!" n (Html.to_string v1)
 
 let check_json n f g x =
   let v1 = f x in
   let v2 = f (g v1) in
   if not (v1 = v2) then begin
-    Printf.printf "%s(v1): %s\n%!" n (Json.to_string v1);
-    Printf.printf "%s(v2): %s\n%!" n (Json.to_string v2);
+    try
+      Printf.bprintf buf "%s(v1): %s\n%!" n (Json.to_string v1);
+      Printf.bprintf buf "%s(v2): %s\n%!" n (Json.to_string v2);
+    with Stack_overflow ->
+      ()
   end;
-  ("json.EQ " ^ n) @? (v1 = v2)
+  ("EQ " ^ n) @? (v1 = v2);
+  ("EQ " ^ n) @? ( ignore (f (g (f x))); true )
 
-let check n (f1) (f2,g2) x =
+let check n f0 f1 (f2,g2) x =
+  check_html n f0 x;
   check_xml n f1 x;
   check_json n f2 g2 x
 
-let test_tuple_marshal () =
+let test_tuple () =
   for i = 1 to 200 do begin
     let f = f () in
     let tu = tu () in
-    check "f" (xml_of_f) (json_of_f, f_of_json) f;
-    check "tu" (xml_of_tu) (json_of_tu, tu_of_json) tu;
+    check "f" html_of_f xml_of_f (json_of_f, f_of_json) f;
+    check "tu" html_of_tu xml_of_tu (json_of_tu, tu_of_json) tu;
   end done
 
-let test_rec_marshal () =
+let test_rec () =
   for i = 1 to 200 do begin
     let t = t () in
     let x = x () in
-    check "t" (xml_of_t) (json_of_t, t_of_json) t;
-    check "x" (xml_of_x) (json_of_x, x_of_json) x;
+    check "t" html_of_t xml_of_t (json_of_t, t_of_json) t;
+    check "x" html_of_x xml_of_x (json_of_x, x_of_json) x;
   end done
 
-let test_variant_marshal () =
+let test_variant () =
   for i = 1 to 200 do begin
     let p = p () in
-    check "p" (xml_of_p) (json_of_p, p_of_json) p;
+    check "p" html_of_p xml_of_p (json_of_p, p_of_json) p;
   end done
 
-let test_polyvar_marshal () =
+let test_polyvar () =
   for i = 1 to 200 do begin
     let pp = pp () in
-    check "pp" (xml_of_pp) (json_of_pp, pp_of_json) pp;
+    check "pp" html_of_pp xml_of_pp (json_of_pp, pp_of_json) pp;
   end done
 
-let test_object_marshal () =
+let test_object () =
   for i = 1 to 200 do begin
     let o = o () in
-    check "o" (xml_of_o) (json_of_o, o_of_json) o;
+    check "o" html_of_o xml_of_o (json_of_o, o_of_json) o;
   end done
 
 let suite = [
-  "variant_marshal" >:: test_variant_marshal;
-  "polyvar_marshal" >:: test_polyvar_marshal;
-  "tuple_marshal"   >:: test_tuple_marshal;
-  "rec_marshal"     >:: test_rec_marshal;
-  "object_marshal"  >:: test_object_marshal;
+  (* FIXME: generate cyclic values:
+     "variant" >:: test_variant; *)
+  "polyvar" >:: test_polyvar;
+  "tuple"   >:: test_tuple;
+  (* FIXME: generate cyclic values:
+     "rec"     >:: test_rec; *)
+  "object"  >:: test_object;
 ]
-
-let _ =
-  run_test_tt_main ("COW" >::: suite)
