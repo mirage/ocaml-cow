@@ -9,7 +9,7 @@ INCL   = -I ../_build/lib cow.cma
 
 .PHONY: all
 
-all: $(MAIN)
+all: $(TESTS:%=%_pp.cmo) $(MAIN)
 	@
 
 $(MAIN): $(MAIN).ml $(CMO) $(PP)
@@ -17,7 +17,7 @@ $(MAIN): $(MAIN).ml $(CMO) $(PP)
 	  $(MAIN).ml -o $@
 
 %_pp.ml: %.ml ../_build/syntax/pa_cow.cma
-	camlp4o $(P4OPTS) -I ../_build/syntax pa_cow.cma $< -o $@
+	camlp4o $(P4OPTS) -I ../_build/syntax pa_cow.cma $< -o $@ -printer o
 
 %.cmo: %.ml ../_build/syntax/pa_cow.cma
 	ocamlc -g -pp 'camlp4o $(P4OPTS) -I ../_build/syntax pa_cow.cma'\
