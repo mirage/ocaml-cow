@@ -38,7 +38,7 @@ Syntax extension
 
 This provides the following type-conv providers:
 
-```
+```ocaml
 # #use "topfind";;
 # #camlp4o;;
 # #require "cow";;
@@ -69,7 +69,7 @@ val html_of_t : ?id:string -> t -> Cow.Html.t = <fun>
 It also provides the follow quotation expanders. In a toplevel such as 
 `utop`, activate the syntax extension and:
 
-```
+```ocaml
 # #require "cow.syntax";;
 # <:xml< <foo>bar</foo> >>
 - : Cow.Xml.t = [`Data " "; `El ((("", "foo"), []), [`Data "bar"]); `Data " "]
@@ -87,7 +87,7 @@ directly entering them in their native syntaxes.
 
 Use `$type:expr$` to evaluate `expr` and insert it into a quotation:
 
-```
+```ocaml
 # let item x = <:html< <li>$str:x$</li> >>
   and klass = "items" in
   <:html<
