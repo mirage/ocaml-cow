@@ -5,3 +5,6 @@ tests/*.cmi
 tests/*.cmo
 tests/render_pp.ml
 tests/render
+tests/a.out
+tests/extension_pp.ml
+tests/test
