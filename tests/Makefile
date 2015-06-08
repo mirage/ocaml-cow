@@ -13,7 +13,7 @@ all: $(TESTS:%=%_pp.cmo) $(MAIN)
 	@
 
 $(MAIN): $(MAIN).ml $(CMO) $(PP)
-	ocamlfind ocamlc -package oUnit -linkpkg $(LINK) $(INCL) $(CMO)\
+	ocamlfind ocamlc -linkpkg $(LINK) $(INCL) $(CMO)\
 	  $(MAIN).ml -o $@
 
 %_pp.ml: %.ml ../_build/syntax/pa_cow.cma
