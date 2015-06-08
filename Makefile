@@ -14,7 +14,7 @@ clean:
 tests: all
 	$(MAKE) -C tests clean
 	$(MAKE) -C tests
-	tests/render
+	tests/test
 
 VERSION = $(shell grep 'VERSION=' _vars | sed 's/VERSION=//')
 NAME    = $(shell grep 'LIB=' _vars    | sed 's/LIB=//')
