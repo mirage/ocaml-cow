@@ -132,6 +132,7 @@ let polygradient = function
                   background: $low$; /* for non-css3 browsers */
                   background: -webkit-radial-gradient($behaviour$, $low$, $high$);
                   background: -mos-radial-gradient($behaviour$, $low$, $high$);
+                  background: -o-radial-gradient($behaviour$, $low$, $high$);
                   background: radial-gradient($behaviour$, $low$, $high$);
                 >>
             in impl
@@ -151,6 +152,7 @@ let polygradient = function
                   background: $low$;
                   background: -webkit-linear-gradient($behaviour''$, $low$, $high$);
                   background: -moz-linear-gradient($behaviour''$, $low$, $high$);
+                  background: -o-linear-gradient($behaviour''$, $low$, $high$);
                   background: linear-gradient($behaviour''$, $low$, $high$);
                 >>
             in impl
@@ -216,9 +218,9 @@ let reset_padding =
     h1, h2, h3, h4, h5, h6,
     ul, ol, dl, li, dt, dd, p,
     blockquote, pre, form, fieldset,
-    table, th, td { 
-      margin: 0; 
-      padding: 0; 
+    table, th, td {
+      margin: 0;
+      padding: 0;
    }
   >>
 

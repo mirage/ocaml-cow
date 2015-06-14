@@ -28,6 +28,8 @@ type prop_decl =
   | Prop of string * expr list
   | Decl of expr list * prop_decl list
 
+(** Utility type used to specify the type of gradient to be
+    emitted by [polygradient] *)
 type gradient_type = [ `Linear | `Radial ]
 
 (** The type of CSS fragment *)
@@ -63,20 +65,25 @@ val unroll : t -> t
 val polygradient : gradient_type -> ?behaviour:t -> ?low:t -> ?high:t -> t
 
 (** Emit a CSS gradient style that linearly interpolates
-    between the [low] and [high] colors *)
+    between the [low] and [high] colors moving from top to
+    bottom; the default values of [low] and [high] are
+    [#0a0a0a] and [#ffffff] respectively *)
 val gradient : ?low:t -> ?high:t -> t
 
 (** Emit a border style that rounds off the top border by
     [0.5em] pixels. *)
 val top_rounded : t
 
-(** Emit a border style that rounds off the bottom border by
+(** Emit a border style that rounds off the top border by
     [0.5em] pixels. *)
 val top_rounded : t
 
-(** Emit a border style that rounds off all the borders by
-    [0.5em] pixels. *)
+(** Emit a border style that rounds off the bottom border
+    by [0.5em] pixels. *)
 val bottom_rounded : t
+
+(** Emit a border style that rounds off all the borders by
+    [radius], which has a default value of [0.5em] *)
 val rounded : ?radius:t -> t
 
 val box_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
