@@ -1,5 +1,5 @@
-P4OPTS = $(shell ocamlfind query str dyntype dyntype.syntax re re.str ulex xmlm ezjsonm -predicates syntax,preprocessor,byte -r -format "-I %d %a")
-LINK   = $(shell ocamlfind query dyntype re re.str ulex oUnit uri xmlm ezjsonm omd -predicates archives,byte -r -format "-I %d %a")
+P4OPTS = $(shell ocamlfind query str dyntype dyntype.syntax ulex xmlm ezjsonm -predicates syntax,preprocessor,byte -r -format "-I %d %a")
+LINK   = $(shell ocamlfind query dyntype ulex oUnit uri xmlm ezjsonm omd -predicates archives,byte -r -format "-I %d %a")
 TESTS  = render extension
 MAIN   = test
 
@@ -13,7 +13,7 @@ all: $(TESTS:%=%_pp.cmo) $(MAIN)
 	@
 
 $(MAIN): $(MAIN).ml $(CMO) $(PP)
-	ocamlfind ocamlc -package oUnit -linkpkg $(LINK) $(INCL) $(CMO)\
+	ocamlfind ocamlc -linkpkg $(LINK) $(INCL) $(CMO)\
 	  $(MAIN).ml -o $@
 
 %_pp.ml: %.ml ../_build/syntax/pa_cow.cma
