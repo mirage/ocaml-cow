@@ -123,28 +123,61 @@ module Css = struct
       | Exprs er -> assert false
 end
 
+type gradient_type = [ `Linear | `Radial ]
+
+let polygradient = function
+    | `Radial ->
+            let impl ?(behaviour = <:css<circle>>) ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) =
+                <:css<
+                  background: $low$; /* for non-css3 browsers */
+                  background: -webkit-radial-gradient($behaviour$, $low$, $high$);
+                  background: -mos-radial-gradient($behaviour$, $low$, $high$);
+                  background: radial-gradient($behaviour$, $low$, $high$);
+                >>
+            in impl
+    | `Linear ->
+            let impl ?(behaviour = <:css<to right>>) ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) =
+                let behaviour' = String.lowercase @@ String.trim @@ Css.to_string behaviour in
+                let behaviour'' =
+                    begin match behaviour' with
+                    | "right" -> <:css<to left>>
+                    | "left" -> <:css<to right>>
+                    | "top" -> <:css<to bottom>>
+                    | "bottom" -> <:css<to top>>
+                    | "to right" | "to left" | "to top" | "to bottom" -> behaviour
+                    end
+                in
+                <:css<
+                  background: $low$;
+                  background: -webkit-linear-gradient($behaviour''$, $low$, $high$);
+                  background: -moz-linear-gradient($behaviour''$, $low$, $high$);
+                  background: linear-gradient($behaviour''$, $low$, $high$);
+                >>
+            in impl
+
 (* From http://www.webdesignerwall.com/tutorials/cross-browser-css-gradient/ *)
-let gradient ~low ~high =
+let gradient ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) =
   <:css<
     background: $low$; /* for non-css3 browsers */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$high$, endColorstr=$low$); /* for IE */
-    background: -webkit-gradient(linear, left top, left bottom, from($high$), to($low$)); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  $high$,  $low$); /* for firefox 3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, from($high$), to($low$)); /* for older webkit browsers */
+    background: -moz-linear-gradient(top,  $high$,  $low$); /* for firefox 3.6 to 15 */
+    background: -o-linear-gradient(top, $high$, $low$); /* for older versions of Opera (and the sake of completeness) */
  >>
 
-let text_shadow =
+let text_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) =
   <:css<
-    text-shadow: 0 1px 1px rgba(0,0,0,.3);  
+    text-shadow: $h$ $v$ $blur$ $color$;
   >>
 
-let box_shadow =
+let box_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) =
   <:css<
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -webkit-box-shadow: $h$ $v$ $blur$ $color$;
+    -moz-box-shadow: $h$ $v$ $blur$ $color$;
+    box-shadow: $h$ $v$ $blur$ $color$;
   >>
 
-let rounded =
+let rounded ?(radius = <:css<.5em>>) =
   <:css<
     -webkit-border-radius: .5em;
     -moz-border-radius: .5em;

@@ -28,6 +28,8 @@ type prop_decl =
   | Prop of string * expr list
   | Decl of expr list * prop_decl list
 
+type gradient_type = [ `Linear | `Radial ]
+
 (** The type of CSS fragment *)
 type t =
   | Props of prop_decl list
@@ -51,9 +53,18 @@ val unroll : t -> t
 
 (** {2 CSS library} *)
 
+(** Emit a CSS gradient style that can be either a linear
+    gradient or a radial gradient (at the moment it will
+    by default produce a centered circular gradient if
+    asked for a radial gradient). For example, a call of
+    [polygradient `Radial <:css<circle>> <:css<#ff0000>> <:css<#00ff00>>]
+    will produce a red and green centered circular radial
+    gradient. *)
+val polygradient : gradient_type -> ?behaviour:t -> ?low:t -> ?high:t -> t
+
 (** Emit a CSS gradient style that linearly interpolates
     between the [low] and [high] colors *)
-val gradient : low:t -> high:t -> t
+val gradient : ?low:t -> ?high:t -> t
 
 (** Emit a border style that rounds off the top border by
     [0.5em] pixels. *)
@@ -66,18 +77,18 @@ val top_rounded : t
 (** Emit a border style that rounds off all the borders by
     [0.5em] pixels. *)
 val bottom_rounded : t
-val rounded : t
+val rounded : ?radius:t -> t
 
-val box_shadow : t
-val text_shadow : t
+val box_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
+val text_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
 
 val no_padding : t
 val reset_padding : t
 val bottom_rounded : t
-val rounded : t
+val rounded : ?radius:t -> t
 
-val box_shadow : t
-val text_shadow : t
+val box_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
+val text_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
 
 val no_padding : t
 val reset_padding : t
