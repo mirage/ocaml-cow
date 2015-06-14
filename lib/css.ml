@@ -283,14 +283,12 @@ let gradient ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) () =
     background: linear-gradient(top, $low$, $high$); /* for modern browsers */
  >>
 
-let text_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>)
-    ?(color = <:css<rgba(0,0,0,.3)>>) () =
+let text_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) () =
   <:css<
     text-shadow: $h$ $v$ $blur$ $color$;
   >>
 
-let box_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>)
-    ?(color = <:css<rgba(0,0,0,.3)>>) () =
+let box_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) () =
   <:css<
     -webkit-box-shadow: $h$ $v$ $blur$ $color$;
     -moz-box-shadow: $h$ $v$ $blur$ $color$;
