@@ -62,40 +62,36 @@ val unroll : t -> t
     [polygradient `Radial <:css<circle>> <:css<#ff0000>> <:css<#00ff00>>]
     will produce a red and green centered circular radial
     gradient. *)
-val polygradient : gradient_type -> ?behaviour:t -> ?low:t -> ?high:t -> t
+val polygradient
+  : gradient_type ->
+    ?behaviour:t ->
+    ?low:t ->
+    ?high:t ->
+    unit -> t
 
 (** Emit a CSS gradient style that linearly interpolates
     between the [low] and [high] colors moving from top to
     bottom; the default values of [low] and [high] are
     [#0a0a0a] and [#ffffff] respectively *)
-val gradient : ?low:t -> ?high:t -> t
+val gradient
+  : ?low:t ->
+    ?high:t ->
+    unit -> t
 
 (** Emit a border style that rounds off the top border by
     [0.5em] pixels. *)
-val top_rounded : t
-
-(** Emit a border style that rounds off the top border by
-    [0.5em] pixels. *)
-val top_rounded : t
+val top_rounded : ?radius:t -> unit -> t
 
 (** Emit a border style that rounds off the bottom border
     by [0.5em] pixels. *)
-val bottom_rounded : t
+val bottom_rounded : ?radius:t -> unit -> t
 
 (** Emit a border style that rounds off all the borders by
     [radius], which has a default value of [0.5em] *)
-val rounded : ?radius:t -> t
+val rounded : ?radius:t -> unit -> t
 
-val box_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
-val text_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
-
-val no_padding : t
-val reset_padding : t
-val bottom_rounded : t
-val rounded : ?radius:t -> t
-
-val box_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
-val text_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> t
+val box_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> unit -> t
+val text_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> unit -> t
 
 val no_padding : t
 val reset_padding : t

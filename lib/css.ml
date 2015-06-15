@@ -81,6 +81,9 @@ module Css = struct
     Output.t Format.str_formatter t;
     Format.flush_str_formatter ()
 
+  let of_string s =
+    Exprs [[Str s]]
+
   let is_prop = function
     | Prop _ -> true
     | _      -> false
@@ -125,85 +128,87 @@ end
 
 type gradient_type = [ `Linear | `Radial ]
 
-let polygradient = function
-    | `Radial ->
-            let impl ?(behaviour = <:css<circle>>) ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) =
-                <:css<
-                  background: $low$; /* for non-css3 browsers */
-                  background: -webkit-radial-gradient($behaviour$, $low$, $high$);
-                  background: -mos-radial-gradient($behaviour$, $low$, $high$);
-                  background: -o-radial-gradient($behaviour$, $low$, $high$);
-                  background: radial-gradient($behaviour$, $low$, $high$);
-                >>
-            in impl
-    | `Linear ->
-            let impl ?(behaviour = <:css<to right>>) ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) =
-                let behaviour' = String.lowercase @@ String.trim @@ Css.to_string behaviour in
-                let behaviour'' =
-                    begin match behaviour' with
-                    | "right" -> <:css<to left>>
-                    | "left" -> <:css<to right>>
-                    | "top" -> <:css<to bottom>>
-                    | "bottom" -> <:css<to top>>
-                    | "to right" | "to left" | "to top" | "to bottom" -> behaviour
-                    end
-                in
-                <:css<
-                  background: $low$;
-                  background: -webkit-linear-gradient($behaviour''$, $low$, $high$);
-                  background: -moz-linear-gradient($behaviour''$, $low$, $high$);
-                  background: -o-linear-gradient($behaviour''$, $low$, $high$);
-                  background: linear-gradient($behaviour''$, $low$, $high$);
-                >>
-            in impl
+let polygradient = function (* rationale for this abusive implementation: partial application with the
+                               first argument allows execution to be spread out, possibly improving the
+                               performance of the function *)
+  | `Radial ->
+      let impl ?(behaviour = <:css<circle>>) ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) () =
+        <:css<
+          background: $low$; /* for non-css3 browsers */
+          background: -webkit-radial-gradient($behaviour$, $low$, $high$);
+          background: -mos-radial-gradient($behaviour$, $low$, $high$);
+          background: -o-radial-gradient($behaviour$, $low$, $high$);
+          background: radial-gradient($behaviour$, $low$, $high$);
+        >>
+      in impl
+  | `Linear ->
+      let impl ?(behaviour = <:css<to right>>) ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) () =
+        let behaviour' = String.lowercase (String.trim (Css.to_string behaviour)) in
+        let behaviour'' =
+          begin match behaviour' with
+                | "right" -> <:css<to left>>
+                | "left" -> <:css<to right>>
+                | "top" -> <:css<to bottom>>
+                | "bottom" -> <:css<to top>>
+                | "to right" | "to left" | "to top" | "to bottom" -> behaviour
+          end
+        in <:css<
+            background: $low$;
+            background: -webkit-linear-gradient($behaviour''$, $low$, $high$);
+            background: -moz-linear-gradient($behaviour''$, $low$, $high$);
+            background: -o-linear-gradient($behaviour''$, $low$, $high$);
+            background: linear-gradient($behaviour''$, $low$, $high$);
+          >>
+      in impl
 
 (* From http://www.webdesignerwall.com/tutorials/cross-browser-css-gradient/ *)
-let gradient ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) =
+let gradient ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) () =
   <:css<
     background: $low$; /* for non-css3 browsers */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$high$, endColorstr=$low$); /* for IE */
     background: -webkit-gradient(linear, left top, left bottom, from($high$), to($low$)); /* for older webkit browsers */
     background: -moz-linear-gradient(top,  $high$,  $low$); /* for firefox 3.6 to 15 */
     background: -o-linear-gradient(top, $high$, $low$); /* for older versions of Opera (and the sake of completeness) */
+    background: linear-gradient(top, $low$, $high$); /* for modern browsers */
  >>
 
-let text_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) =
+let text_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) () =
   <:css<
     text-shadow: $h$ $v$ $blur$ $color$;
   >>
 
-let box_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) =
+let box_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) () =
   <:css<
     -webkit-box-shadow: $h$ $v$ $blur$ $color$;
     -moz-box-shadow: $h$ $v$ $blur$ $color$;
     box-shadow: $h$ $v$ $blur$ $color$;
   >>
 
-let rounded ?(radius = <:css<.5em>>) =
+let rounded ?(radius = <:css<.5em>>) () =
   <:css<
-    -webkit-border-radius: .5em;
-    -moz-border-radius: .5em;
-    border-radius: .5em;
+    -webkit-border-radius: $radius$;
+    -moz-border-radius: $radius$;
+    border-radius: $radius$;
   >>
 
-let top_rounded =
+let top_rounded ?(radius = <:css<.5em>>) () =
   <:css<
-    -webkit-border-top-left-radius: .5em;
-    -webkit-border-top-right-radius: .5em;
-    -moz-border-radius-topleft: .5em;
-    -moz-border-radius-topright: .5em;
-    border-top-left-radius: .5em;
-    border-top-right-radius: .5em;
+    -webkit-border-top-left-radius: $radius$;
+    -webkit-border-top-right-radius: $radius$;
+    -moz-border-radius-topleft: $radius$;
+    -moz-border-radius-topright: $radius$;
+    border-top-left-radius: $radius$;
+    border-top-right-radius: $radius$;
   >>
 
-let bottom_rounded =
+let bottom_rounded ?(radius = <:css<.5em>>) () =
   <:css<
-    -webkit-border-bottom-left-radius: .5em;
-    -webkit-border-bottom-right-radius: .5em;
-    -moz-border-radius-bottomleft: .5em;
-    -moz-border-radius-bottomright: .5em;
-    border-bottom-left-radius: .5em;
-    border-bottom-right-radius: .5em;
+    -webkit-border-bottom-left-radius: $radius$;
+    -webkit-border-bottom-right-radius: $radius$;
+    -moz-border-radius-bottomleft: $radius$;
+    -moz-border-radius-bottomright: $radius$;
+    border-bottom-left-radius: $radius$;
+    border-bottom-right-radius: $radius$;
   >>
 
 let no_padding =
