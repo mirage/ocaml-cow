@@ -37,7 +37,7 @@ type t =
   | Props of prop_decl list
   | Exprs of expr list
 
-(** Print CSS to a [string] suitable for rendering *)
+(** Print CSS to a string suitable for rendering *)
 val to_string : t -> string
 
 (** emits CSS containing the contents of the argument, suitable for
@@ -75,26 +75,49 @@ val polygradient
 
 (** Emit a CSS gradient style that linearly interpolates
     between the [low] and [high] colors moving from top to
-    bottom; the default values of [low] and [high] are
-    [#0a0a0a] and [#ffffff] respectively *)
+    bottom
+    @param low the color to place at the bottom of the gradient.
+               default is #0a0a0a
+    @param high the color to place at the top of the gradient.
+                default is #ffffff *)
 val gradient
   : ?low:t ->
     ?high:t ->
     unit -> t
 
-(** Emit a border style that rounds off the top border by
-    [0.5em] pixels. *)
+(** Emit a border style that rounds off the top border.
+    @param radius the radius at which to round the top corners;
+    default is 0.5em *)
 val top_rounded : ?radius:t -> unit -> t
 
-(** Emit a border style that rounds off the bottom border
-    by [0.5em] pixels. *)
+(** Emit a border style that rounds off the bottom border.
+    @param radius the radius at which to round the bottom
+                  corners; default is 0.5em *)
 val bottom_rounded : ?radius:t -> unit -> t
 
 (** Emit a border style that rounds off all the borders by
     [radius], which has a default value of [0.5em] *)
 val rounded : ?radius:t -> unit -> t
 
+(** emit a style which creates a shadow or glow around the element.
+    @param h the horizontal (from left) displacement of the shadow;
+      defaults to 0
+    @param v the vertical (from top) displacement of the shadow;
+      defaults to 1px
+    @param blur the blur/scatter effect of the shadow; defaults to
+      1px
+    @param color the color of the shadow; defaults to rgba(0,0,0,.3) *)
 val box_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> unit -> t
+
+(** emit a style which creates a shadow or glow around text of an
+     element.
+    @param h the horizontal (from left) displacement of the shadow;
+      defaults to 0
+    @param v the vertical (from top) displacement of the shadow;
+      defaults to 1px
+    @param blur the blur/scatter effect of the shadow; defaults to
+      1px
+    @param color the color of the shadow; defaults to rgba(0,0,0,.3) *)
 val text_shadow : ?h:t -> ?v:t -> ?blur:t -> ?color:t -> unit -> t
 
 val no_padding : t
