@@ -40,6 +40,10 @@ type t =
 (** Print CSS to a [string] suitable for rendering *)
 val to_string : t -> string
 
+(** emits CSS containing the contents of the argument, suitable for
+    embedding in CSS format strings *)
+val of_string : string -> t
+
 (** {2 Getters} *)
 
 val expr : t -> expr
