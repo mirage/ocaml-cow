@@ -57,6 +57,10 @@ val string : t -> string
     an equivalent fragment with only root declarations *)
 val unroll : t -> t
 
+val set_prop : t -> string -> string list -> t
+
+val get_prop : t -> string -> string list
+
 (** {2 CSS library} *)
 
 (** Emit a CSS gradient style that can be either a linear
