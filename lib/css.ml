@@ -124,6 +124,45 @@ module Css = struct
     match t with
       | Props pl -> Props (List.rev (List.fold_left aux [] pl))
       | Exprs er -> assert false
+
+  let set_prop props p (v : string list) =
+    match props with
+    | Props props ->
+        if   List.exists (fun x -> match x with | Prop _ -> false | _ -> true) props
+        then raise (Failure("the statement contains stuff other than Prop's, so I don't know what to change!"))
+        else begin
+          let rec _set_prop ls p v = (* walk through the property list, copying each element only until we reach
+                                        the target, after which all elements will be shared with the original *)
+            match ls with
+            | (Prop (name, vals)) :: tl ->
+                if name = p
+                then begin
+                  let exprs = List.map (fun el -> [Str el]) v in (* waiting until the last minute to convert the
+                                                                   string list to an Expr list, because there's
+                                                                   a chance that the function will never reach
+                                                                   this point and in those cases we don't want
+                                                                   to have done this *)
+                  (Prop (name, exprs)) :: tl
+                end
+                else (Prop (name, vals)) :: (_set_prop tl p v)
+            | _ -> raise Not_found
+          in Props (_set_prop props p v)
+        end
+    | _ -> raise (Failure "invalid CSS element type")
+
+  let get_prop props p =
+    match props with
+    | Props props ->
+        if   List.exists (fun x -> match x with | Prop _ -> false | _ -> true) props
+        then raise (Failure("the statement contains stuff other than Prop's, so I don't know what to look for!"))
+        else begin
+          try
+            let Prop (name, ex's) = List.find (fun x -> match x with | Prop (name, _) -> name = p | _ -> false) props in
+            List.map (fun x -> match x with | [Str s] -> s | _ -> raise (Failure "this should never happen")) ex's
+          with
+          | Not_found -> raise Not_found
+        end
+    | _ -> raise (Failure "invalid CSS element type")
 end
 
 type gradient_type = [ `Linear | `Radial ]
