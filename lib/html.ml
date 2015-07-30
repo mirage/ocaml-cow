@@ -81,13 +81,13 @@ let to_string t =
 let of_string ?enc str =
   Xml.of_string ~entity:Xhtml.entity ?enc str
 
-(* @deprecated *)
+(** @deprecated *)
 type link = {
   text : string;
   href: string;
 }
 
-(* @deprecated *)
+(** @deprecated *)
 let html_of_link l : t =
   <:xml<<a href=$str:l.href$>$str:l.text$</a>&>>
 
