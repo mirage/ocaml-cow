@@ -85,7 +85,7 @@ module Json_of = struct
         <:expr< `Float (float_of_int $id$) >>
 
       | Int (Some i) when i <= 32 ->
-        <:expr< `Float (float_of_int $id$) >>
+        <:expr< `Float (Int32.to_float $id$) >>
 
       | Int (Some i) when i <= 64 ->
         <:expr< `Float (Int64.to_float $id$) >>
