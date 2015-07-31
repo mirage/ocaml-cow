@@ -114,3 +114,25 @@ type table = t array array
 val html_of_table : ?headings:bool -> table -> t
 
 val nil : t
+
+val concat : t list -> t
+(** [concat els] combines all the members of [els] into a single [html.t]
+ * @param els a list of the elements to combine *)
+
+val append : t -> t -> t
+(** [append par ch] appends ch to par *)
+
+module Create : sig
+  type t = element list
+
+  val ul : t list -> t
+  (** [ul ls] converts an OCaml list of HTML elements to a valid HTML unordered
+   *  list *)
+
+  val ol : t list -> t
+  (** [ul ls] converts an OCaml list of HTML elements to a valid HTML ordered
+   *  list *)
+
+  val stylesheet : Css.t -> t
+  (** [stylesheet style] converts a COW CSS type to a valid HTML stylesheet *)
+end
