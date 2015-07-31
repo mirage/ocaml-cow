@@ -1,5 +1,13 @@
+1.2.2 (30-Jul-2015)
+* Fix int32 conversion to float in JSON syntax (#76, by Antoine Luciani)
+* Fix a regression introduced in 1.2.0 in `make test` (#72 by @dsheets)
+* Modernize `.travis.yml` to use `ocaml-travisci-skeleton` (by @dsheets)
+* Remove direct dependency on re (#71, by @rgrinberg)
+* Add a `.merlin` file (#70, by @rgrinberg)
+
 1.2.1 (05-Mar-2015):
-* Fix compatibility of the `json` syntax extension with `ezjsonm` version 0.4 (#68)
+* Fix compatibility of the `json` syntax extension with `ezjsonm` version 0.4
+  (#68)
 
 1.2.0 (06-Feb-2015):
 * When serializing HTML, only self-close void elements.
@@ -34,7 +42,8 @@
 * Fix parsing of empty attributes in XML/HTML/XHTML.
 
 0.9.0 (20-Dec-2013):
-* Remove all the Markdown variants except `Omd`, which now claims the `Cow.Markdown` module name.
+* Remove all the Markdown variants except `Omd`, which now claims the
+  `Cow.Markdown` module name.
 * Clarify the repository license as ISC.
 * Run some modules through `ocp-indent`.
 
@@ -46,7 +55,8 @@
 0.8.0 (12-Dec-2013):
 * Add Travis continuous integration scripts.
 * Add `Omd_markdown` module based on the `omd` library.
-* Note: The `Markdown` and `Markdown_github` modules are now deprecated and will be removed before 1.0.
+* Note: The `Markdown` and `Markdown_github` modules are now deprecated and will
+  be removed before 1.0.
 
 0.7.0 (25-Sep-2013):
 * Add an OPAM script that installs the right dependencies.
@@ -59,8 +69,10 @@
 * Fix handling of whitespaces in antiquotation attributes.
 
 0.6.1 (03-Jul-2013):
-* Tweak CSS syntax highlighting of OCaml code to fit Anil's superior colour taste.
-* Add a `Code.ocaml_fragment` to get just the syntax highlighted bits without the wrapper tags.
+* Tweak CSS syntax highlighting of OCaml code to fit Anil's superior colour
+  taste.
+* Add a `Code.ocaml_fragment` to get just the syntax highlighted bits without
+  the wrapper tags.
 * Expose a `decl` option to make the `Xml.to_string` declaration prefix optional.
 * Do not output a `<?xml` declaration in `Html.to_string`.
 
@@ -70,11 +82,13 @@
 * Remove `?templates` from `Html.of_string` and `Xml.of_string`.
 
 0.5.5 (12-Jun-2013):
-* Markdown to HTML now generates header titles inside the anchor (previously, a space was anchored).
+* Markdown to HTML now generates header titles inside the anchor (previously, a
+  space was anchored).
 
 0.5.4 (21-May-2013):
 * Add `json_of` and `of_json` type-conv providers (#6).
-* Add `Json.to_string_hum` which adds more newlines for human-readable output (#7).
+* Add `Json.to_string_hum` which adds more newlines for human-readable output
+  (#7).
 * Document the `-cow-no-open` camlp4 flag (#9).
 * Be compatible with Core by using `List.concat` instead of `List.flatten` (#2).
 * Fix Atom feed by adding a `link` field.
