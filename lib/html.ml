@@ -196,3 +196,19 @@ let concat els =
   List.concat els
 
 let append (_to : t) (el : t) = _to @ el
+
+module Create = struct
+  type t = element list
+
+  let ul ls =
+    let els =
+      List.map (fun el -> <:html< <li>$el$</li> >>) ls
+      |> concat
+    in <:html< <ul>$els$</ul> >>
+
+  let ol ls =
+    let els =
+      List.map (fun el -> <:html< <li>$el$</li> >>) ls
+      |> concat
+    in <:html< <ol>$els$</ol> >>
+end
