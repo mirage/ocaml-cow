@@ -16,10 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
+let (|>) x f = f x
+let (@@) f x = f x
+
 type element = ('a Xml.frag as 'a) Xml.frag
 type t = Xml.t
 
-type tree = [ `Data of string | `El of Xmlm.tag * 'a list ] as 'a
+type tree = [ `Data of string | `El of Xmlm.tag * 'a list | `Css of Css.t ] as 'a
 
 let void_elements = [
   "img";
@@ -211,4 +214,7 @@ module Create = struct
       List.map (fun el -> <:html< <li>$el$</li> >>) ls
       |> concat
     in <:html< <ol>$els$</ol> >>
+
+  let stylesheet css =
+    <:html< <style type="text/css">$css:css$</style> >>
 end
