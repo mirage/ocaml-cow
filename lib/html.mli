@@ -121,3 +121,11 @@ val concat : t list -> t
 
 (** [append par ch] appends ch to par *)
 val append : t -> t -> t
+
+module Create : sig
+  type t = element list
+
+  val ul : t list -> t
+
+  val ol : t list -> t
+end
