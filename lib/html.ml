@@ -191,3 +191,8 @@ let html_of_table ?(headings=false) t =
   <:xml<<table>$opt:hd$ $list:tl$</table>&>>
 
 let nil : t = []
+
+let concat els =
+  List.concat els
+
+let append (_to : t) (el : t) = _to @ el
