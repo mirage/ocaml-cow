@@ -202,13 +202,12 @@ module Create = struct
 
   let ul ls =
     let els =
-      List.map (fun el -> <:html< <li>$el$</li> >>) ls
-      |> concat
+      concat (List.map (fun el -> <:html< <li>$el$</li> >>) ls)
     in <:html< <ul>$els$</ul> >>
 
   let ol ls =
     let els =
-      List.map (fun el -> <:html< <li>$el$</li> >>) ls
-      |> concat
+      concat (List.map (fun el -> <:html< <li>$el$</li> >>) ls)
     in <:html< <ol>$els$</ol> >>
+
 end
