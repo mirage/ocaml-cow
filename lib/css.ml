@@ -81,6 +81,9 @@ module Css = struct
     Output.t Format.str_formatter t;
     Format.flush_str_formatter ()
 
+  let of_string s =
+    Exprs [[Str s]]
+
   let is_prop = function
     | Prop _ -> true
     | _      -> false
@@ -121,54 +124,130 @@ module Css = struct
     match t with
       | Props pl -> Props (List.rev (List.fold_left aux [] pl))
       | Exprs er -> assert false
+
+  let set_prop props p (v : string list) =
+    match props with
+    | Props props ->
+        if   List.exists (fun x -> match x with | Prop _ -> false | _ -> true) props
+        then raise (Failure("the statement contains stuff other than Prop's, so I don't know what to change!"))
+        else begin
+          let rec _set_prop ls p v = (* walk through the property list, copying each element only until we reach
+                                        the target, after which all elements will be shared with the original *)
+            match ls with
+            | (Prop (name, vals)) :: tl ->
+                if name = p
+                then begin
+                  let exprs = List.map (fun el -> [Str el]) v in (* waiting until the last minute to convert the
+                                                                   string list to an Expr list, because there's
+                                                                   a chance that the function will never reach
+                                                                   this point and in those cases we don't want
+                                                                   to have done this *)
+                  (Prop (name, exprs)) :: tl
+                end
+                else (Prop (name, vals)) :: (_set_prop tl p v)
+            | _ -> raise Not_found
+          in Props (_set_prop props p v)
+        end
+    | _ -> raise (Failure "invalid CSS element type")
+
+  let get_prop props p =
+    match props with
+    | Props props ->
+        if   List.exists (fun x -> match x with | Prop _ -> false | _ -> true) props
+        then raise (Failure("the statement contains stuff other than Prop's, so I don't know what to look for!"))
+        else begin
+          try
+            let Prop (name, ex's) = List.find (fun x -> match x with | Prop (name, _) -> name = p | _ -> false) props in
+            List.map (fun x -> match x with | [Str s] -> s | _ -> raise (Failure "this should never happen")) ex's
+          with
+          | Not_found -> raise Not_found
+        end
+    | _ -> raise (Failure "invalid CSS element type")
 end
 
+type gradient_type = [ `Linear | `Radial ]
+
+let polygradient = function (* rationale for this abusive implementation: partial application with the
+                               first argument allows execution to be spread out, possibly improving the
+                               performance of the function *)
+  | `Radial ->
+      let impl ?(behaviour = <:css<circle>>) ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) () =
+        <:css<
+          background: $low$; /* for non-css3 browsers */
+          background: -webkit-radial-gradient($behaviour$, $low$, $high$);
+          background: -mos-radial-gradient($behaviour$, $low$, $high$);
+          background: -o-radial-gradient($behaviour$, $low$, $high$);
+          background: radial-gradient($behaviour$, $low$, $high$);
+        >>
+      in impl
+  | `Linear ->
+      let impl ?(behaviour = <:css<to right>>) ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) () =
+        let behaviour' = String.lowercase (String.trim (Css.to_string behaviour)) in
+        let behaviour'' =
+          begin match behaviour' with
+                | "right" -> <:css<to left>>
+                | "left" -> <:css<to right>>
+                | "top" -> <:css<to bottom>>
+                | "bottom" -> <:css<to top>>
+                | "to right" | "to left" | "to top" | "to bottom" -> behaviour
+          end
+        in <:css<
+            background: $low$;
+            background: -webkit-linear-gradient($behaviour''$, $low$, $high$);
+            background: -moz-linear-gradient($behaviour''$, $low$, $high$);
+            background: -o-linear-gradient($behaviour''$, $low$, $high$);
+            background: linear-gradient($behaviour''$, $low$, $high$);
+          >>
+      in impl
+
 (* From http://www.webdesignerwall.com/tutorials/cross-browser-css-gradient/ *)
-let gradient ~low ~high =
+let gradient ?(low = <:css<#0a0a0a>>) ?(high = <:css<#ffffff>>) () =
   <:css<
     background: $low$; /* for non-css3 browsers */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$high$, endColorstr=$low$); /* for IE */
-    background: -webkit-gradient(linear, left top, left bottom, from($high$), to($low$)); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  $high$,  $low$); /* for firefox 3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, from($high$), to($low$)); /* for older webkit browsers */
+    background: -moz-linear-gradient(top,  $high$,  $low$); /* for firefox 3.6 to 15 */
+    background: -o-linear-gradient(top, $high$, $low$); /* for older versions of Opera (and the sake of completeness) */
+    background: linear-gradient(top, $low$, $high$); /* for modern browsers */
  >>
 
-let text_shadow =
+let text_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) () =
   <:css<
-    text-shadow: 0 1px 1px rgba(0,0,0,.3);  
+    text-shadow: $h$ $v$ $blur$ $color$;
   >>
 
-let box_shadow =
+let box_shadow ?(h = <:css<0>>) ?(v = <:css<1px>>) ?(blur = <:css<1px>>) ?(color = <:css<rgba(0,0,0,.3)>>) () =
   <:css<
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -webkit-box-shadow: $h$ $v$ $blur$ $color$;
+    -moz-box-shadow: $h$ $v$ $blur$ $color$;
+    box-shadow: $h$ $v$ $blur$ $color$;
   >>
 
-let rounded =
+let rounded ?(radius = <:css<.5em>>) () =
   <:css<
-    -webkit-border-radius: .5em;
-    -moz-border-radius: .5em;
-    border-radius: .5em;
+    -webkit-border-radius: $radius$;
+    -moz-border-radius: $radius$;
+    border-radius: $radius$;
   >>
 
-let top_rounded =
+let top_rounded ?(radius = <:css<.5em>>) () =
   <:css<
-    -webkit-border-top-left-radius: .5em;
-    -webkit-border-top-right-radius: .5em;
-    -moz-border-radius-topleft: .5em;
-    -moz-border-radius-topright: .5em;
-    border-top-left-radius: .5em;
-    border-top-right-radius: .5em;
+    -webkit-border-top-left-radius: $radius$;
+    -webkit-border-top-right-radius: $radius$;
+    -moz-border-radius-topleft: $radius$;
+    -moz-border-radius-topright: $radius$;
+    border-top-left-radius: $radius$;
+    border-top-right-radius: $radius$;
   >>
 
-let bottom_rounded =
+let bottom_rounded ?(radius = <:css<.5em>>) () =
   <:css<
-    -webkit-border-bottom-left-radius: .5em;
-    -webkit-border-bottom-right-radius: .5em;
-    -moz-border-radius-bottomleft: .5em;
-    -moz-border-radius-bottomright: .5em;
-    border-bottom-left-radius: .5em;
-    border-bottom-right-radius: .5em;
+    -webkit-border-bottom-left-radius: $radius$;
+    -webkit-border-bottom-right-radius: $radius$;
+    -moz-border-radius-bottomleft: $radius$;
+    -moz-border-radius-bottomright: $radius$;
+    border-bottom-left-radius: $radius$;
+    border-bottom-right-radius: $radius$;
   >>
 
 let no_padding =
@@ -183,9 +262,9 @@ let reset_padding =
     h1, h2, h3, h4, h5, h6,
     ul, ol, dl, li, dt, dd, p,
     blockquote, pre, form, fieldset,
-    table, th, td { 
-      margin: 0; 
-      padding: 0; 
+    table, th, td {
+      margin: 0;
+      padding: 0;
    }
   >>
 

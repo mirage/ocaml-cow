@@ -81,13 +81,13 @@ let to_string t =
 let of_string ?enc str =
   Xml.of_string ~entity:Xhtml.entity ?enc str
 
-(* @deprecated *)
+(** @deprecated *)
 type link = {
   text : string;
   href: string;
 }
 
-(* @deprecated *)
+(** @deprecated *)
 let html_of_link l : t =
   <:xml<<a href=$str:l.href$>$str:l.text$</a>&>>
 
@@ -191,3 +191,23 @@ let html_of_table ?(headings=false) t =
   <:xml<<table>$opt:hd$ $list:tl$</table>&>>
 
 let nil : t = []
+
+let concat els =
+  List.concat els
+
+let append (_to : t) (el : t) = _to @ el
+
+module Create = struct
+  type t = element list
+
+  let ul ls =
+    let els =
+      concat (List.map (fun el -> <:html< <li>$el$</li> >>) ls)
+    in <:html< <ul>$els$</ul> >>
+
+  let ol ls =
+    let els =
+      concat (List.map (fun el -> <:html< <li>$el$</li> >>) ls)
+    in <:html< <ol>$els$</ol> >>
+
+end
