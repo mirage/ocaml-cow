@@ -15,6 +15,13 @@
  *)
 
 module Css = struct
+  type color =
+      Rgba of char * char * char * char
+    | Rgb of char * char * char
+  
+  and color_fmt =
+    [ `Hex | `Rgb ]
+
   type elt =
     | Str of string
     | Fun of string * expr list
@@ -176,6 +183,52 @@ module Css = struct
           | Not_found -> raise Not_found
         )
     | _ -> err_invalid_css ()
+
+  let color_to_string ?(fmt = `Hex) c =
+    let rval = match fmt,c with
+    | `Hex,(Rgba (r,g,b,a)) ->
+        let fmt' = format_of_string "#%02x%02x%02x%02x" in
+        let r = int_of_char r
+        and g = int_of_char g
+        and b = int_of_char b
+        and a = int_of_char a in
+        Printf.sprintf fmt' r g b a
+    | `Hex,(Rgb (r,g,b)) ->
+        let fmt' = format_of_string "#%02x%02x%02x" in
+        let r = int_of_char r
+        and g = int_of_char g
+        and b = int_of_char b in
+        Printf.sprintf fmt' r g b
+    | `Rgb,(Rgba (r,g,b,a)) ->
+        let fmt' = format_of_string "rgba(%d,%d,%d,%d)" in
+        let r = int_of_char r
+        and g = int_of_char g
+        and b = int_of_char b
+        and a = int_of_char a in
+        Printf.sprintf fmt' r g b a
+    | `Rgb,(Rgb (r,g,b)) ->
+        let fmt' = format_of_string "rgb(%d,%d,%d)" in
+        let r = int_of_char r
+        and g = int_of_char g
+        and b = int_of_char b in
+        Printf.sprintf fmt' r g b
+    in rval
+
+  let color_of_string ?(fmt = `Hex) s =
+    let s = String.lowercase s in
+    let coi = char_of_int in
+    let rval = match fmt with
+      | `Hex ->
+          let fmt' = format_of_string "#%x" in
+          let x = Scanf.sscanf s fmt' (fun x -> x) in
+          let r,g,b = (x land 0xff0000) lsr 16, (x land 0xff00) lsr 8,
+                      x land 0xff in
+          Rgb(coi r, coi g, coi b)
+      | `Rgb ->
+          let fmt' = format_of_string "rgb(%d,%d,%d)" in
+          let r,g,b = Scanf.sscanf s fmt' (fun a b c -> a,b,c) in
+          Rgb(coi r, coi g, coi b)
+    in rval
 end
 
 type gradient_type = [ `Linear | `Radial ]

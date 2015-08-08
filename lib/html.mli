@@ -123,7 +123,21 @@ val append : t -> t -> t
 (** [append par ch] appends ch to par *)
 
 module Create : sig
-  type t = element list
+  module Tags : sig
+    type html_list = [`Ol of t list | `Ul of t list]
+
+    type table_flags =
+        Headings_fst_col
+      | Headings_fst_row
+      | Sideways
+      | Heading_color of Css.color
+      | Bg_color of Css.color 
+
+    type 'a table =
+      [ `Tr of 'a table list | `Td of 'a * int * int | `Th of 'a * int * int ]
+  end
+
+  type t = Xml.t
 
   val ul : t list -> t
   (** [ul ls] converts an OCaml list of HTML elements to a valid HTML unordered
@@ -135,4 +149,43 @@ module Create : sig
 
   val stylesheet : Css.t -> t
   (** [stylesheet style] converts a COW CSS type to a valid HTML stylesheet *)
+
+  val table :
+    row:('a -> t list) ->
+    ?flags:Tags.table_flags list ->
+    'a list ->
+    t
+  (** [table ~row:r ~flags:f t] produces an HTML table formatted according to
+      [f] of type [Cow.Html.Create.Tags.table_flags list]. [r] is a function to
+      transform a single row (a tuple) into a [Cow.Html.t list]. [t] is a list
+      of n-tuples representing a table where the number of rows is equal to the
+      length of the list and the number of columns is equal to [n]. See the
+      following example:
+{[
+let row = (fun (name,email) -> [ <:html<$str:name$>>; <:html<$str:email$>>]) in
+let data =
+  [ "Name","Email Address";
+    "John Christopher McAlpine","christophermcalpine@gmail.com";
+    "Somebody McElthein","johnqpublic@something.something";
+    "John Doe","johndoe@johndoe.com" ] in
+let table = Cow.Html.Create ~row data
+]}
+      which produces the HTML table
+{[
+<!DOCTYPE html>
+<table>
+  <tr>
+    <th>Name</th>                       <th>Email Address</th>
+  </tr>
+  <tr>
+    <td>John Christopher McAlpine</td>  <td>christophermcalpine@gmail.com</td>
+  </tr>
+  <tr>
+    <td>Somebody McElthein</td>         <td>johnqpublic@something.something</td>
+  </tr>
+  <tr>
+    <td>John Doe</td>                   <td>johndoe@johndoe.com</td>
+  </tr>
+</table>
+]}*)
 end

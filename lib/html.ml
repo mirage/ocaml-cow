@@ -20,7 +20,7 @@ let (|>) x f = f x
 let (@@) f x = f x
 
 type element = ('a Xml.frag as 'a) Xml.frag
-type t = Xml.t
+type t = element list
 
 type tree = [ `Data of string | `El of Xmlm.tag * 'a list | `Css of Css.t ] as 'a
 
@@ -201,7 +201,23 @@ let concat els =
 let append (_to : t) (el : t) = _to @ el
 
 module Create = struct
-  type t = element list
+  module Tags = struct
+    type html_list = [ `Ol of t list | `Ul of t list ]
+
+    type table_flags =
+        Headings_fst_col
+      | Headings_fst_row
+      | Sideways
+      | Heading_color of Css.color
+      | Bg_color of Css.color
+
+    type 'a table =
+      [ `Tr of 'a table list | `Td of 'a * int * int | `Th of 'a * int * int ]
+  end
+
+  open Tags
+
+  type t = Xml.t
 
   let ul ls =
     let els =
@@ -215,4 +231,64 @@ module Create = struct
 
   let stylesheet css =
     <:html< <style type="text/css">$css:css$</style> >>
+
+  let table ~row ?(flags = [Headings_fst_row]) tbl =
+    let h_fst_col = ref false in
+    let h_fst_row = ref false in
+    let hdg_c = ref (Css.color_of_string "#eDeDeD") in
+    let bg_c = ref (Css.color_of_string "#fFfFfF") in
+    let side = ref false in
+    let () = List.iter (fun tag ->
+      match tag with
+      | Headings_fst_col -> h_fst_col := true;
+      | Headings_fst_row -> h_fst_row := true;
+      | Heading_color c -> hdg_c := c;
+      | Bg_color c -> bg_c := c;
+      | Sideways -> side := true;
+      ();)
+      flags in
+    let rows = List.map row tbl in
+    let rows =
+      if !side then
+        List.mapi (fun i _ -> List.map (fun el -> List.nth el i) rows) @@ List.hd rows
+      else
+        rows in
+    let cellify rows =
+      List.map (fun r ->
+        List.map (fun el -> <:html<<td>$el$</td>&>>) r
+      ) rows in
+    let rows =
+      match !h_fst_row,!h_fst_col with
+      | false,false ->
+          cellify rows
+      | true,false ->
+          let hrow =
+            List.hd rows
+            |> List.map (fun el -> <:html<<th>$el$</th>&>>) in
+          let rest = cellify (List.tl rows) in
+          hrow :: rest
+      | false,true ->
+          List.map (fun r ->
+            let h = List.hd r in
+            let rest = List.map (fun el -> <:html<<td>$el$</td>&>>) (List.tl r) in
+            <:html<<th>$h$</th>&>> :: rest)
+            rows
+      | true,true ->
+          let hrow =
+            List.hd rows
+            |> List.map (fun el -> <:html<<th>$el$</th>&>>) in
+          let rest =
+            List.tl rows
+            |> List.map (fun r ->
+                let hcell = List.hd r in
+                let rest = List.flatten @@ cellify [List.tl r] in
+                <:html<<th>$hcell$</th>&>> :: rest)
+          in hrow :: rest
+    in
+    let rows = List.map (fun r -> let r = List.flatten r in <:html<<tr>$r$</tr>&>>) rows in
+    let rows = concat rows in
+    let hc = Css.color_to_string !hdg_c in
+    let bg = Css.color_to_string !bg_c in
+    <:html<<table>$rows$</table>&>>
+
 end
