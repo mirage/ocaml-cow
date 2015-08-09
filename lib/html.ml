@@ -287,8 +287,6 @@ module Create = struct
     in
     let rows = List.map (fun r -> let r = List.flatten r in <:html<<tr>$r$</tr>&>>) rows in
     let rows = concat rows in
-    let hc = Css.color_to_string !hdg_c in
-    let bg = Css.color_to_string !bg_c in
     <:html<<table>$rows$</table>&>>
 
 end

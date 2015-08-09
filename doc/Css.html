@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Xml.html">
+<link rel="next" href="Html.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Xml" rel="Chapter" href="Xml.html">
+<link title="Css" rel="Chapter" href="Css.html">
+<link title="Html" rel="Chapter" href="Html.html">
+<link title="Json" rel="Chapter" href="Json.html">
+<link title="Markdown" rel="Chapter" href="Markdown.html">
+<link title="Atom" rel="Chapter" href="Atom.html">
+<link title="Code" rel="Chapter" href="Code.html">
+<link title="Xhtml" rel="Chapter" href="Xhtml.html"><title>Css</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Xml.html" title="Xml">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Html.html" title="Html">Next</a>
+</div>
+<h1>Module <a href="type_Css.html">Css</a></h1>
+
+<pre><span class="keyword">module</span> Css: <code class="code">sig</code> <a href="Css.html">..</a> <code class="code">end</code></pre><div class="info module top">
+convenience type for manipulating colors in COW<br>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEcolor"><span class="keyword">type</span> <code class="type"></code>color</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolor.Rgba"><span class="constructor">Rgba</span></span> <span class="keyword">of</span> <code class="type">char * char * char * char</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolor.Rgb"><span class="constructor">Rgb</span></span> <span class="keyword">of</span> <code class="type">char * char * char</code></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="TYPEcolor_fmt"><span class="keyword">type</span> <code class="type"></code>color_fmt</span> = <code class="type">[ `Hex | `Rgb ]</code> </pre>
+<div class="info ">
+tags used to specify how colors are to be read from and written to strings<br>
+</div>
+
+
+<pre><code><span id="TYPEelt"><span class="keyword">type</span> <code class="type"></code>elt</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTelt.Str"><span class="constructor">Str</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTelt.Fun"><span class="constructor">Fun</span></span> <span class="keyword">of</span> <code class="type">string * <a href="Css.html#TYPEexpr">expr</a> list</code></code></td>
+
+</tr></table>
+
+<div class="info ">
+Single element<br>
+</div>
+
+
+<pre><span id="TYPEexpr"><span class="keyword">type</span> <code class="type"></code>expr</span> = <code class="type"><a href="Css.html#TYPEelt">elt</a> list</code> </pre>
+<div class="info ">
+Expression: `.body a:hover`. No commas here.<br>
+</div>
+
+
+<pre><code><span id="TYPEprop_decl"><span class="keyword">type</span> <code class="type"></code>prop_decl</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTprop_decl.Prop"><span class="constructor">Prop</span></span> <span class="keyword">of</span> <code class="type">string * <a href="Css.html#TYPEexpr">expr</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTprop_decl.Decl"><span class="constructor">Decl</span></span> <span class="keyword">of</span> <code class="type"><a href="Css.html#TYPEexpr">expr</a> list * <a href="Css.html#TYPEprop_decl">prop_decl</a> list</code></code></td>
+
+</tr></table>
+
+<div class="info ">
+We allow nested declarations<br>
+</div>
+
+
+<pre><span id="VALcolor_to_string"><span class="keyword">val</span> color_to_string</span> : <code class="type">?fmt:<a href="Css.html#TYPEcolor_fmt">color_fmt</a> -> <a href="Css.html#TYPEcolor">color</a> -> string</code></pre><div class="info ">
+<code class="code">color_to_string ~fmt:f c</code> converts a value <code class="code">c</code> of type <code class="code">Cow.Css.color</code> to
+    a string using the format <code class="code">f</code> (either <code class="code">`Hex</code> for values such as <code class="code">"#a0b0c0"</code>
+    or <code class="code">`Rgb</code> for values such as <code class="code">"rgb(42,42,42)"</code>). Uses <code class="code">printf</code> internally.<br>
+</div>
+
+<pre><span id="VALcolor_of_string"><span class="keyword">val</span> color_of_string</span> : <code class="type">?fmt:<a href="Css.html#TYPEcolor_fmt">color_fmt</a> -> string -> <a href="Css.html#TYPEcolor">color</a></code></pre><div class="info ">
+<code class="code">color_of_string ~fmt:f s</code> converts a string <code class="code">s</code> to a <code class="code">Cow.Css.color</code> based
+    on the format <code class="code">f</code>. Internally uses <code class="code">Scanf.sscanf</code> for parsing.<br>
+</div>
+
+<pre><span id="TYPEgradient_type"><span class="keyword">type</span> <code class="type"></code>gradient_type</span> = <code class="type">[ `Linear | `Radial ]</code> </pre>
+<div class="info ">
+Utility type used to specify the type of gradient to be
+    emitted by <code class="code">polygradient</code><br>
+</div>
+
+
+<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.Props"><span class="constructor">Props</span></span> <span class="keyword">of</span> <code class="type"><a href="Css.html#TYPEprop_decl">prop_decl</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.Exprs"><span class="constructor">Exprs</span></span> <span class="keyword">of</span> <code class="type"><a href="Css.html#TYPEexpr">expr</a> list</code></code></td>
+
+</tr></table>
+
+<div class="info ">
+The type of CSS fragment<br>
+</div>
+
+
+<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Css.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Print CSS to a string suitable for rendering<br>
+</div>
+
+<pre><span id="VALof_string"><span class="keyword">val</span> of_string</span> : <code class="type">string -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+emits CSS containing the contents of the argument, suitable for
+    embedding in CSS format strings<br>
+</div>
+
+<pre><span id="VALexpr"><span class="keyword">val</span> expr</span> : <code class="type"><a href="Css.html#TYPEt">t</a> -> <a href="Css.html#TYPEexpr">expr</a></code></pre>
+<pre><span id="VALexprs"><span class="keyword">val</span> exprs</span> : <code class="type"><a href="Css.html#TYPEt">t</a> -> <a href="Css.html#TYPEexpr">expr</a> list</code></pre>
+<pre><span id="VALprops"><span class="keyword">val</span> props</span> : <code class="type"><a href="Css.html#TYPEt">t</a> -> <a href="Css.html#TYPEprop_decl">prop_decl</a> list</code></pre>
+<pre><span id="VALstring"><span class="keyword">val</span> string</span> : <code class="type"><a href="Css.html#TYPEt">t</a> -> string</code></pre>
+<pre><span id="VALunroll"><span class="keyword">val</span> unroll</span> : <code class="type"><a href="Css.html#TYPEt">t</a> -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+transform a fragment with nested declarations into
+    an equivalent fragment with only root declarations<br>
+</div>
+
+<pre><span id="VALset_prop"><span class="keyword">val</span> set_prop</span> : <code class="type"><a href="Css.html#TYPEt">t</a> -> string -> string list -> <a href="Css.html#TYPEt">t</a></code></pre>
+<pre><span id="VALget_prop"><span class="keyword">val</span> get_prop</span> : <code class="type"><a href="Css.html#TYPEt">t</a> -> string -> string list</code></pre>
+<pre><span id="VALpolygradient"><span class="keyword">val</span> polygradient</span> : <code class="type"><a href="Css.html#TYPEgradient_type">gradient_type</a> -><br>       ?behaviour:<a href="Css.html#TYPEt">t</a> -> ?low:<a href="Css.html#TYPEt">t</a> -> ?high:<a href="Css.html#TYPEt">t</a> -> unit -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+Emit a CSS gradient style that can be either a linear
+    gradient or a radial gradient (at the moment it will
+    by default produce a centered circular gradient if
+    asked for a radial gradient). For example, a call of
+    <code class="code">polygradient `Radial &lt;:css&lt;circle&gt;&gt; &lt;:css&lt;#ff0000&gt;&gt; &lt;:css&lt;#00ff00&gt;&gt;</code>
+    will produce a red and green centered circular radial
+    gradient.<br>
+</div>
+
+<pre><span id="VALgradient"><span class="keyword">val</span> gradient</span> : <code class="type">?low:<a href="Css.html#TYPEt">t</a> -> ?high:<a href="Css.html#TYPEt">t</a> -> unit -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+Emit a CSS gradient style that linearly interpolates
+    between the <code class="code">low</code> and <code class="code">high</code> colors moving from top to
+    bottom<br>
+</div>
+<div class="param_info"><code class="code">low</code> : the color to place at the bottom of the gradient.
+               default is #0a0a0a</div>
+<div class="param_info"><code class="code">high</code> : the color to place at the top of the gradient.
+                default is #ffffff</div>
+
+<pre><span id="VALtop_rounded"><span class="keyword">val</span> top_rounded</span> : <code class="type">?radius:<a href="Css.html#TYPEt">t</a> -> unit -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+Emit a border style that rounds off the top border.<br>
+</div>
+<div class="param_info"><code class="code">radius</code> : the radius at which to round the top corners;
+    default is 0.5em</div>
+
+<pre><span id="VALbottom_rounded"><span class="keyword">val</span> bottom_rounded</span> : <code class="type">?radius:<a href="Css.html#TYPEt">t</a> -> unit -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+Emit a border style that rounds off the bottom border.<br>
+</div>
+<div class="param_info"><code class="code">radius</code> : the radius at which to round the bottom
+                  corners; default is 0.5em</div>
+
+<pre><span id="VALrounded"><span class="keyword">val</span> rounded</span> : <code class="type">?radius:<a href="Css.html#TYPEt">t</a> -> unit -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+Emit a border style that rounds off all the borders by
+    <code class="code">radius</code>, which has a default value of <code class="code">0.5em</code><br>
+</div>
+
+<pre><span id="VALbox_shadow"><span class="keyword">val</span> box_shadow</span> : <code class="type">?h:<a href="Css.html#TYPEt">t</a> -> ?v:<a href="Css.html#TYPEt">t</a> -> ?blur:<a href="Css.html#TYPEt">t</a> -> ?color:<a href="Css.html#TYPEt">t</a> -> unit -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+emit a style which creates a shadow or glow around the element.<br>
+</div>
+<div class="param_info"><code class="code">h</code> : the horizontal (from left) displacement of the shadow;
+      defaults to 0</div>
+<div class="param_info"><code class="code">v</code> : the vertical (from top) displacement of the shadow;
+      defaults to 1px</div>
+<div class="param_info"><code class="code">blur</code> : the blur/scatter effect of the shadow; defaults to
+      1px</div>
+<div class="param_info"><code class="code">color</code> : the color of the shadow; defaults to rgba(0,0,0,.3)</div>
+
+<pre><span id="VALtext_shadow"><span class="keyword">val</span> text_shadow</span> : <code class="type">?h:<a href="Css.html#TYPEt">t</a> -> ?v:<a href="Css.html#TYPEt">t</a> -> ?blur:<a href="Css.html#TYPEt">t</a> -> ?color:<a href="Css.html#TYPEt">t</a> -> unit -> <a href="Css.html#TYPEt">t</a></code></pre><div class="info ">
+emit a style which creates a shadow or glow around text of an
+     element.<br>
+</div>
+<div class="param_info"><code class="code">h</code> : the horizontal (from left) displacement of the shadow;
+      defaults to 0</div>
+<div class="param_info"><code class="code">v</code> : the vertical (from top) displacement of the shadow;
+      defaults to 1px</div>
+<div class="param_info"><code class="code">blur</code> : the blur/scatter effect of the shadow; defaults to
+      1px</div>
+<div class="param_info"><code class="code">color</code> : the color of the shadow; defaults to rgba(0,0,0,.3)</div>
+
+<pre><span id="VALno_padding"><span class="keyword">val</span> no_padding</span> : <code class="type"><a href="Css.html#TYPEt">t</a></code></pre>
+<pre><span id="VALreset_padding"><span class="keyword">val</span> reset_padding</span> : <code class="type"><a href="Css.html#TYPEt">t</a></code></pre></body></html>
