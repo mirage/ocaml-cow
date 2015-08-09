@@ -1,3 +1,5 @@
 REC
 PKG omd
 PKG cow
+PKG xmlm
+PKG ezjsonm
