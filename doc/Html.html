@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Css.html">
+<link rel="next" href="Json.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Xml" rel="Chapter" href="Xml.html">
+<link title="Css" rel="Chapter" href="Css.html">
+<link title="Html" rel="Chapter" href="Html.html">
+<link title="Json" rel="Chapter" href="Json.html">
+<link title="Markdown" rel="Chapter" href="Markdown.html">
+<link title="Atom" rel="Chapter" href="Atom.html">
+<link title="Code" rel="Chapter" href="Code.html">
+<link title="Xhtml" rel="Chapter" href="Xhtml.html"><title>Html</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Css.html" title="Css">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Json.html" title="Json">Next</a>
+</div>
+<h1>Module <a href="type_Html.html">Html</a></h1>
+
+<pre><span class="keyword">module</span> Html: <code class="code">sig</code> <a href="Html.html">..</a> <code class="code">end</code></pre><div class="info module top">
+A (X)HTML tree.<br>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEelement"><span class="keyword">type</span> <code class="type"></code>element</span> = <code class="type"><a href="Html.html#TYPEelement">element</a> Xml.frag</code> </pre>
+<div class="info ">
+A (X)HTML tree.<br>
+</div>
+
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type"><a href="Html.html#TYPEelement">element</a> list</code> </pre>
+<div class="info ">
+A sequence of (X)HTML trees.<br>
+</div>
+
+
+<pre><span id="VALdoctype"><span class="keyword">val</span> doctype</span> : <code class="type">string</code></pre><div class="info ">
+<b>See also</b> <a href="http://www.w3.org/TR/html5/syntax.html#the-doctype">The (X)HTML5 DOCTYPE.</a><br>
+</div>
+
+<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Html.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+<code class="code">to_string html</code> is a valid (X)HTML5 polyglot string corresponding
+    to the <code class="code">html</code> structure.<br>
+</div>
+
+<pre><span id="VALof_string"><span class="keyword">val</span> of_string</span> : <code class="type">?enc:Xml.encoding -> string -> <a href="Html.html#TYPEt">t</a></code></pre><div class="info ">
+<code class="code">of_string ?enc html_str</code> is the tree representation of <code class="code">html_str</code>
+    as decoded by <code class="code">enc</code>. For more information about the default
+    encoding, see <code class="code">Xmlm.inenc</code>.
+<p>
+
+    Note that this function converts all
+    <a href="https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references">
+    standard entities</a> into their corresponding UTF-8 symbol.<br>
+</div>
+
+<pre><span id="VALoutput"><span class="keyword">val</span> output</span> : <code class="type">?nl:bool -><br>       ?indent:int option -><br>       ?ns_prefix:(string -> string option) -> Xmlm.dest -> <a href="Html.html#TYPEt">t</a> -> unit</code></pre><div class="info ">
+Outputs valid (X)HTML5 polyglot text from a <a href="Html.html#TYPEt"><code class="code">Html.t</code></a>. Only non-void
+    element handling is implemented so far.
+    For more information about the parameters, see <code class="code">Xmlm.make_output</code>.<br>
+<b>See also</b> <a href="http://www.w3.org/TR/html-polyglot/">Polyglot Markup</a><br>
+</div>
+
+<pre><span id="VALoutput_doc"><span class="keyword">val</span> output_doc</span> : <code class="type">?nl:bool -><br>       ?indent:int option -><br>       ?ns_prefix:(string -> string option) -> Xmlm.dest -> <a href="Html.html#TYPEt">t</a> -> unit</code></pre><div class="info ">
+Outputs a valid (X)HTML5 polyglot document from a <a href="Html.html#TYPEt"><code class="code">Html.t</code></a>. Only
+    non-void element handling and HTML5 DOCTYPE is implemented so far.
+    For more information about the parameters, see <code class="code">Xmlm.make_output</code>.<br>
+<b>See also</b> <a href="http://www.w3.org/TR/html-polyglot/">Polyglot Markup</a><br>
+</div>
+
+<pre><code><span id="TYPElink"><span class="keyword">type</span> <code class="type"></code>link</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlink.text">text</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlink.href">href</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+The URI of the link.  You must take care of properly
+      percent-encode the URI.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+
+
+<pre><span id="VALhtml_of_link"><span class="keyword">val</span> html_of_link</span> : <code class="type"><a href="Html.html#TYPElink">link</a> -> <a href="Html.html#TYPEt">t</a></code></pre><div class="info ">
+<span class="warning">Deprecated.</span>Use <code class="code">a</code> instead.<br>
+</div>
+
+<pre><span id="VALa"><span class="keyword">val</span> a</span> : <code class="type">?hreflang:string -><br>       ?rel:[ `alternate<br>            | `author<br>            | `bookmark<br>            | `help<br>            | `license<br>            | `next<br>            | `nofollow<br>            | `noreferrer<br>            | `prefetch<br>            | `prev<br>            | `search<br>            | `tag ] -><br>       ?target:[ `Frame of string | `blank | `parent | `self | `top ] -><br>       ?ty:string -><br>       ?title:string -> ?cls:string -> href:Uri.t -> <a href="Html.html#TYPEt">t</a> -> <a href="Html.html#TYPEelement">element</a></code></pre><div class="info ">
+<code class="code">a href html</code> generate a link from <code class="code">html</code> to <code class="code">href</code>.<br>
+</div>
+<div class="param_info"><code class="code">hreflang</code> : the language of the linked document.  Default: <code class="code">None</code>.</div>
+<div class="param_info"><code class="code">rel</code> : Specifies the relationship between the current document
+               and the linked document.  Default: <code class="code">None</code>.</div>
+<div class="param_info"><code class="code">target</code> : Specifies where to open the linked document.</div>
+<div class="param_info"><code class="code">ty</code> : Specifies the media type of the linked document.</div>
+<div class="param_info"><code class="code">title</code> : specifies extra information about the element that is
+                 usually as a tooltip text when the mouse moves over
+                 the element.  Default: <code class="code">None</code>.</div>
+
+<pre><span id="VALimg"><span class="keyword">val</span> img</span> : <code class="type">?alt:string -><br>       ?width:int -><br>       ?height:int -><br>       ?ismap:Uri.t -> ?title:string -> ?cls:string -> Uri.t -> <a href="Html.html#TYPEelement">element</a></code></pre>
+<pre><span id="VALinterleave"><span class="keyword">val</span> interleave</span> : <code class="type">string array -> <a href="Html.html#TYPEt">t</a> list -> <a href="Html.html#TYPEt">t</a> list</code></pre>
+<pre><span id="VALhtml_of_string"><span class="keyword">val</span> html_of_string</span> : <code class="type">string -> <a href="Html.html#TYPEt">t</a></code></pre>
+<pre><span id="VALhtml_of_int"><span class="keyword">val</span> html_of_int</span> : <code class="type">int -> <a href="Html.html#TYPEt">t</a></code></pre>
+<pre><span id="VALhtml_of_float"><span class="keyword">val</span> html_of_float</span> : <code class="type">float -> <a href="Html.html#TYPEt">t</a></code></pre>
+<pre><span id="TYPEtable"><span class="keyword">type</span> <code class="type"></code>table</span> = <code class="type"><a href="Html.html#TYPEt">t</a> array array</code> </pre>
+
+
+<pre><span id="VALhtml_of_table"><span class="keyword">val</span> html_of_table</span> : <code class="type">?headings:bool -> <a href="Html.html#TYPEtable">table</a> -> <a href="Html.html#TYPEt">t</a></code></pre>
+<pre><span id="VALnil"><span class="keyword">val</span> nil</span> : <code class="type"><a href="Html.html#TYPEt">t</a></code></pre>
+<pre><span id="VALconcat"><span class="keyword">val</span> concat</span> : <code class="type"><a href="Html.html#TYPEt">t</a> list -> <a href="Html.html#TYPEt">t</a></code></pre><div class="info ">
+<code class="code">concat els</code> combines all the members of <code class="code">els</code> into a single <code class="code">html.t</code>
+ *<br>
+</div>
+
+<pre><span id="VALappend"><span class="keyword">val</span> append</span> : <code class="type"><a href="Html.html#TYPEt">t</a> -> <a href="Html.html#TYPEt">t</a> -> <a href="Html.html#TYPEt">t</a></code></pre><div class="info ">
+<code class="code">append par ch</code> appends ch to par<br>
+</div>
+
+<pre><span class="keyword">module</span> <a href="Html.Create.html">Create</a>: <code class="code">sig</code> <a href="Html.Create.html">..</a> <code class="code">end</code></pre></body></html>
