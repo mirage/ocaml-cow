@@ -50,6 +50,7 @@ object
           | "uri"   -> <:expr< [`Data (Uri.to_string $e$)] >>
           | "alist" -> <:expr< List.map (fun (k,v) -> (("",k),v)) $e$ >>
           | "list"  -> <:expr< List.concat $e$ >>
+          | "css"   -> <:expr< [`Data (Css.to_string $e$)] >>
           | "attrs" ->
 
             <:expr<

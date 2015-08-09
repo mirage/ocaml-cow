@@ -28,3 +28,6 @@ release:
 pr:
 	opam publish prepare $(NAME).$(VERSION) $(ARCHIVE)
 	opam publish submit $(NAME).$(VERSION) && rm -rf $(NAME).$(VERSION)
+
+doc: all
+	ocamlfind ocamldoc -package xmlm,ezjsonm,uri -I _build -I _build/lib -html -d doc lib/xml.mli lib/css.mli lib/html.mli lib/json.mli lib/markdown.mli lib/atom.mli lib/code.mli lib/xhtml.mli
