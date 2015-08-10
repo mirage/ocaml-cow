@@ -245,7 +245,7 @@ module Create = struct
       | Sideways -> side := true;
       ();)
       flags in
-    fun ~row tbl =
+    let aux ~row tbl =
       let rows = List.map row tbl in
       let rows =
         if !side then
@@ -287,5 +287,6 @@ module Create = struct
       let rows = List.map (fun r -> let r = List.flatten r in <:html<<tr>$r$</tr>&>>) rows in
       let rows = concat rows in
       <:html<<table>$rows$</table>&>>
+    in aux
 
 end
