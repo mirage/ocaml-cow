@@ -227,7 +227,8 @@ module Create = struct
     in <:html< <ol>$els$</ol> >>
 
   let stylesheet css =
-    <:html< <style type="text/css">$css:css$</style> >>
+    let css = Cow.Css.to_string css in
+    <:html< <style type="text/css">$str:css$</style> >>
 
   let table ?(flags = [Headings_fst_row]) ~row tbl =
     let h_fst_col = ref false in
