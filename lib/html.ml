@@ -229,7 +229,7 @@ module Create = struct
   let stylesheet css =
     <:html< <style type="text/css">$css:css$</style> >>
 
-  let table ~row ?(flags = [Headings_fst_row]) tbl =
+  let table ?(flags = [Headings_fst_row]) ~row tbl =
     let h_fst_col = ref false in
     let h_fst_row = ref false in
     let hdg_c = ref (Css.color_of_string "#eDeDeD") in
@@ -244,46 +244,47 @@ module Create = struct
       | Sideways -> side := true;
       ();)
       flags in
-    let rows = List.map row tbl in
-    let rows =
-      if !side then
-        List.mapi (fun i _ -> List.map (fun el -> List.nth el i) rows) @@ List.hd rows
-      else
-        rows in
-    let cellify rows =
-      List.map (fun r ->
-        List.map (fun el -> <:html<<td>$el$</td>&>>) r
-      ) rows in
-    let rows =
-      match !h_fst_row,!h_fst_col with
-      | false,false ->
-          cellify rows
-      | true,false ->
-          let hrow =
-            List.hd rows
-            |> List.map (fun el -> <:html<<th>$el$</th>&>>) in
-          let rest = cellify (List.tl rows) in
-          hrow :: rest
-      | false,true ->
-          List.map (fun r ->
-            let h = List.hd r in
-            let rest = List.map (fun el -> <:html<<td>$el$</td>&>>) (List.tl r) in
-            <:html<<th>$h$</th>&>> :: rest)
-            rows
-      | true,true ->
-          let hrow =
-            List.hd rows
-            |> List.map (fun el -> <:html<<th>$el$</th>&>>) in
-          let rest =
-            List.tl rows
-            |> List.map (fun r ->
-                let hcell = List.hd r in
-                let rest = List.flatten @@ cellify [List.tl r] in
-                <:html<<th>$hcell$</th>&>> :: rest)
-          in hrow :: rest
-    in
-    let rows = List.map (fun r -> let r = List.flatten r in <:html<<tr>$r$</tr>&>>) rows in
-    let rows = concat rows in
-    <:html<<table>$rows$</table>&>>
+    fun ~row tbl =
+      let rows = List.map row tbl in
+      let rows =
+        if !side then
+          List.mapi (fun i _ -> List.map (fun el -> List.nth el i) rows) @@ List.hd rows
+        else
+          rows in
+      let cellify rows =
+        List.map (fun r ->
+          List.map (fun el -> <:html<<td>$el$</td>&>>) r
+        ) rows in
+      let rows =
+        match !h_fst_row,!h_fst_col with
+        | false,false ->
+            cellify rows
+        | true,false ->
+            let hrow =
+              List.hd rows
+              |> List.map (fun el -> <:html<<th>$el$</th>&>>) in
+            let rest = cellify (List.tl rows) in
+            hrow :: rest
+        | false,true ->
+            List.map (fun r ->
+              let h = List.hd r in
+              let rest = List.map (fun el -> <:html<<td>$el$</td>&>>) (List.tl r) in
+              <:html<<th>$h$</th>&>> :: rest)
+              rows
+        | true,true ->
+            let hrow =
+              List.hd rows
+              |> List.map (fun el -> <:html<<th>$el$</th>&>>) in
+            let rest =
+              List.tl rows
+              |> List.map (fun r ->
+                  let hcell = List.hd r in
+                  let rest = List.flatten @@ cellify [List.tl r] in
+                  <:html<<th>$hcell$</th>&>> :: rest)
+            in hrow :: rest
+      in
+      let rows = List.map (fun r -> let r = List.flatten r in <:html<<tr>$r$</tr>&>>) rows in
+      let rows = concat rows in
+      <:html<<table>$rows$</table>&>>
 
 end
