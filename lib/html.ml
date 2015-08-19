@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
+let (@@) f x = f x
+
 type element = ('a Xml.frag as 'a) Xml.frag
 type t = element list
 
