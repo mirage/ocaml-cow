@@ -149,8 +149,8 @@ module Create : sig
   (** [stylesheet style] converts a COW CSS type to a valid HTML stylesheet *)
 
   val table :
+    ?flags:(Tags.table_flags list) ->
     row:('a -> t list) ->
-    ?flags:Tags.table_flags list ->
     'a list ->
     t
   (** [table ~flags:f ~row:r tbl] produces an HTML table formatted according to

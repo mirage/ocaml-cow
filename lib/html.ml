@@ -227,10 +227,10 @@ module Create = struct
     in <:html< <ol>$els$</ol> >>
 
   let stylesheet css =
-    let css = Cow.Css.to_string css in
+    let css = Css.to_string css in
     <:html< <style type="text/css">$str:css$</style> >>
 
-  let table ?(flags = [Headings_fst_row]) ~row tbl =
+  let table ?(flags = [Headings_fst_row]) =
     let h_fst_col = ref false in
     let h_fst_row = ref false in
     let hdg_c = ref (Css.color_of_string "#eDeDeD") in
