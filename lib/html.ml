@@ -18,6 +18,8 @@
 
 let (@@) f x = f x
 
+let (|>) x f = f x
+
 type element = ('a Xml.frag as 'a) Xml.frag
 type t = element list
 
