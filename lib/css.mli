@@ -83,8 +83,10 @@ val string : t -> string
     an equivalent fragment with only root declarations *)
 val unroll : t -> t
 
+(** sets a css property in a declaration *)
 val set_prop : t -> string -> string list -> t
 
+(** gets the value(s) of a property in a declaration *)
 val get_prop : t -> string -> string list
 
 (** {2 CSS library} *)
