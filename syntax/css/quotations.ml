@@ -72,5 +72,5 @@ let expand_str_item fn _loc _ s =
 
 ;;
 
-Q.add "css" Q.DynAst.expr_tag (expand_expr Parser.main);
-Q.add "css" Q.DynAst.str_item_tag (expand_str_item Parser.main)
+Q.add "css" Q.DynAst.expr_tag (expand_expr Css_parser.main);
+Q.add "css" Q.DynAst.str_item_tag (expand_str_item Css_parser.main)

@@ -15,7 +15,7 @@
  *)
 
 {
-  open Parser
+  open Css_parser
 
   let debug = ref false
 

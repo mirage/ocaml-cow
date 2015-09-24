@@ -1,5 +1,5 @@
 NAME=cow
-VERSION=1.3.0
+VERSION=1.4.0
 LIB=cow
 SYNTAX="pa_cow"
 DEPS="dyntype.syntax dyntype ulex uri xmlm omd ezjsonm"
