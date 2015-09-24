@@ -1,7 +1,7 @@
 xml/Options
 xml/Qast
 xml/Xml_location
-xml/Parser
+xml/Xml_parser
 xml/Printer
 xml/Xml
 xml/Quotation

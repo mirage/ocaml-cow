@@ -30,7 +30,7 @@ let destruct_aq s =
     "", s
 
 let parse_quot_string entity _loc s =
-  let ast = Parser.parse ?enc:(Parser.get_encoding ()) ?entity _loc s in
+  let ast = Xml_parser.parse ?enc:(Xml_parser.get_encoding ()) ?entity _loc s in
   let meta_ast = Qast.meta_t _loc ast in
   meta_ast
 
