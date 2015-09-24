@@ -14,6 +14,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
+(** convenience type for manipulating colors in COW *)
+type color =
+    Rgba of char * char * char * char
+  | Rgb of char * char * char
+
+(** tags used to specify how colors are to be read from and written to strings
+ *)
+type color_fmt =
+  [ `Hex | `Rgb ]
+
 (** Single element *)
 type elt =
   | Str of string
@@ -27,6 +37,22 @@ type prop_decl =
   (** Property: {v `background-color: blue, red;` v} *)
   | Prop of string * expr list
   | Decl of expr list * prop_decl list
+
+(** [color_to_string ~fmt:f c] converts a value [c] of type [Cow.Css.color] to
+    a string using the format [f] (either [`Hex] for values such as ["#a0b0c0"]
+    or [`Rgb] for values such as ["rgb(42,42,42)"]). Uses [printf] internally.
+    *)
+val color_to_string :
+  ?fmt:color_fmt ->
+  color ->
+  string
+
+(** [color_of_string ~fmt:f s] converts a string [s] to a [Cow.Css.color] based
+    on the format [f]. Internally uses [Scanf.sscanf] for parsing. *)
+val color_of_string :
+  ?fmt:color_fmt ->
+  string ->
+  color
 
 (** Utility type used to specify the type of gradient to be
     emitted by [polygradient] *)
@@ -57,8 +83,10 @@ val string : t -> string
     an equivalent fragment with only root declarations *)
 val unroll : t -> t
 
+(** sets a css property in a declaration *)
 val set_prop : t -> string -> string list -> t
 
+(** gets the value(s) of a property in a declaration *)
 val get_prop : t -> string -> string list
 
 (** {2 CSS library} *)
