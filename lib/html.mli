@@ -114,3 +114,18 @@ type table = t array array
 val html_of_table : ?headings:bool -> table -> t
 
 val nil : t
+
+(** [concat els] combines all the members of [els] into a single [html.t]
+ * @param els a list of the elements to combine *)
+val concat : t list -> t
+
+(** [append par ch] appends ch to par *)
+val append : t -> t -> t
+
+module Create : sig
+  type t = element list
+
+  val ul : t list -> t
+
+  val ol : t list -> t
+end
