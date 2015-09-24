@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-(** Convert a string into an xHTML <code> block, where keywords have been
+(** Convert a string into an xHTML code block, where keywords have been
     classified in different classes *)
 val ocaml : string -> Html.t
 
