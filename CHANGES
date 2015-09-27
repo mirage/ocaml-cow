@@ -1,4 +1,4 @@
-1.4.0 (trunk):
+1.4.0 (27-Sep-2015):
 * Improve compatability with Type_conv >= 113.00 by renaming some of the
   syntax parser modules to be less generically named.
 * Add ocamldoc generation and improve the `Html.Create` library
