@@ -92,7 +92,7 @@ Use `$type:expr$` to evaluate `expr` and insert it into a quotation:
   and klass = "items" in
   <:html<
     <ul class=$str:klass$>
-      $list:List.map item ["foo";"bar"]$
+      $list:List.map ["foo";"bar"] item$
     </ul>
   >>
   |> Xml.to_string
