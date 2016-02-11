@@ -52,7 +52,7 @@ object
             | "prop" -> <:expr< Css.Props $e$ >>
             | "" -> e
             | t ->
-              Printf.eprintf "[ERROR] \"%s\" is not a valid tag. Valid tags are [expr|prop]\n" t;
+              Printf.eprintf "[ERROR] \"%s\" is not a valid tag. Valid tags are [int|float|str|expr|prop]\n" t;
               Loc.raise _loc Parsing.Parse_error
           end
       | e -> super#expr e
