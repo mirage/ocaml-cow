@@ -42,6 +42,15 @@ let xml_expanders = [
   <:xml<$make_xml ~label:()$>>, make_xml_result;
 ]
 
+let css_int () = 5
+let css_int_result = string_of_int (css_int ())
+
+(* TODO: add real CSS tests not just these camlp4 antiquot parser tests *)
+let css_expanders = [
+  "css", <:css<&>>, "";
+  "css_fn", <:css<body { height: $int:css_int()$; } >>, css_int_result;
+]
+
 let suite name decl prefix =
   let suite = List.fold_left (fun acc (v, n, x, s) ->
       let aux t xml =
