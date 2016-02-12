@@ -20,12 +20,19 @@ module Q = Syntax.Quotation
 module AQ = Syntax.AntiquotSyntax
 
 let destruct_aq s =
-  try
-    let pos = String.index s ':' in
+  (* If there is a space, it changes how we interpret antiquote classes. *)
+  let space_pos = try Some (String.index s ' ') with Not_found -> None in
+  let split pos =
     let len = String.length s in
     let name = String.sub s 0 pos
     and code = String.sub s (pos + 1) (len - pos - 1) in
     name, code
+  in
+  try
+    let pos = String.index s ':' in
+    match space_pos with
+    | Some spos -> if spos < pos then ("", s) else split pos
+    | None -> split pos
   with Not_found ->
     "", s
 

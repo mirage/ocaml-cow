@@ -21,6 +21,9 @@ let attrs = <:xml<hello="world" class="ab">>
 let attrs' = <:xml<hello="world"  class="ab">>
 let attrs'' = <:xml<hello="world" class="a b">>
 
+let make_xml ~label = <:xml<<tag/>&>>
+let make_xml_result = "<tag/>"
+
 let xml_expanders = [
   true, "opt",  <:xml<<z>$opt:opt$</z>&>>, "<z><a>a</a></z>";
   true, "opt'", <:xml<<z>$opt:opt'$</z>&>>, "<z/>";
@@ -33,6 +36,19 @@ let xml_expanders = [
   true, "attrs", <:xml<<tag $attrs:attrs$/>&>>, "<tag hello=\"world\" class=\"ab\"/>";
   true, "attrs'", <:xml<<tag $attrs:attrs'$/>&>>, "<tag hello=\"world\" class=\"ab\"/>";
   true, "attrs''", <:xml<<tag $attrs:attrs''$/>&>>, "<tag hello=\"world\" class=\"a b\"/>";
+  true, "labeled_xml_fn",
+  (let label = () in <:xml<$make_xml ~label$>>), make_xml_result;
+  true, "label_xml_fn_assignment",
+  <:xml<$make_xml ~label:()$>>, make_xml_result;
+]
+
+let css_int () = 5
+let css_int_result = string_of_int (css_int ())
+
+(* TODO: add real CSS tests not just these camlp4 antiquot parser tests *)
+let css_expanders = [
+  "css", <:css<&>>, "";
+  "css_fn", <:css<body { height: $int:css_int()$; } >>, css_int_result;
 ]
 
 let suite name decl prefix =
