@@ -15,6 +15,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
+(** HTML library. *)
+
 type element = 'a Xml.frag constraint 'a = element
 (** A (X)HTML tree. *)
 
@@ -22,14 +24,12 @@ type t = element list
 (** A sequence of (X)HTML trees. *)
 
 val doctype : string
-(**
-   @see <http://www.w3.org/TR/html5/syntax.html#the-doctype> The (X)HTML5 DOCTYPE.
-*)
+(** @see <http://www.w3.org/TR/html5/syntax.html#the-doctype> The
+    (X)HTML5 DOCTYPE. *)
 
 val to_string : t -> string
 (** [to_string html] is a valid (X)HTML5 polyglot string corresponding
-    to the [html] structure.
-*)
+    to the [html] structure. *)
 
 val of_string : ?enc:Xml.encoding -> string -> t
 (** [of_string ?enc html_str] is the tree representation of [html_str]
@@ -45,11 +45,10 @@ val output :
   ?indent:int option ->
   ?ns_prefix:(string -> string option) -> Xmlm.dest -> t -> unit
 (** Outputs valid (X)HTML5 polyglot text from a {!t}. Only non-void
-    element handling is implemented so far.
-    For more information about the parameters, see {!Xmlm.make_output}.
+    element handling is implemented so far. For more information
+    about the parameters, see {!Xmlm.make_output}.
 
-    @see <http://www.w3.org/TR/html-polyglot/> Polyglot Markup
-*)
+    @see <http://www.w3.org/TR/html-polyglot/> Polyglot Markup *)
 
 val output_doc :
   ?nl:bool ->
@@ -57,23 +56,12 @@ val output_doc :
   ?ns_prefix:(string -> string option) -> Xmlm.dest -> t -> unit
 (** Outputs a valid (X)HTML5 polyglot document from a {!t}. Only
     non-void element handling and HTML5 DOCTYPE is implemented so far.
-    For more information about the parameters, see {!Xmlm.make_output}.
+    For more information about the parameters, see
+    {!Xmlm.make_output}.
 
-    @see <http://www.w3.org/TR/html-polyglot/> Polyglot Markup
-*)
+    @see <http://www.w3.org/TR/html-polyglot/> Polyglot Markup *)
 
 (** {2 HTML library} *)
-
-(** @deprecated *)
-type link = {
-  text : string;
-  href: string;
-  (** The URI of the link.  You must take care of properly
-      percent-encode the URI. *)
-}
-
-val html_of_link : link -> t
-(** @deprecated Use [a] instead. *)
 
 val a : ?hreflang: string ->
         ?rel: [ `alternate | `author | `bookmark | `help | `license
@@ -87,12 +75,17 @@ val a : ?hreflang: string ->
 (** [a href html] generate a link from [html] to [href].
 
     @param title specifies extra information about the element that is
-                 usually as a tooltip text when the mouse moves over
-                 the element.  Default: [None].
+    usually as a tooltip text when the mouse moves over the element.
+    Default: [None].
+
     @param target Specifies where to open the linked document.
+
     @param rel Specifies the relationship between the current document
-               and the linked document.  Default: [None].
-    @param hreflang the language of the linked document.  Default: [None].
+    and the linked document.  Default: [None].
+
+    @param hreflang the language of the linked document.  Default:
+    [None].
+
     @param ty Specifies the media type of the linked document.  *)
 
 val img : ?alt: string ->
@@ -106,32 +99,53 @@ val img : ?alt: string ->
 val interleave : string array -> t list -> t list
 
 val html_of_string : string -> t
+(** @deprecated use {!string} *)
+
+val string: string -> t
+
 val html_of_int : int -> t
+(** @deprecated use {!int} *)
+
+val int: int -> t
+
 val html_of_float : float -> t
+(** @deprecated use {!float} *)
+
+val float: float -> t
 
 type table = t array array
 
 val html_of_table : ?headings:bool -> table -> t
 
-val nil : t
+val nil: t
+(** @deprecated use {!empty} *)
 
-(** [concat els] combines all the members of [els] into a single [html.t]
- * @param els a list of the elements to combine *)
+val empty: t
+
 val concat : t list -> t
+(** @deprecated use {!list} *)
+
+val list: t list -> t
 
 (** [append par ch] appends ch to par *)
-val append : t -> t -> t
+val append: t -> t -> t
+
+val (++): t -> t -> t
 
 module Create : sig
   module Tags : sig
     type html_list = [`Ol of t list | `Ul of t list]
 
+    type color =
+      | Rgba of char * char * char * char
+      | Rgb of char * char * char
+
     type table_flags =
         Headings_fst_col
       | Headings_fst_row
       | Sideways
-      | Heading_color of Css.color
-      | Bg_color of Css.color 
+      | Heading_color of color
+      | Bg_color of color
 
     type 'a table =
       [ `Tr of 'a table list | `Td of 'a * int * int | `Th of 'a * int * int ]
@@ -145,7 +159,7 @@ module Create : sig
   (** [ul ls] converts an OCaml list of HTML elements to a valid HTML ordered
    *  list *)
 
-  val stylesheet : Css.t -> t
+  val stylesheet : string -> t
   (** [stylesheet style] converts a COW CSS type to a valid HTML stylesheet *)
 
   val table :
@@ -158,11 +172,11 @@ module Create : sig
 
       @param flags a list of type [Cow.Html.Flags.table_flags] specifying how
       the generated table is to be structured.
-      
+
       @param row a function to transform a single row of the input table (a
       single element of the list, that is) into a list of elements, each of
       which will occupy a cell in a row of the table.
-      
+
       [tbl:] a list of (probably) tuples representing a table.
 
       See the following example:

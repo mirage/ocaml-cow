@@ -78,3 +78,18 @@ let of_string ?entity ?enc str =
   with Error (pos, e) ->
     Printf.eprintf "[XMLM:%d-%d] %s: %s\n"(fst pos) (snd pos) str (error_message e);
     raise Parsing.Parse_error
+
+let empty: t = []
+let string s: t = [`Data s]
+let int i = string @@ string_of_int i
+let float f = string @@ string_of_float f
+let (++) = List.append
+let list = List.concat
+
+let tag t ?(attributes=[]) body : t =
+  let attributes = List.map (fun (k,v) -> ("",k), v) attributes in
+  [`El ((("",t), attributes), body)]
+
+let tago t ?attributes = function
+  | None   -> empty
+  | Some b -> tag t ?attributes b

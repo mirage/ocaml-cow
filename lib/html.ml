@@ -23,8 +23,6 @@ let (|>) x f = f x
 type element = ('a Xml.frag as 'a) Xml.frag
 type t = element list
 
-type tree = [ `Data of string | `El of Xmlm.tag * 'a list ] as 'a
-
 let void_elements = [
   "img";
   "input";
@@ -84,16 +82,6 @@ let to_string t =
 
 let of_string ?enc str =
   Xml.of_string ~entity:Xhtml.entity ?enc str
-
-(** @deprecated *)
-type link = {
-  text : string;
-  href: string;
-}
-
-(** @deprecated *)
-let html_of_link l : t =
-  <:xml<<a href=$str:l.href$>$str:l.text$</a>&>>
 
 let a ?hreflang ?rel ?target ?ty ?title ?cls ~href html =
   let attrs = [(("", "href"), Uri.to_string href)] in
@@ -168,22 +156,35 @@ let interleave classes l =
     let res = classes.(!i mod n) in
     incr i;
     res in
-  List.map (fun elt -> <:xml< <div class=$str:get ()$>$elt$</div> >>) l
+  List.map (Xml.tag "div" ~attributes:["class", get ()]) l
 
-let html_of_string s = <:xml<$str:s$>>
-let html_of_int i = <:xml<$int:i$>>
-let html_of_float f = <:xml<$flo:f$>>
+let html_of_string s = Xml.string s
+let string = html_of_string
+
+let html_of_int i = Xml.int i
+let int = html_of_int
+
+let html_of_float f = Xml.float f
+let float = html_of_float
 
 type table = t array array
 
+let tr x = Xml.tag "tr" x
+let th x = Xml.tag "th" x
+let td x = Xml.tag "td" x
+let nil: t = []
+let empty = nil
+
+let some = function None -> empty | Some x -> x
+
+let concat els = List.concat els
+let list = concat
+
 let html_of_table ?(headings=false) t =
-  let tr x = <:xml<<tr>$list:x$</tr>&>> in
-  let th x = <:xml<<th>$x$</th>&>> in
-  let td x = <:xml<<td>$x$</td>&>> in
   let hd =
     if Array.length t > 0 && headings then
       let l = Array.to_list t.(0) in
-      Some (tr (List.map th l))
+      Some (tr (list @@ List.map th l))
     else
       None in
   let tl =
@@ -191,26 +192,42 @@ let html_of_table ?(headings=false) t =
       List.map Array.to_list (List.tl (Array.to_list t))
     else
       List.map Array.to_list (Array.to_list t) in
-  let tl = List.map (fun l -> tr (List.map td l)) tl in
-  <:xml<<table>$opt:hd$ $list:tl$</table>&>>
-
-let nil : t = []
-
-let concat els =
-  List.concat els
+  let tl = List.map (fun l -> tr (list @@ List.map td l)) tl in
+  Xml.(tag "table" (some hd ++ list tl))
 
 let append (_to : t) (el : t) = _to @ el
+let (++) = append
 
 module Create = struct
   module Tags = struct
     type html_list = [ `Ol of t list | `Ul of t list ]
 
-    type table_flags =
+    type color =
+      | Rgba of char * char * char * char
+      | Rgb of char * char * char
+
+  let color_of_string ?(fmt = `Hex) s =
+    let s = String.lowercase s in
+    let coi = char_of_int in
+    let rval = match fmt with
+      | `Hex ->
+        let fmt' = format_of_string "#%x" in
+        let x = Scanf.sscanf s fmt' (fun x -> x) in
+        let r,g,b = (x land 0xff0000) lsr 16, (x land 0xff00) lsr 8,
+                    x land 0xff in
+        Rgb(coi r, coi g, coi b)
+      | `Rgb ->
+        let fmt' = format_of_string "rgb(%d,%d,%d)" in
+        let r,g,b = Scanf.sscanf s fmt' (fun a b c -> a,b,c) in
+        Rgb(coi r, coi g, coi b)
+    in rval
+
+  type table_flags =
         Headings_fst_col
       | Headings_fst_row
       | Sideways
-      | Heading_color of Css.color
-      | Bg_color of Css.color
+      | Heading_color of color
+      | Bg_color of color
 
     type 'a table =
       [ `Tr of 'a table list | `Td of 'a * int * int | `Th of 'a * int * int ]
@@ -220,25 +237,18 @@ module Create = struct
 
   type t = Xml.t
 
-  let ul ls =
-    let els =
-      concat (List.map (fun el -> <:html< <li>$el$</li> >>) ls)
-    in <:html< <ul>$els$</ul> >>
-
-  let ol ls =
-    let els =
-      concat (List.map (fun el -> <:html< <li>$el$</li> >>) ls)
-    in <:html< <ol>$els$</ol> >>
+  let li x = Xml.tag "li" x
+  let ul ls = Xml.tag "ul" (list (List.map li ls))
+  let ol ls = Xml.tag "ol" (list (List.map li ls))
 
   let stylesheet css =
-    let css = Css.to_string css in
-    <:html< <style type="text/css">$str:css$</style> >>
+    Xml.tag "style" ~attributes:["type","text/css"] (string css)
 
   let table ?(flags = [Headings_fst_row]) =
     let h_fst_col = ref false in
     let h_fst_row = ref false in
-    let hdg_c = ref (Css.color_of_string "#eDeDeD") in
-    let bg_c = ref (Css.color_of_string "#fFfFfF") in
+    let hdg_c = ref (color_of_string "#eDeDeD") in
+    let bg_c = ref (color_of_string "#fFfFfF") in
     let side = ref false in
     let () = List.iter (fun tag ->
       match tag with
@@ -256,41 +266,34 @@ module Create = struct
           List.mapi (fun i _ -> List.map (fun el -> List.nth el i) rows) @@ List.hd rows
         else
           rows in
-      let cellify rows =
-        List.map (fun r ->
-          List.map (fun el -> <:html<<td>$el$</td>&>>) r
-        ) rows in
+      let cellify rows = List.map (fun r -> List.map td r) rows in
       let rows =
         match !h_fst_row,!h_fst_col with
         | false,false ->
             cellify rows
         | true,false ->
-            let hrow =
-              List.hd rows
-              |> List.map (fun el -> <:html<<th>$el$</th>&>>) in
+            let hrow = List.hd rows |> List.map th in
             let rest = cellify (List.tl rows) in
             hrow :: rest
         | false,true ->
             List.map (fun r ->
               let h = List.hd r in
-              let rest = List.map (fun el -> <:html<<td>$el$</td>&>>) (List.tl r) in
-              <:html<<th>$h$</th>&>> :: rest)
-              rows
+              let rest = List.map td (List.tl r) in
+              th h :: rest
+            ) rows
         | true,true ->
-            let hrow =
-              List.hd rows
-              |> List.map (fun el -> <:html<<th>$el$</th>&>>) in
+            let hrow = List.hd rows |> List.map th in
             let rest =
               List.tl rows
               |> List.map (fun r ->
                   let hcell = List.hd r in
                   let rest = List.flatten @@ cellify [List.tl r] in
-                  <:html<<th>$hcell$</th>&>> :: rest)
+                  th hcell:: rest)
             in hrow :: rest
       in
-      let rows = List.map (fun r -> let r = List.flatten r in <:html<<tr>$r$</tr>&>>) rows in
+      let rows = List.map (fun r -> let r = List.flatten r in tr r) rows in
       let rows = concat rows in
-      <:html<<table>$rows$</table>&>>
+      Xml.tag "table"rows
     in aux
 
 end

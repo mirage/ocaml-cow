@@ -60,7 +60,7 @@ let rec to_fct t f =
       (fun () -> f ", ") a;
     f "}"
 
-let rec to_fct_hum t f =
+let to_fct_hum t f =
   match t with
   | `Bool b   -> f (string_of_bool b)
   | `Float r  -> f (Printf.sprintf "%g" r)
