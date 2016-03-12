@@ -34,4 +34,4 @@ depends: [
   "omd"     {>= "0.8.2"}
   "ezjsonm" {>= "0.4.0"}
 ]
-available: [ocaml-version >= "4.00"]
+available: [ocaml-version >= "4.01"]
