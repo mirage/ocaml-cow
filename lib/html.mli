@@ -259,6 +259,7 @@ val tag: string -> node
 
 val i: node
 val p: node
+val tt: node
 
 val aside: node
 

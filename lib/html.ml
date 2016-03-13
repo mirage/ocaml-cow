@@ -85,6 +85,7 @@ let some = function None -> empty | Some x -> x
 
 let i = tag "i"
 let p = tag "p"
+let tt = tag "tt"
 let aside = tag "aside"
 
 let nil = empty
