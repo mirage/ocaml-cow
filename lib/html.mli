@@ -247,10 +247,12 @@ val h6: node
 
 val small: node
 
-val ul :
+val li: node
+
+val ul: ?add_li:bool ->
   ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t list -> t
 
-val ol :
+val ol: ?add_li:bool ->
   ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t list -> t
 
 val tag: string -> node

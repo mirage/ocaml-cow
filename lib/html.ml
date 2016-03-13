@@ -93,11 +93,13 @@ let concat = list
 let li ?cls ?id ?attrs x =
   tag ?cls ?id ?attrs "li" x
 
-let ul ?cls ?id ?attrs ls =
-  tag ?cls ?id ?attrs "ul" (list (List.map (fun x -> li x) ls))
+let ul ?(add_li=true) ?cls ?id ?attrs ls =
+  let ls = if add_li then List.map (fun x -> li x) ls else ls in
+  tag ?cls ?id ?attrs "ul" (list ls)
 
-let ol ?cls ?id ?attrs ls =
-  tag ?cls ?id ?attrs "ol" (list (List.map (fun x -> li x) ls))
+let ol ?(add_li=false) ?cls ?id ?attrs ls =
+  let ls = if add_li then List.map (fun x -> li x) ls else ls in
+  tag ?cls ?id ?attrs "ol" (list ls)
 
 let h1 = tag "h1"
 let h2 = tag "h2"
