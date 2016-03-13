@@ -1,0 +1,37 @@
+OASISFormat: 0.4
+Name:        cow
+Version:     2.0.0
+Synopsis:    Caml on the Web (CoW)
+Authors:     Anil Madhavapeddy, Thomas Gazagnaire, David Sheets,
+             Rudi Grinberg, Thomas Gazagnaire
+License:     ISC
+Plugins:     META (0.4), DevFiles (0.4)
+BuildTools:  ocamlbuild
+
+Library cow
+  Pack: true
+  Path: lib
+  Findlibname: cow
+  Modules: Atom, Html, Json, Markdown, Xhtml, Xml
+  BuildDepends: xmlm, uri, ezjsonm, omd
+
+Document cow
+  Title:                Cow docs
+  Type:                 ocamlbuild (0.4)
+  BuildTools+:          ocamldoc
+  Install:              true
+  XOCamlbuildPath:      lib
+  XOCamlbuildLibraries: cow
+
+Executable test
+  Build$:           flag(tests)
+  Path:             tests
+  MainIs:           test.ml
+  CompiledObject:   best
+  Install:          false
+  BuildDepends:     alcotest, cow
+
+Test test
+  Run$:             flag(tests)
+  Command:          $test -q
+  WorkingDirectory: tests/

@@ -1,13 +1,10 @@
-open Omd
 open Cow
 
-open OUnit
-
 let xml_decl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-let a = <:xml<<a>a</a>&>>
-let b = <:xml<<b/>&>>
-let c = <:xml<<c>$a$ $b$ $a$</c>&>>
-let d = <:xml<<a foo=""></a>&>>
+let a = Xml.(tag "a" (string "a"))
+let b = Xml.(tag "b" empty)
+let c = Xml.(tag "c" (a ++ string " " ++ b ++ string " " ++ a))
+let d = Xml.(tag "a" ~attrs:["foo",""] empty)
 let _d = Xml.to_string d
 let opt = Some a
 let opt' = None
@@ -17,41 +14,30 @@ let str = "str"
 let uri = Uri.of_string "https://github.com/mirage/ocaml-cow?q1=a&q2=b"
 let alist = ["hello","world"; "class","a b"]
 let list = [a; b; c]
-let attrs = <:xml<hello="world" class="ab">>
-let attrs' = <:xml<hello="world"  class="ab">>
-let attrs'' = <:xml<hello="world" class="a b">>
+let attrs = ["hello","world"; "class","ab"]
+let attrs' = ["hello","world"; "class","ab"]
+let attrs'' = ["hello","world"; "class","a b"]
 
-let make_xml ~label = <:xml<<tag/>&>>
+let make_xml = Xml.(tag "tag" empty)
 let make_xml_result = "<tag/>"
 
 let xml_expanders = [
-  true, "opt",  <:xml<<z>$opt:opt$</z>&>>, "<z><a>a</a></z>";
-  true, "opt'", <:xml<<z>$opt:opt'$</z>&>>, "<z/>";
-  false, "int",  <:xml<$int:int$>>, string_of_int int;
-  false, "flo",  <:xml<$flo:flo$>>, string_of_float flo;
-  false, "str",  <:xml<$str:str$>>, str;
-  false, "uri",  <:xml<$uri:uri$>>, "https://github.com/mirage/ocaml-cow?q1=a&amp;q2=b";
-  true, "alist", <:xml<<tag $alist:alist$/>&>>, "<tag hello=\"world\" class=\"a b\"/>";
-  true, "list", <:xml<$list:list$>>, "<a>a</a><b/><c><a>a</a> <b/> <a>a</a></c>";
-  true, "attrs", <:xml<<tag $attrs:attrs$/>&>>, "<tag hello=\"world\" class=\"ab\"/>";
-  true, "attrs'", <:xml<<tag $attrs:attrs'$/>&>>, "<tag hello=\"world\" class=\"ab\"/>";
-  true, "attrs''", <:xml<<tag $attrs:attrs''$/>&>>, "<tag hello=\"world\" class=\"a b\"/>";
-  true, "labeled_xml_fn",
-  (let label = () in <:xml<$make_xml ~label$>>), make_xml_result;
-  true, "label_xml_fn_assignment",
-  <:xml<$make_xml ~label:()$>>, make_xml_result;
+  true, "opt",  Xml.(tag "z" (some opt)), "<z><a>a</a></z>";
+  true, "opt'", Xml.(tag "z" (some opt')), "<z/>";
+  false, "int",  Xml.int int, string_of_int int;
+  false, "flo",  Xml.float flo, string_of_float flo;
+  false, "str",  Xml.string str, str;
+  false, "uri",  Xml.uri uri, "https://github.com/mirage/ocaml-cow?q1=a&amp;q2=b";
+  true, "alist", Xml.(tag "tag" ~attrs:alist empty), "<tag hello=\"world\" class=\"a b\"/>";
+  true, "list", Xml.list list, "<a>a</a><b/><c><a>a</a> <b/> <a>a</a></c>";
+  true, "attrs", Xml.(tag "tag" ~attrs:attrs empty), "<tag hello=\"world\" class=\"ab\"/>";
+  true, "attrs'", Xml.(tag "tag" ~attrs:attrs' empty), "<tag hello=\"world\" class=\"ab\"/>";
+  true, "attrs''", Xml.(tag "tag" ~attrs:attrs'' empty), "<tag hello=\"world\" class=\"a b\"/>";
+  true, "labeled_xml_fn", make_xml, make_xml_result;
+  true, "label_xml_fn_assignment", make_xml, make_xml_result;
 ]
 
-let css_int () = 5
-let css_int_result = string_of_int (css_int ())
-
-(* TODO: add real CSS tests not just these camlp4 antiquot parser tests *)
-let css_expanders = [
-  "css", <:css<&>>, "";
-  "css_fn", <:css<body { height: $int:css_int()$; } >>, css_int_result;
-]
-
-let suite name decl prefix =
+let suite name decl prefix: Alcotest.test_case list =
   let suite = List.fold_left (fun acc (v, n, x, s) ->
       let aux t xml =
         let name = Printf.sprintf "%s.%s-%s" name n t in
@@ -64,13 +50,15 @@ let suite name decl prefix =
              %s\n\
              ----------------"
             str (prefix^s) in
-        let test () = error @? (str = prefix^s) in
-        name >:: test in
+        let test () = Alcotest.(check string) error str (prefix^s) in
+        name, `Quick, test
+      in
       if v then
         (aux "1" x) :: (aux "2" (Xml.of_string (Xml.to_string ~decl x))) :: acc
       else
         (aux "1" x) :: acc
-    ) [] xml_expanders in
+    ) [] xml_expanders
+  in
   List.rev suite
 
 let suite =

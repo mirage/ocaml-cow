@@ -1,34 +1,56 @@
-.PHONY: all clean depend install
+PREFIX ?= $(shell opam config var prefix)
 
-all:
-	./cmd configure
-	./cmd build
+SETUP = ocaml setup.ml
 
-install:
-	./cmd install
+build: setup.data
+	$(SETUP) -build $(BUILDFLAGS)
+
+all: setup.data
+	$(SETUP) -all $(ALLFLAGS)
+
+setup.ml: _oasis
+	rm -f _tags myocamlbuild.ml
+	oasis setup
+	echo 'true: debug, bin_annot' >> _tags
+	echo 'true: warn_error(+1..49), warn(A-4-41-44)' >> _tags
+#	echo 'Ocamlbuild_plugin.mark_tag_used "tests"' >> myocamlbuild.ml
+
+doc: setup.data build
+	$(SETUP) -doc $(DOCFLAGS)
+
+test:
+	$(SETUP) -configure --enable-tests --prefix $(PREFIX)
+	$(MAKE) build
+	$(SETUP) -test $(TESTFLAGS)
+
+install: setup.data
+	$(SETUP) -install $(INSTALLFLAGS)
+
+uninstall: setup.data
+	$(SETUP) -uninstall $(UNINSTALLFLAGS)
+
+reinstall: setup.data
+	$(SETUP) -reinstall $(REINSTALLFLAGS)
 
 clean:
-	./cmd clean
-	$(MAKE) -C tests clean
+	if [ -f setup.ml ]; then $(SETUP) -clean $(CLEANFLAGS); fi
+	rm -f setup.data setup.ml myocamlbuild.ml _tags configure
+	rm -f lib/*.odocl lib/META setup.log lib/*.mldylib lib/*.mllib lib/*.mlpack
+	rm -rf examples/*.byte examples/_tests
+	rm -rf _tests
 
-tests: all
-	$(MAKE) -C tests clean
-	$(MAKE) -C tests
-	tests/test
+setup.data: setup.ml
+	$(SETUP) -configure --prefix $(PREFIX)
 
-VERSION = $(shell grep 'VERSION=' _vars | sed 's/VERSION=//')
-NAME    = $(shell grep 'LIB=' _vars    | sed 's/LIB=//')
-ARCHIVE = https://github.com/mirage/ocaml-$(NAME)/archive/v$(VERSION).tar.gz
+RVERSION = $(shell grep 'VERSION=' _vars | sed 's/VERSION=//')
+RNAME    = $(shell grep 'LIB=' _vars    | sed 's/LIB=//')
+RARCHIVE = https://github.com/mirage/ocaml-$(RNAME)/archive/v$(RVERSION).tar.gz
 
 release:
-	git tag -a v$(VERSION) -m "Version $(VERSION)."
-	git push upstream v$(VERSION)
+	git tag -a v$(RVERSION) -m "Version $(RVERSION)."
+	git push upstream v$(RVERSION)
 	$(MAKE) pr
 
 pr:
-	opam publish prepare $(NAME).$(VERSION) $(ARCHIVE)
-	opam publish submit $(NAME).$(VERSION) && rm -rf $(NAME).$(VERSION)
-
-doc: all
-	mkdir -p doc
-	ocamlfind ocamldoc -package xmlm,ezjsonm,uri -I _build -I _build/lib -html -d doc lib/xml.mli lib/css.mli lib/html.mli lib/json.mli lib/markdown.mli lib/atom.mli lib/code.mli lib/xhtml.mli
+	opam publish prepare $(RNAME).$(RVERSION) $(RARCHIVE)
+	opam publish submit $(RNAME).$(RVERSION) && rm -rf $(RNAME).$(RVERSION)

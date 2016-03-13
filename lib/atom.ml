@@ -23,15 +23,22 @@ type author = {
   name: string;
   uri: string option;
   email: string option;
-} with xml
+}
 
-type date =
-    int * int * int * int * int (* year, month, date, hour, minute *)
-with xml
+let stringo = function None -> None | Some s -> Some (Xml.string s)
+
+let xml_of_author a =
+  Xml.(
+    tag "name" (string a.name)
+    ++ tago "uri" (stringo a.uri)
+    ++ tago "email" (stringo a.email)
+  )
+
+type date = int * int * int * int * int (* year, month, day, hour, minute *)
 
 let xml_of_date (year,month,day,hour,min) =
   let str = Printf.sprintf "%.4d-%.2d-%.2dT%.2d:%.2d:00Z" year month day hour min in
-  <:xml<$str:str$>>
+  Xml.string str
 
 type link = {
   rel : [`self|`alternate];
@@ -42,22 +49,19 @@ type link = {
 let mk_link ?(rel=`self) ?typ href =
   { rel; typ; href }
 
-let tag t ?(attributes=[]) body : Xml.t =
-  let attributes = List.map (fun (k,v) -> ("",k), v) attributes in
-  [`El ((("",t), attributes), body)]
-
 let data body : Xml.t = [`Data body]
 
 let empty: Xml.t = []
 
 let xml_of_link l =
-  let attributes = [
+  let attrs = [
     ("rel" , match l.rel with `self -> "self" | `alternate -> "alternate");
     ("href", Uri.to_string l.href)
   ] @ match l.typ with
       | None   -> []
-      | Some t -> ["type", t] in
-  tag "link" ~attributes empty
+      | Some t -> ["type", t]
+  in
+  Xml.tag "link" ~attrs empty
 
 type meta = {
   id      : string;
@@ -90,26 +94,29 @@ let xml_of_meta m =
 type content = Xml.t
 
 let xml_of_content base c =
-  let div = <:xml<<content type="xhtml">
-    <div xmlns="http://www.w3.org/1999/xhtml">
-      $c$
-   </div>
-  </content>&>>
+  let div =
+    Xml.tag "content" ~attrs:["type","xhtml"] (
+      Xml.tag "div" ~attrs:["xmlns","http://www.w3.org/1999/xhtml"] (
+        c
+      ))
   in
   match base with
   | None -> div
   | Some base -> begin
      match div with
      | [`El ((("","content"),[("","type"),"xhtml"]),childs)] ->
-         [ `El ((("","content"),[(("","type"),"xhtml");(("","xml:base"),base)]),childs) ]
+       [ `El ((("","content"),
+               [(("","type"),"xhtml");
+                (("","xml:base"),base)]),
+              childs) ]
      | _ -> assert false
   end
 
 type summary = string option
 
 let xml_of_summary = function
-  | None     -> []
-  | Some str -> <:xml<<summary>$str:str$</summary>&>>
+  | None     -> Xml.empty
+  | Some str -> Xml.(tag "summary" (string str))
 
 type entry = {
   entry: meta;
@@ -118,13 +125,14 @@ type entry = {
   base: string option;
 }
 
-let xml_of_entry e = <:xml<
-  <entry>
-    $xml_of_meta e.entry$
-    $xml_of_summary e.summary$
-    $xml_of_content e.base e.content$
-  </entry>
->>
+let xml_of_entry e =
+  Xml.(
+    tag "entry" (
+      xml_of_meta e.entry
+      ++ xml_of_summary e.summary
+      ++ xml_of_content e.base e.content
+    )
+  )
 
 let contributors entries =
   List.fold_left
@@ -134,8 +142,7 @@ let contributors entries =
     []
     entries
 
-let xml_of_contributor c =
-  <:xml<<contributor>$xml_of_author c$</contributor>&>>
+let xml_of_contributor c = Xml.tag "contributor" (xml_of_author c)
 
 type feed = {
   feed   : meta;
@@ -144,22 +151,17 @@ type feed = {
 
 let xml_of_feed ? self f =
   let self = match self with
-    | None   -> []
-    | Some s -> <:xml<<link rel="self" href=$str:s$/>&>> in
-<:xml<
-  <feed xmlns="http://www.w3.org/2005/Atom">
-     $self$
-     $xml_of_meta f.feed$
-     $list:List.map xml_of_contributor (contributors f.entries)$
-     $list:List.map xml_of_entry f.entries$
-  </feed>
->>
+    | None   -> Xml.empty
+    | Some s -> Xml.tag "link" ~attrs:["rel","self"; "href",s] Xml.empty
+  in
+  Xml.(tag "tag" ~attrs:["xmlns","http://www.w3.org/2005/Atom"] (
+      self
+      ++ xml_of_meta f.feed
+      ++ list (List.map xml_of_contributor (contributors f.entries))
+      ++ list (List.map xml_of_entry f.entries);
+    ))
 
 let compare (yr1,mn1,da1,_,_) (yr2,mn2,da2,_,_) =
   match yr1 - yr2 with
-    | 0 ->
-      (match mn1 - mn2 with
-        | 0 -> da1 - da2
-        | n -> n
-      )
+    | 0 -> (match mn1 - mn2 with 0 -> da1 - da2 | n -> n)
     | n -> n

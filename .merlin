@@ -1,8 +1,3 @@
+PKG omd ezjsonm xmlm cow alcotest
 S lib
-S syntax/**
 B _build/lib
-B _build/syntax/**
-PKG findlib
-PKG cow
-PKG omd
-PKG ezjsonm
