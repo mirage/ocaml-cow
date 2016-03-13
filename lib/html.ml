@@ -245,6 +245,8 @@ let img ?alt ?width ?height ?ismap ?title ?cls src =
                [`El((("", "img"), (("", "ismap"), "") ::attrs), [])]
   | None -> [`El((("", "img"), attrs), [])]
 
+let anchor name = tag "a" ~attrs:["name", name] empty
+
 (* color tweaks for lists *)
 let interleave classes l =
   let i = ref 0 in
@@ -380,7 +382,7 @@ module Create = struct
 
 end
 
-let script ?src ?typ body =
+let script ?src ?typ ?charset body =
   let attrs = match src with
     | None   -> []
     | Some s -> ["src",s]
@@ -388,5 +390,9 @@ let script ?src ?typ body =
   let attrs = match typ with
     | None   -> attrs
     | Some t -> ("type", t) :: attrs
+  in
+  let attrs = match charset with
+    | None   -> attrs
+    | Some c -> ("charset", c) :: attrs
   in
   tag "script" ~attrs body
