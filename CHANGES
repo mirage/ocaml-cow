@@ -1,4 +1,8 @@
-1.4.1 (trunk):
+2.0.0: (trunk)
+* Remove camlp4 syntax extension support
+* Expose more and clean-up Html combinators
+
+1.4.1 (unreleased):
 * Fix XML and HTML labeled argument assignment antiquotation syntax bug (#86)
 * Fix CSS space-less antiquotation syntax bug
 

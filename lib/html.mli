@@ -237,6 +237,7 @@ val base: node
 val col: node
 val track: node
 val keygen: node
+val anchor: string -> t
 
 val h1: node
 val h2: node
@@ -271,4 +272,4 @@ val body: node
 val nav: node
 val section: node
 
-val script: ?src:string -> ?typ:string -> t -> t
+val script: ?src:string -> ?typ:string -> ?charset:string -> t -> t
