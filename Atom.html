@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="next" href="Html.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Atom" rel="Chapter" href="Atom.html">
+<link title="Html" rel="Chapter" href="Html.html">
+<link title="Json" rel="Chapter" href="Json.html">
+<link title="Markdown" rel="Chapter" href="Markdown.html">
+<link title="Xhtml" rel="Chapter" href="Xhtml.html">
+<link title="Xml" rel="Chapter" href="Xml.html"><title>Atom</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Html.html" title="Html">Next</a>
+</div>
+<h1>Module <a href="type_Atom.html">Atom</a></h1>
+
+<pre><span class="keyword">module</span> Atom: <code class="code">sig</code> <a href="Atom.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<span class="warning">Deprecated.</span>Please use the <code class="code">Syndic</code> package instead.<br>
+The Atom Syndication format. See RFC4287 for the full specification.<br>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEauthor"><span class="keyword">type</span> <code class="type"></code>author</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTauthor.name">name</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTauthor.uri">uri</span>&nbsp;: <code class="type">string option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTauthor.email">email</span>&nbsp;: <code class="type">string option</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="TYPEdate"><span class="keyword">type</span> <code class="type"></code>date</span> = <code class="type">int * int * int * int * int</code> </pre>
+<div class="info ">
+year, month, date, hour, minute<br>
+</div>
+
+
+<pre><span id="VALcompare"><span class="keyword">val</span> compare</span> : <code class="type"><a href="Atom.html#TYPEdate">date</a> -> <a href="Atom.html#TYPEdate">date</a> -> int</code></pre>
+<pre><code><span id="TYPElink"><span class="keyword">type</span> <code class="type"></code>link</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlink.rel">rel</span>&nbsp;: <code class="type">[ `alternate | `self ]</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlink.href">href</span>&nbsp;: <code class="type">Uri.t</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlink.typ">typ</span>&nbsp;: <code class="type">string option</code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info ">
+An Atom URI. There are lots of rules on which combinations of links
+    are permitted in one feed. See RFC4287 Sec 4.1.1 for the gory details.<br>
+</div>
+
+
+<pre><span id="VALmk_link"><span class="keyword">val</span> mk_link</span> : <code class="type">?rel:[ `alternate | `self ] -> ?typ:string -> Uri.t -> <a href="Atom.html#TYPElink">link</a></code></pre><div class="info ">
+<code class="code">mk_link ~rel ~typ uri</code> builds a <a href="Atom.html#TYPElink"><code class="code">Atom.link</code></a>. <code class="code">rel</code> defaults to <code class="code">`self</code>,
+    and <code class="code">typ</code> represents the optional MIME type (e.g. <code class="code">text/html</code>).
+    The <code class="code">uri</code> should usually be a fully qualified URI.<br>
+</div>
+
+<pre><code><span id="TYPEmeta"><span class="keyword">type</span> <code class="type"></code>meta</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmeta.id">id</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmeta.title">title</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmeta.subtitle">subtitle</span>&nbsp;: <code class="type">string option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmeta.author">author</span>&nbsp;: <code class="type"><a href="Atom.html#TYPEauthor">author</a> option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmeta.rights">rights</span>&nbsp;: <code class="type">string option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmeta.updated">updated</span>&nbsp;: <code class="type"><a href="Atom.html#TYPEdate">date</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmeta.links">links</span>&nbsp;: <code class="type"><a href="Atom.html#TYPElink">link</a> list</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="TYPEsummary"><span class="keyword">type</span> <code class="type"></code>summary</span> = <code class="type">string option</code> </pre>
+
+<br>
+A single entry in the Atom feed.  The <code class="code">base</code> represents the base
+    href for the contents of the feed, in case it has relative links.<br>
+
+<pre><code><span id="TYPEentry"><span class="keyword">type</span> <code class="type"></code>entry</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTentry.entry">entry</span>&nbsp;: <code class="type"><a href="Atom.html#TYPEmeta">meta</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTentry.summary">summary</span>&nbsp;: <code class="type"><a href="Atom.html#TYPEsummary">summary</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTentry.content">content</span>&nbsp;: <code class="type"><a href="Xml.html#TYPEt">Xml.t</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTentry.base">base</span>&nbsp;: <code class="type">string option</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><code><span id="TYPEfeed"><span class="keyword">type</span> <code class="type"></code>feed</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfeed.feed">feed</span>&nbsp;: <code class="type"><a href="Atom.html#TYPEmeta">meta</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfeed.entries">entries</span>&nbsp;: <code class="type"><a href="Atom.html#TYPEentry">entry</a> list</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALxml_of_feed"><span class="keyword">val</span> xml_of_feed</span> : <code class="type">?self:string -> <a href="Atom.html#TYPEfeed">feed</a> -> <a href="Xml.html#TYPEt">Xml.t</a></code></pre></body></html>

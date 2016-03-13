@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="Up" href="Html.Create.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Atom" rel="Chapter" href="Atom.html">
+<link title="Html" rel="Chapter" href="Html.html">
+<link title="Json" rel="Chapter" href="Json.html">
+<link title="Markdown" rel="Chapter" href="Markdown.html">
+<link title="Xhtml" rel="Chapter" href="Xhtml.html">
+<link title="Xml" rel="Chapter" href="Xml.html"><title>Html.Create.Tags</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="Html.Create.html" title="Html.Create">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Html.Create.Tags.html">Html.Create.Tags</a></h1>
+
+<pre><span class="keyword">module</span> Tags: <code class="code">sig</code> <a href="Html.Create.Tags.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEhtml_list"><span class="keyword">type</span> <code class="type"></code>html_list</span> = <code class="type">[ `Ol of <a href="Html.html#TYPEt">Html.t</a> list | `Ul of <a href="Html.html#TYPEt">Html.t</a> list ]</code> </pre>
+
+
+<pre><code><span id="TYPEcolor"><span class="keyword">type</span> <code class="type"></code>color</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolor.Rgba"><span class="constructor">Rgba</span></span> <span class="keyword">of</span> <code class="type">char * char * char * char</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolor.Rgb"><span class="constructor">Rgb</span></span> <span class="keyword">of</span> <code class="type">char * char * char</code></code></td>
+
+</tr></table>
+
+
+
+<pre><code><span id="TYPEtable_flags"><span class="keyword">type</span> <code class="type"></code>table_flags</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtable_flags.Headings_fst_col"><span class="constructor">Headings_fst_col</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtable_flags.Headings_fst_row"><span class="constructor">Headings_fst_row</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtable_flags.Sideways"><span class="constructor">Sideways</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtable_flags.Heading_color"><span class="constructor">Heading_color</span></span> <span class="keyword">of</span> <code class="type"><a href="Html.Create.Tags.html#TYPEcolor">color</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtable_flags.Bg_color"><span class="constructor">Bg_color</span></span> <span class="keyword">of</span> <code class="type"><a href="Html.Create.Tags.html#TYPEcolor">color</a></code></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="TYPEtable"><span class="keyword">type</span> <code class="type">'a</code> table</span> = <code class="type">[ `Td of 'a * int * int<br>       | `Th of 'a * int * int<br>       | `Tr of 'a <a href="Html.Create.Tags.html#TYPEtable">table</a> list ]</code> </pre>
+
+</body></html>
