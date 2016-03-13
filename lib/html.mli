@@ -134,6 +134,7 @@ val concat : t list -> t
 (** @deprecated use {!list} *)
 
 val list: t list -> t
+val some: t option -> t
 
 (** [append par ch] appends ch to par *)
 val append: t -> t -> t
@@ -214,9 +215,7 @@ end
 
 (** {1 HTML nodes} *)
 
-type node =
-  ?cls:string -> ?id:string ->
-  ?attributes:(string * string) list -> t -> t
+type node = ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t -> t
 (** The type for nodes. *)
 
 val div: node
@@ -249,10 +248,10 @@ val h6: node
 val small: node
 
 val ul :
-  ?cls:string -> ?id:string -> ?attributes:(string * string) list -> t list -> t
+  ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t list -> t
 
 val ol :
-  ?cls:string -> ?id:string -> ?attributes:(string * string) list -> t list -> t
+  ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t list -> t
 
 val tag: string -> node
 

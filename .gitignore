@@ -21,3 +21,6 @@ myocamlbuild.ml
 setup.data
 cow.docdir
 _tags
+*.native
+_tests
+tests/_tests

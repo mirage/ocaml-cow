@@ -58,10 +58,16 @@ val float: float -> t
 val list: t list -> t
 (** [list xs] is the XML fragment [x1 ... xn]. *)
 
-val tag: string -> ?attributes:(string * string) list -> t -> t
+val some: t option -> t
+(** [some t] is [t] if it's not empty, {!empty} otherwise. *)
+
+val uri: Uri.t -> t
+(** [uri t] is [t]. *)
+
+val tag: string -> ?attrs:(string * string) list -> t -> t
 (** [tag k v] is [<k>v</k>] *)
 
-val tago: string -> ?attributes:(string * string) list -> t option -> t
+val tago: string -> ?attrs:(string * string) list -> t option -> t
 (** [tago k v] is [k v] if [v] is not [None], otherwise it's {!empty}. *)
 
 val (++): t -> t -> t

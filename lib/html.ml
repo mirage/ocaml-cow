@@ -40,19 +40,18 @@ let void_elements = [
   "keygen";
 ]
 
-type node =
-  ?cls:string -> ?id:string -> ?attributes:(string * string) list -> t -> t
+type node = ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t -> t
 
-let tag name ?cls ?id ?(attributes=[]) t =
-  let attributes = match id with
-    | None   -> attributes
-    | Some i -> ("id", i) :: attributes
+let tag name ?cls ?id ?(attrs=[]) t =
+  let attrs = match id with
+    | None   -> attrs
+    | Some i -> ("id", i) :: attrs
   in
-  let attributes = match cls with
-    | None   -> attributes
-    | Some c -> ("class", c) :: attributes
+  let attrs = match cls with
+    | None   -> attrs
+    | Some c -> ("class", c) :: attrs
   in
-  Xml.tag name ~attributes t
+  Xml.tag name ~attrs t
 
 let div = tag "div"
 let span = tag "span"
@@ -91,14 +90,14 @@ let aside = tag "aside"
 let nil = empty
 let concat = list
 
-let li ?cls ?id ?attributes x =
-  tag ?cls ?id ?attributes "li" x
+let li ?cls ?id ?attrs x =
+  tag ?cls ?id ?attrs "li" x
 
-let ul ?cls ?id ?attributes ls =
-  tag ?cls ?id ?attributes "ul" (list (List.map (fun x -> li x) ls))
+let ul ?cls ?id ?attrs ls =
+  tag ?cls ?id ?attrs "ul" (list (List.map (fun x -> li x) ls))
 
-let ol ?cls ?id ?attributes ls =
-  tag ?cls ?id ?attributes "ol" (list (List.map (fun x -> li x) ls))
+let ol ?cls ?id ?attrs ls =
+  tag ?cls ?id ?attrs "ol" (list (List.map (fun x -> li x) ls))
 
 let h1 = tag "h1"
 let h2 = tag "h2"
@@ -251,7 +250,7 @@ let interleave classes l =
     let res = classes.(!i mod n) in
     incr i;
     res in
-  List.map (Xml.tag "div" ~attributes:["class", get ()]) l
+  List.map (Xml.tag "div" ~attrs:["class", get ()]) l
 
 let html_of_string s = Xml.string s
 let string = html_of_string
@@ -322,7 +321,7 @@ module Create = struct
   type t = Xml.t
 
   let stylesheet css =
-    Xml.tag "style" ~attributes:["type","text/css"] (string css)
+    Xml.tag "style" ~attrs:["type","text/css"] (string css)
 
   let table ?(flags = [Headings_fst_row]) =
     let h_fst_col = ref false in
@@ -379,12 +378,12 @@ module Create = struct
 end
 
 let script ?src ?typ body =
-  let attributes = match src with
+  let attrs = match src with
     | None   -> []
     | Some s -> ["src",s]
   in
-  let attributes = match typ with
-    | None   -> attributes
-    | Some t -> ("type", t) :: attributes
+  let attrs = match typ with
+    | None   -> attrs
+    | Some t -> ("type", t) :: attrs
   in
-  tag "script" ~attributes body
+  tag "script" ~attrs body

@@ -85,11 +85,13 @@ let int i = string @@ string_of_int i
 let float f = string @@ string_of_float f
 let (++) = List.append
 let list = List.concat
+let some = function None -> empty | Some x -> x
+let uri x = string (Uri.to_string x)
 
-let tag t ?(attributes=[]) body : t =
-  let attributes = List.map (fun (k,v) -> ("",k), v) attributes in
-  [`El ((("",t), attributes), body)]
+let tag t ?(attrs=[]) body : t =
+  let attrs = List.map (fun (k,v) -> ("",k), v) attrs in
+  [`El ((("",t), attrs), body)]
 
-let tago t ?attributes = function
+let tago t ?attrs = function
   | None   -> empty
-  | Some b -> tag t ?attributes b
+  | Some b -> tag t ?attrs b

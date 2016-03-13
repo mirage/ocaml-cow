@@ -54,13 +54,14 @@ let data body : Xml.t = [`Data body]
 let empty: Xml.t = []
 
 let xml_of_link l =
-  let attributes = [
+  let attrs = [
     ("rel" , match l.rel with `self -> "self" | `alternate -> "alternate");
     ("href", Uri.to_string l.href)
   ] @ match l.typ with
       | None   -> []
-      | Some t -> ["type", t] in
-  Xml.tag "link" ~attributes empty
+      | Some t -> ["type", t]
+  in
+  Xml.tag "link" ~attrs empty
 
 type meta = {
   id      : string;
@@ -94,8 +95,8 @@ type content = Xml.t
 
 let xml_of_content base c =
   let div =
-    Xml.tag "content" ~attributes:["type","xhtml"] (
-      Xml.tag "div" ~attributes:["xmlns","http://www.w3.org/1999/xhtml"] (
+    Xml.tag "content" ~attrs:["type","xhtml"] (
+      Xml.tag "div" ~attrs:["xmlns","http://www.w3.org/1999/xhtml"] (
         c
       ))
   in
@@ -151,9 +152,9 @@ type feed = {
 let xml_of_feed ? self f =
   let self = match self with
     | None   -> Xml.empty
-    | Some s -> Xml.tag "link" ~attributes:["rel","self"; "href",s] Xml.empty
+    | Some s -> Xml.tag "link" ~attrs:["rel","self"; "href",s] Xml.empty
   in
-  Xml.(tag "tag" ~attributes:["xmlns","http://www.w3.org/2005/Atom"] (
+  Xml.(tag "tag" ~attrs:["xmlns","http://www.w3.org/2005/Atom"] (
       self
       ++ xml_of_meta f.feed
       ++ list (List.map xml_of_contributor (contributors f.entries))
