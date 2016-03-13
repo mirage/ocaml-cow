@@ -42,8 +42,8 @@ clean:
 setup.data: setup.ml
 	$(SETUP) -configure --prefix $(PREFIX)
 
-RVERSION = $(shell grep 'VERSION=' _vars | sed 's/VERSION=//')
-RNAME    = $(shell grep 'LIB=' _vars    | sed 's/LIB=//')
+RVERSION = $(shell grep 'Version:' _oasis | sed 's/Version: *//')
+RVERSION = $(shell grep 'Name:' _oasis | sed 's/Name: *//')
 RARCHIVE = https://github.com/mirage/ocaml-$(RNAME)/archive/v$(RVERSION).tar.gz
 
 release:
