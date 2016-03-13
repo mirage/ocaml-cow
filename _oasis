@@ -22,3 +22,16 @@ Document cow
   Install:              true
   XOCamlbuildPath:      lib
   XOCamlbuildLibraries: cow
+
+Executable test
+  Build$:           flag(tests)
+  Path:             tests
+  MainIs:           test.ml
+  CompiledObject:   best
+  Install:          false
+  BuildDepends:     alcotest, cow
+
+Test test
+  Run$:             flag(tests)
+  Command:          $test -q
+  WorkingDirectory: tests/
