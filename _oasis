@@ -8,6 +8,8 @@ License:     ISC
 Plugins:     META (0.4), DevFiles (0.4)
 BuildTools:  ocamlbuild
 
+AlphaFeatures: ocamlbuild_more_args
+
 Library cow
   Pack: true
   Path: lib
@@ -35,3 +37,12 @@ Test test
   Run$:             flag(tests)
   Command:          $test -q
   WorkingDirectory: tests/
+
+Document cow
+  Type: ocamlbuild (0.3)
+  BuildTools: ocamldoc
+  Title: API reference for Cow
+  XOCamlbuildPath: .
+  XOCamlbuildExtraArgs:
+    "-docflags '-t cow -colorize-code -short-functors -charset utf-8'"
+  XOCamlbuildLibraries: cow

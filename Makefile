@@ -54,3 +54,18 @@ release:
 pr:
 	opam publish prepare $(RNAME).$(RVERSION) $(RARCHIVE)
 	opam publish submit $(RNAME).$(RVERSION) && rm -rf $(RNAME).$(RVERSION)
+
+init-pages:
+	mkdir -p doc/html
+	cd doc/html && ( \
+	  git init && \
+	  git remote add origin git@github.com:mirage/ocaml-cow.git && \
+	  git fetch && \
+	  git checkout gh-pages && \
+	  git pull)
+
+gh-pages: doc
+	rm -f doc/html/*.html
+	cd doc/html && cp ../../cow.docdir/*.html .
+	cd doc/html && git add * && git commit -a -m "Update docs"
+	cd doc/html && git push
