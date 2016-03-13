@@ -17,10 +17,7 @@
 
 (** HTML library. *)
 
-type element = 'a Xml.frag constraint 'a = element
-(** A (X)HTML tree. *)
-
-type t = element list
+type t = Xml.t
 (** A sequence of (X)HTML trees. *)
 
 val doctype : string
@@ -63,15 +60,26 @@ val output_doc :
 
 (** {2 HTML library} *)
 
-val a : ?hreflang: string ->
-        ?rel: [ `alternate | `author | `bookmark | `help | `license
-              | `next | `nofollow | `noreferrer | `prefetch
-              | `prev | `search | `tag ] ->
-        ?target: [ `blank | `parent | `self | `top | `Frame of string ] ->
-        ?ty: string ->
-        ?title: string ->
-        ?cls: string ->
-        href:Uri.t -> t -> element
+
+type rel =
+  [ `alternate
+  | `author
+  | `bookmark
+  | `help
+  | `license
+  | `next
+  | `nofollow
+  | `noreferrer
+  | `prefetch
+  | `prev
+  | `search
+  | `tag ]
+
+type target = [ `blank | `parent | `self | `top | `Frame of string ]
+
+val a:
+  ?hreflang: string -> ?rel:rel ->  ?target:target ->  ?ty: string ->
+  ?title: string -> ?cls: string ->  href:Uri.t -> t -> t
 (** [a href html] generate a link from [html] to [href].
 
     @param title specifies extra information about the element that is
@@ -94,7 +102,7 @@ val img : ?alt: string ->
           ?ismap: Uri.t ->
           ?title: string ->
           ?cls: string ->
-          Uri.t -> element
+          Uri.t -> t
 
 val interleave : string array -> t list -> t list
 
@@ -153,12 +161,6 @@ module Create : sig
 
   type t = Xml.t
 
-  val ul : t list -> t
-
-  val ol : t list -> t
-  (** [ul ls] converts an OCaml list of HTML elements to a valid HTML ordered
-   *  list *)
-
   val stylesheet : string -> t
   (** [stylesheet style] converts a COW CSS type to a valid HTML stylesheet *)
 
@@ -209,3 +211,62 @@ let table = Cow.Html.Create ~flags:[Headings_fst_row] ~row data
 %}
 *)
 end
+
+(** {1 HTML nodes} *)
+
+type node =
+  ?cls:string -> ?id:string ->
+  ?attributes:(string * string) list -> t -> t
+(** The type for nodes. *)
+
+val div: node
+(** [div ~cls t] is [<div class="cls">t</div>]. *)
+
+val span: node
+(** [div ~cls: t] is [<div class="cls">t</div>]. *)
+
+val input: node
+val link: node
+val meta: node
+val br: node
+val hr: node
+val source: node
+val wbr: node
+val param: node
+val embed: node
+val base: node
+val col: node
+val track: node
+val keygen: node
+
+val h1: node
+val h2: node
+val h3: node
+val h4: node
+val h5: node
+val h6: node
+
+val small: node
+
+val ul :
+  ?cls:string -> ?id:string -> ?attributes:(string * string) list -> t list -> t
+
+val ol :
+  ?cls:string -> ?id:string -> ?attributes:(string * string) list -> t list -> t
+
+val tag: string -> node
+
+val i: node
+val p: node
+
+val aside: node
+
+val footer: node
+val title: node
+val head: node
+val header: node
+val body: node
+val nav: node
+val section: node
+
+val script: ?src:string -> ?typ:string -> t -> t
