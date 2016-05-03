@@ -1,4 +1,9 @@
-2.0.0: (trunk)
+2.0.1: (03-May-2016):
+* Remove deprecated function usage, which fixes build under 4.03
+* Remove OCaml 4.01 support.
+* Add OCaml test cases for OCaml 4.03.
+
+2.0.0: (13-Mar-2016):
 * Remove camlp4 syntax extension support
 * Expose more and clean-up Html combinators
 
