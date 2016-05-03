@@ -295,7 +295,7 @@ module Create = struct
       | Rgb of char * char * char
 
   let color_of_string ?(fmt = `Hex) s =
-    let s = String.lowercase_ascii s in
+    let s = String.lowercase s in
     let coi = char_of_int in
     let rval = match fmt with
       | `Hex ->

@@ -1,6 +1,5 @@
 2.0.1: (03-May-2016):
-* Remove deprecated function usage, which fixes build under 4.03
-* Remove OCaml 4.01 support.
+* Turn off warnings-as-errors, which fixes build under 4.03
 * Add OCaml test cases for OCaml 4.03.
 
 2.0.0: (13-Mar-2016):
