@@ -100,17 +100,18 @@ let dt ?cls ?id ?attrs x =
 let dd ?cls ?id ?attrs x =
   tag ?cls ?id ?attrs "dd" x
 
-let ul ?(add_li=true) ?cls ?id ?attrs ls =
-  let ls = if add_li then List.map (fun x -> li x) ls else ls in
+let ul ?(add_li=true) ?cls ?id ?attrs ?licls ls =
+  let ls = if add_li then List.map (fun x -> li ?cls:licls x) ls else ls in
   tag ?cls ?id ?attrs "ul" (list ls)
 
-let ol ?(add_li=false) ?cls ?id ?attrs ls =
-  let ls = if add_li then List.map (fun x -> li x) ls else ls in
+let ol ?(add_li=false) ?cls ?id ?attrs ?licls ls =
+  let ls = if add_li then List.map (fun x -> li ?cls:licls x) ls else ls in
   tag ?cls ?id ?attrs "ol" (list ls)
 
-let dl ?(add_dtdd=true) ?cls ?id ?attrs lss =
+let dl ?(add_dtdd=true) ?cls ?id ?attrs ?dtcls ?ddcls lss =
   let lss = if add_dtdd
-            then List.map (fun (t, d) -> list [dt t; dd d]) lss
+            then List.map
+                   (fun (t, d) -> list [dt ?cls:dtcls t; dd ?cls:ddcls d]) lss
             else List.map (fun (t, d) -> list [t; d]) lss in
   tag ?cls ?id ?attrs "dl" (list lss)
 

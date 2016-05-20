@@ -253,14 +253,16 @@ val dt: node
 val dd: node
 
 val ul: ?add_li:bool ->
-  ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t list -> t
+  ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?licls:string -> t list -> t
 
 val ol: ?add_li:bool ->
-  ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t list -> t
+  ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?licls:string -> t list -> t
 
 val dl: ?add_dtdd:bool ->
   ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
-  (t * t) list -> t
+  ?dtcls:string -> ?ddcls:string -> (t * t) list -> t
 
 val tag: string -> node
 
