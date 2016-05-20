@@ -249,12 +249,18 @@ val h6: node
 val small: node
 
 val li: node
+val dt: node
+val dd: node
 
 val ul: ?add_li:bool ->
   ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t list -> t
 
 val ol: ?add_li:bool ->
   ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t list -> t
+
+val dl: ?add_dtdd:bool ->
+  ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  (t * t) list -> t
 
 val tag: string -> node
 
