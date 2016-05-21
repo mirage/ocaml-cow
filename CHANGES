@@ -1,4 +1,10 @@
-2.0.1: (03-May-2016):
+2.1.0 (21-May-2016):
+* Add description lists (dl/dt/dd)
+* Add ~licls/~dtcls/~ddcls to Html.ul/ol/dl. Setting classes of child
+  elements in lists is sometimes useful.
+* Add some missing HTML5 combinators.
+
+2.0.1 (03-May-2016):
 * Turn off warnings-as-errors, which fixes build under 4.03
 * Add OCaml test cases for OCaml 4.03.
 

@@ -1,9 +1,9 @@
 OASISFormat: 0.4
 Name:        cow
-Version:     2.0.1
+Version:     2.1.0
 Synopsis:    Caml on the Web (CoW)
 Authors:     Anil Madhavapeddy, Thomas Gazagnaire, David Sheets,
-             Rudi Grinberg, Thomas Gazagnaire
+             Rudi Grinberg, Timothy Bourke
 License:     ISC
 Plugins:     META (0.4), DevFiles (0.4)
 BuildTools:  ocamlbuild
