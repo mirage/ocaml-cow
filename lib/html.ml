@@ -56,17 +56,16 @@ let tag name ?cls ?id ?(attrs=[]) t =
 let div = tag "div"
 let span = tag "span"
 let input = tag "input"
-let meta = tag "meta"
 let br = tag "br"
 let hr = tag "hr"
 let source = tag "source"
 let wbr = tag "wbr"
 let param = tag "param"
 let embed = tag "embed"
-let base = tag "base"
 let col = tag "col"
 let track = tag "track"
 let keygen = tag "keygen"
+let html = tag "html"
 let footer = tag "footer"
 let header = tag "header"
 let head = tag "head"
@@ -76,8 +75,9 @@ let nav = tag "nav"
 let tr = tag "tr"
 let th = tag "th"
 let td = tag "td"
-let link = tag "link"
+let article = tag "article"
 let section = tag "section"
+let address = tag "address"
 
 let empty: t = []
 let list = List.concat
@@ -87,6 +87,101 @@ let i = tag "i"
 let p = tag "p"
 let tt = tag "tt"
 let aside = tag "aside"
+let pre = tag "pre"
+let main = tag "main"
+
+let add_oattr name attr attrs =
+  match attr with
+  | None   -> attrs
+  | Some i -> (name, i) :: attrs
+
+let add_uattr name attr attrs =
+  match attr with
+  | None   -> attrs
+  | Some i -> (name, Uri.to_string i) :: attrs
+
+let link ?cls ?id ?(attrs=[]) ?title ?href ?rel ?media x =
+  tag "link" ?cls ?id
+    ~attrs:(add_oattr "title" title
+           (add_uattr "href" href
+           (add_oattr "rel" rel
+           (add_oattr "media" media attrs)))) x
+
+let base ?cls ?id ?(attrs=[]) ?href ?target x =
+  tag "base" ?cls ?id
+    ~attrs:(add_uattr "href" href
+           (add_oattr "target" target attrs)) x
+
+let meta ?cls ?id ?(attrs=[]) ?name ?content ?charset x =
+  tag "meta" ?cls ?id
+    ~attrs:(add_oattr "name" name
+           (add_oattr "content" content
+           (add_oattr "charset" charset attrs))) x
+
+let blockquote ?cls ?id ?(attrs=[]) ?cite x =
+  tag "blockquote" ?cls ?id
+    ~attrs:(add_uattr "cite" cite attrs) x
+
+let figure ?cls ?id ?(attrs=[]) ?figcaption x =
+  let x = match figcaption with
+    | None   -> x
+    | Some i -> tag "figcaption" Xml.(i ++ x)
+  in
+  tag "figure" ?cls ?id ~attrs x
+
+let em = tag "em"
+let strong = tag "strong"
+let s = tag "s"
+let cite = tag "cite"
+let code = tag "code"
+let var = tag "var"
+let samp = tag "samp"
+let kbd = tag "kbd"
+let sub = tag "sub"
+let sup = tag "sup"
+let b = tag "b"
+let u = tag "u"
+let mark = tag "mark"
+let bdi = tag "bdi"
+let bdo = tag "bdo"
+
+let q ?cls ?id ?(attrs=[]) ?cite x =
+  let attrs = match cite with
+    | None   -> attrs
+    | Some i -> ("cite", Uri.to_string i) :: attrs
+  in
+  tag "q" ?cls ?id ~attrs x
+
+let dfn ?cls ?id ?(attrs=[]) ?title x =
+  tag "dfn" ?cls ?id
+    ~attrs:(add_oattr "title" title attrs) x
+
+let abbr ?cls ?id ?(attrs=[]) ?title x =
+  tag "abbr" ?cls ?id
+    ~attrs:(add_oattr "title" title attrs) x
+
+let data ?cls ?id ?(attrs=[]) ~value x =
+  tag "data" ?cls ?id ~attrs:(("value", value) :: attrs) x
+
+let time ?cls ?id ?(attrs=[]) ?datetime x =
+  tag "time" ?cls ?id
+    ~attrs:(add_oattr "datetime" datetime attrs) x
+
+let ruby = tag "ruby"
+let rb = tag "rb"
+let rt = tag "rt"
+let rtc = tag "rtc"
+let rp = tag "rp"
+
+let ins ?cls ?id ?(attrs=[]) ?cite ?datetime x =
+  tag "ins" ?cls ?id
+    ~attrs:(add_oattr "datetime" datetime
+           (add_uattr "cite" cite attrs)) x
+
+let del ?cls ?id ?(attrs=[]) ?cite ?datetime x =
+  tag "del" ?cls ?id
+    ~attrs:(add_oattr "datetime" datetime
+           (add_uattr "cite" cite attrs)) x
 
 let nil = empty
 let concat = list
@@ -259,6 +354,11 @@ let img ?alt ?width ?height ?ismap ?title ?cls src =
   | None -> [`El((("", "img"), attrs), [])]
 
 let anchor name = tag "a" ~attrs:["name", name] empty
+
+let style ?cls ?id ?(attrs=[]) ?media ?typ x =
+  tag "style" ?cls ?id
+    ~attrs:(add_oattr "type" typ
+           (add_oattr "media" media attrs)) x
 
 (* color tweaks for lists *)
 let interleave classes l =

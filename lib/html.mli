@@ -225,19 +225,24 @@ val span: node
 (** [div ~cls: t] is [<div class="cls">t</div>]. *)
 
 val input: node
-val link: node
-val meta: node
+val link: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?title:string -> ?href:Uri.t -> ?rel:string -> ?media:string -> t -> t
+val meta: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?name:string -> ?content:string -> ?charset:string -> t -> t
 val br: node
 val hr: node
 val source: node
 val wbr: node
 val param: node
 val embed: node
-val base: node
 val col: node
 val track: node
 val keygen: node
 val anchor: string -> t
+val base: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+           ?href:Uri.t -> ?target:string -> t -> t
+val style: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+           ?media:string -> ?typ:string -> t -> t
 
 val h1: node
 val h2: node
@@ -269,9 +274,53 @@ val tag: string -> node
 val i: node
 val p: node
 val tt: node
+val blockquote : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?cite:Uri.t -> t -> t
+val pre : node
+val figure : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?figcaption:t -> t -> t
+val main : node
+
+val em : node
+val strong : node
+val s : node
+val cite : node
+val q : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?cite:Uri.t -> t -> t
+val dfn : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?title:string -> t -> t
+val abbr : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?title:string -> t -> t
+val data : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  value:string -> t -> t
+val time : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?datetime:string -> t -> t
+val code : node
+val var : node
+val samp : node
+val kbd : node
+val sub : node
+val sup : node
+val b : node
+val u : node
+val mark : node
+val bdi : node
+val bdo : node
+
+val ruby : node
+val rb : node
+val rt : node
+val rtc : node
+val rp : node
 
 val aside: node
 
+val ins : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?cite:Uri.t -> ?datetime:string -> t -> t
+val del : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?cite:Uri.t -> ?datetime:string -> t -> t
+
+val html: node
 val footer: node
 val title: node
 val head: node
@@ -279,5 +328,7 @@ val header: node
 val body: node
 val nav: node
 val section: node
+val article: node
+val address: node
 
 val script: ?src:string -> ?typ:string -> ?charset:string -> t -> t

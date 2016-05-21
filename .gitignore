@@ -8,6 +8,7 @@ tests/render
 tests/a.out
 tests/extension_pp.ml
 tests/test
+tests/basic.html
 configure
 setup.log
 setup.ml
