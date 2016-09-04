@@ -1,6 +1,6 @@
 OASISFormat: 0.4
 Name:        cow
-Version:     2.1.0
+Version:     2.1.1
 Synopsis:    Caml on the Web (CoW)
 Authors:     Anil Madhavapeddy, Thomas Gazagnaire, David Sheets,
              Rudi Grinberg, Timothy Bourke

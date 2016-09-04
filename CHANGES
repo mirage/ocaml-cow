@@ -1,3 +1,6 @@
+2.1.1:
+* Add ?name attribute to `a` combinator.
+
 2.1.0 (21-May-2016):
 * Add description lists (dl/dt/dd)
 * Add ~licls/~dtcls/~ddcls to Html.ul/ol/dl. Setting classes of child
