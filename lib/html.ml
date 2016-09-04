@@ -303,7 +303,7 @@ let string_of_target = function
   | `top    -> "_top"
   | `Frame n -> n
 
-let a ?hreflang ?rel ?target ?ty ?title ?cls ~href html =
+let a ?hreflang ?rel ?target ?ty ?title ?cls ?name ~href html =
   let attrs = [(("", "href"), Uri.to_string href)] in
   let attrs = match hreflang with
     | Some h -> (("", "hreflang"), h) :: attrs
@@ -327,6 +327,10 @@ let a ?hreflang ?rel ?target ?ty ?title ?cls ~href html =
   in
   let attrs = match cls with
     | Some c -> (("", "class"), c) :: attrs
+    | None -> attrs
+  in
+  let attrs = match name with
+    | Some n -> (("", "name"), n) :: attrs
     | None -> attrs
   in
   [`El((("", "a"), attrs), html)]
