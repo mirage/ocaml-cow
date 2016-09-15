@@ -1,0 +1,7 @@
+description = "Camel on the Web"
+version = "%%VERSION%%"
+requires = ""
+archive(byte) = "cow.cma"
+archive(native) = "cow.cmxa"
+plugin(byte) = "cow.cma"
+plugin(native) = "cow.cmxs"
