@@ -6,3 +6,5 @@ tmp
 *.install
 *.native
 *.byte
+_tests
+basic.html
