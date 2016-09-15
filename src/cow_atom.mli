@@ -16,7 +16,6 @@
  *)
 
 (** The Atom Syndication format. See RFC4287 for the full specification.
-
     @deprecated Please use the [Syndic] package instead. *)
 
 type author = {
@@ -62,7 +61,7 @@ type summary = string option
 type entry = {
   entry   : meta;
   summary : summary;
-  content : Xml.t;
+  content : Cow_xml.t;
   base    : string option;
 }
 
@@ -71,4 +70,4 @@ type feed = {
   entries : entry list;
 }
 
-val xml_of_feed : ?self:string -> feed -> Xml.t
+val xml_of_feed : ?self:string -> feed -> Cow_xml.t

@@ -1,5 +1,5 @@
 (*
- * Copyright (c) 2013 Richard Mortier <mort@cantab.net>
+ * Copyright (c) 2016 Anil Madhavapeddy <anil@recoil.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,11 +14,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t = Html.t
+(** Camel on the Web (CoW) library.
 
-let to_string = Html.to_string
+    This library includes module aliases for various useful Web formats
+    such as XML, XHTML, JSON, Markdown and Atom.  In many cases, you can
+    also use the constitutent libraries directly. *)
 
-let of_string s =
-  let omd =  Omd.of_string s in
-  let html = Omd.to_html omd in
-  Html.of_string html
+module Xml = Cow_xml
+module Json = Cow_json
+module Markdown = Cow_markdown
+module Html = Cow_html
+module Xhtml = Cow_xhtml
+module Atom = Cow_atom

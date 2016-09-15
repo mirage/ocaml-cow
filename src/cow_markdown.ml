@@ -1,6 +1,5 @@
 (*
- * Copyright (C) 2006-2009 Citrix Systems Inc.
- * Copyright (c) 2010 Thomas Gazagnaire <thomas@gazagnaire.org>
+ * Copyright (c) 2013 Richard Mortier <mort@cantab.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,14 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-include module type of Ezjsonm
+type t = Cow_html.t
 
-val to_buffer : value -> Buffer.t -> unit
-val to_string : value -> string
+let to_string = Cow_html.to_string
 
-val to_buffer_hum : value -> Buffer.t -> unit
-val to_string_hum : value -> string
-
-val of_string : string -> value
-
-exception Runtime_error of string * value
+let of_string s =
+  let omd =  Omd.of_string s in
+  let html = Omd.to_html omd in
+  Cow_html.of_string html

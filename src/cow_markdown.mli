@@ -14,8 +14,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t = Html.t
+(** Markdown library *)
+
+type t = Cow_html.t
+(** The type of a Markdown document, represented as an (X)HTML tree *)
 
 val to_string: t -> string
+(** [to_string t] will output an (X)HTML string representation of
+  the [t] Markdown *)
 
 val of_string: string -> t
+(** [of_string s] will parse the [s] Markdown and store an X(HTML)
+  representation via the Omd library. *)

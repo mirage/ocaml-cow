@@ -1,0 +1,7 @@
+description = "Camel on the Web (CoW)"
+version = "%%VERSION%%"
+requires = "xmlm uri ezjsonm omd"
+archive(byte) = "cow_lib.cma"
+archive(native) = "cow_lib.cmxa"
+plugin(byte) = "cow_lib.cma"
+plugin(native) = "cow_lib.cmxs"

@@ -1,3 +1,4 @@
-PKG omd ezjsonm xmlm cow alcotest
-S lib
-B _build/lib
+PKG bytes
+S src
+S test
+B _build/**

@@ -1,3 +1,13 @@
+2.2.0:
+* Port to use module aliases, so there are now `Cow_xml` `Cow_html`
+  `Cow_xhtml` `Cow_markdown` `Cow_json` and  `Cow_atom` modules,
+  with aliases to the old scheme under the `Cow` module (e.g. `Cow.Xml`).
+  Existing code should continue to work, but the whole compilation unit
+  is no longer linked in if just a single method of output is used.
+  This bumps the minimum OCaml version to 4.02.3 due to the use of
+  module-level aliases.
+* Switch build system to use `topkg` instead of `oasis`, and adhere
+  to the `opkg` layout format.
 2.1.0 (21-May-2016):
 * Add description lists (dl/dt/dd)
 * Add ~licls/~dtcls/~ddcls to Html.ul/ol/dl. Setting classes of child

@@ -1,6 +1,6 @@
 (*
- * Copyright (c) 2015 Christophe Troestler <christophe.Troestler@umons.ac.be>
- * Copyright (c) 2012 Anil Madhavapeddy <anil@recoil.org>
+ * Copyright (C) 2006-2009 Citrix Systems Inc.
+ * Copyright (c) 2010 Thomas Gazagnaire <thomas@gazagnaire.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-val entity : string -> string option
-(** [entity s] converts the HTML entity [s] to its corresponding UTF-8
-    symbol.  For example [entity "amp" = "&"]. *)
+(** JSON (JavaScript Object Notation) library *)
 
+include module type of Ezjsonm
+
+val to_buffer : value -> Buffer.t -> unit
+val to_string : value -> string
+
+val to_buffer_hum : value -> Buffer.t -> unit
+val to_string_hum : value -> string
+
+val of_string : string -> value
+
+exception Runtime_error of string * value

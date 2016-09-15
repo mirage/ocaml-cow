@@ -25,10 +25,10 @@ type author = {
   email: string option;
 }
 
-let stringo = function None -> None | Some s -> Some (Xml.string s)
+let stringo = function None -> None | Some s -> Some (Cow_xml.string s)
 
 let xml_of_author a =
-  Xml.(
+  Cow_xml.(
     tag "name" (string a.name)
     ++ tago "uri" (stringo a.uri)
     ++ tago "email" (stringo a.email)
@@ -38,7 +38,7 @@ type date = int * int * int * int * int (* year, month, day, hour, minute *)
 
 let xml_of_date (year,month,day,hour,min) =
   let str = Printf.sprintf "%.4d-%.2d-%.2dT%.2d:%.2d:00Z" year month day hour min in
-  Xml.string str
+  Cow_xml.string str
 
 type link = {
   rel : [`self|`alternate];
@@ -49,9 +49,9 @@ type link = {
 let mk_link ?(rel=`self) ?typ href =
   { rel; typ; href }
 
-let data body : Xml.t = [`Data body]
+let data body : Cow_xml.t = [`Data body]
 
-let empty: Xml.t = []
+let empty: Cow_xml.t = []
 
 let xml_of_link l =
   let attrs = [
@@ -61,7 +61,7 @@ let xml_of_link l =
       | None   -> []
       | Some t -> ["type", t]
   in
-  Xml.tag "link" ~attrs empty
+  Cow_xml.tag "link" ~attrs empty
 
 type meta = {
   id      : string;
@@ -74,7 +74,7 @@ type meta = {
 }
 
 let xml_of_meta m =
-  let open Xml in
+  let open Cow_xml in
   let body = [
     tag "id"    (data m.id);
     tag "title" (data m.title);
@@ -91,12 +91,12 @@ let xml_of_meta m =
   ] in
   List.concat (body @ List.map xml_of_link m.links)
 
-type content = Xml.t
+type content = Cow_xml.t
 
 let xml_of_content base c =
   let div =
-    Xml.tag "content" ~attrs:["type","xhtml"] (
-      Xml.tag "div" ~attrs:["xmlns","http://www.w3.org/1999/xhtml"] (
+    Cow_xml.tag "content" ~attrs:["type","xhtml"] (
+      Cow_xml.tag "div" ~attrs:["xmlns","http://www.w3.org/1999/xhtml"] (
         c
       ))
   in
@@ -115,8 +115,8 @@ let xml_of_content base c =
 type summary = string option
 
 let xml_of_summary = function
-  | None     -> Xml.empty
-  | Some str -> Xml.(tag "summary" (string str))
+  | None     -> Cow_xml.empty
+  | Some str -> Cow_xml.(tag "summary" (string str))
 
 type entry = {
   entry: meta;
@@ -126,7 +126,7 @@ type entry = {
 }
 
 let xml_of_entry e =
-  Xml.(
+  Cow_xml.(
     tag "entry" (
       xml_of_meta e.entry
       ++ xml_of_summary e.summary
@@ -142,7 +142,7 @@ let contributors entries =
     []
     entries
 
-let xml_of_contributor c = Xml.tag "contributor" (xml_of_author c)
+let xml_of_contributor c = Cow_xml.tag "contributor" (xml_of_author c)
 
 type feed = {
   feed   : meta;
@@ -151,10 +151,10 @@ type feed = {
 
 let xml_of_feed ? self f =
   let self = match self with
-    | None   -> Xml.empty
-    | Some s -> Xml.tag "link" ~attrs:["rel","self"; "href",s] Xml.empty
+    | None   -> Cow_xml.empty
+    | Some s -> Cow_xml.tag "link" ~attrs:["rel","self"; "href",s] Cow_xml.empty
   in
-  Xml.(tag "tag" ~attrs:["xmlns","http://www.w3.org/2005/Atom"] (
+  Cow_xml.(tag "tag" ~attrs:["xmlns","http://www.w3.org/2005/Atom"] (
       self
       ++ xml_of_meta f.feed
       ++ list (List.map xml_of_contributor (contributors f.entries))
