@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t = Html.t
+type t = Cow_html.t
 
 val to_string: t -> string
 

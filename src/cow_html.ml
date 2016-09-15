@@ -20,7 +20,7 @@ let (@@) f x = f x
 
 let (|>) x f = f x
 
-type t = Xml.t
+type t = Cow_xml.t
 
 let void_elements = [
   "img";
@@ -51,7 +51,7 @@ let tag name ?cls ?id ?(attrs=[]) t =
     | None   -> attrs
     | Some c -> ("class", c) :: attrs
   in
-  Xml.tag name ~attrs t
+  Cow_xml.tag name ~attrs t
 
 let div = tag "div"
 let span = tag "span"
@@ -125,7 +125,7 @@ let blockquote ?cls ?id ?(attrs=[]) ?cite x =
 let figure ?cls ?id ?(attrs=[]) ?figcaption x =
   let x = match figcaption with
     | None   -> x
-    | Some i -> tag "figcaption" Xml.(i ++ x)
+    | Some i -> tag "figcaption" Cow_xml.(i ++ x)
   in
   tag "figure" ?cls ?id ~attrs x
 
@@ -235,9 +235,9 @@ let rec generate_signals signals = function
 let output ?(nl=false) ?(indent=None) ?(ns_prefix=fun _ -> None) dest t =
   let append tree =
     let signals = generate_signals [] tree in
-    let out = Xml.make_output ~decl:false ~nl ~indent ~ns_prefix dest in
-    Xml.output out (`Dtd None);
-    List.(iter (Xml.output out) (rev signals))
+    let out = Cow_xml.make_output ~decl:false ~nl ~indent ~ns_prefix dest in
+    Cow_xml.output out (`Dtd None);
+    List.(iter (Cow_xml.output out) (rev signals))
   in
   List.iter append t
 
@@ -259,7 +259,7 @@ let to_string t =
   Buffer.contents buf
 
 let of_string ?enc str =
-  Xml.of_string ~entity:Xhtml.entity ?enc str
+  Cow_xml.of_string ~entity:Cow_xhtml.entity ?enc str
 
 type rel =
   [ `alternate
@@ -368,15 +368,15 @@ let interleave classes l =
     let res = classes.(!i mod n) in
     incr i;
     res in
-  List.map (Xml.tag "div" ~attrs:["class", get ()]) l
+  List.map (Cow_xml.tag "div" ~attrs:["class", get ()]) l
 
-let html_of_string s = Xml.string s
+let html_of_string s = Cow_xml.string s
 let string = html_of_string
 
-let html_of_int i = Xml.int i
+let html_of_int i = Cow_xml.int i
 let int = html_of_int
 
-let html_of_float f = Xml.float f
+let html_of_float f = Cow_xml.float f
 let float = html_of_float
 
 type table = t array array
@@ -394,7 +394,7 @@ let html_of_table ?(headings=false) t =
     else
       List.map Array.to_list (Array.to_list t) in
   let tl = List.map (fun l -> tr (list @@ List.map (fun x -> td x) l)) tl in
-  Xml.(tag "table" (some hd ++ list tl))
+  Cow_xml.(tag "table" (some hd ++ list tl))
 
 let append (_to : t) (el : t) = _to @ el
 let (++) = append
@@ -436,10 +436,10 @@ module Create = struct
 
   open Tags
 
-  type t = Xml.t
+  type t = Cow_xml.t
 
   let stylesheet css =
-    Xml.tag "style" ~attrs:["type","text/css"] (string css)
+    Cow_xml.tag "style" ~attrs:["type","text/css"] (string css)
 
   let table ?(flags = [Headings_fst_row]) =
     let h_fst_col = ref false in
@@ -490,7 +490,7 @@ module Create = struct
       in
       let rows = List.map (fun r -> let r = List.flatten r in tr r) rows in
       let rows = concat rows in
-      Xml.tag "table"rows
+      Cow_xml.tag "table"rows
     in aux
 
 end

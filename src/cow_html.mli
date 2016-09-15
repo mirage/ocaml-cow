@@ -17,7 +17,7 @@
 
 (** HTML library. *)
 
-type t = Xml.t
+type t = Cow_xml.t
 (** A sequence of (X)HTML trees. *)
 
 val doctype : string
@@ -28,7 +28,7 @@ val to_string : t -> string
 (** [to_string html] is a valid (X)HTML5 polyglot string corresponding
     to the [html] structure. *)
 
-val of_string : ?enc:Xml.encoding -> string -> t
+val of_string : ?enc:Cow_xml.encoding -> string -> t
 (** [of_string ?enc html_str] is the tree representation of [html_str]
     as decoded by [enc]. For more information about the default
     encoding, see {!Xmlm.inenc}.
@@ -160,7 +160,7 @@ module Create : sig
       [ `Tr of 'a table list | `Td of 'a * int * int | `Th of 'a * int * int ]
   end
 
-  type t = Xml.t
+  type t = Cow_xml.t
 
   val stylesheet : string -> t
   (** [stylesheet style] converts a COW CSS type to a valid HTML stylesheet *)
