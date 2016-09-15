@@ -6,4 +6,5 @@ open Topkg
 let () =
   Pkg.describe "cow" @@ fun c ->
   Ok [ Pkg.mllib "src/cow_lib.mllib";
-       Pkg.test "test/test"; ]
+       Pkg.test "test/test";
+       Pkg.test "test/basic" ]
