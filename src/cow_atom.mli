@@ -16,7 +16,6 @@
  *)
 
 (** The Atom Syndication format. See RFC4287 for the full specification.
-
     @deprecated Please use the [Syndic] package instead. *)
 
 type author = {

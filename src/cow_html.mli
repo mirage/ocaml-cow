@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-(** HTML library. *)
+(** (X)HTML library *)
 
 type t = Cow_xml.t
 (** A sequence of (X)HTML trees. *)

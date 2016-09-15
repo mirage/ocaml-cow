@@ -15,6 +15,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
+(** JSON (JavaScript Object Notation) library *)
+
 include module type of Ezjsonm
 
 val to_buffer : value -> Buffer.t -> unit
