@@ -1,5 +1,6 @@
-true : bin_annot, safe_string, package(bytes)
+true : annot, bin_annot, safe_string, package(bytes)
 true : package(uri), package(xmlm), package(ezjsonm), package(omd)
+true : principal, strict-sequence
 <src> : include
 <src/cow.*>: no_alias_deps
 <test> : include
