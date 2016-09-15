@@ -1,6 +1,6 @@
-description = "Camel on the Web"
+description = "Camel on the Web (CoW)"
 version = "%%VERSION%%"
-requires = ""
+requires = "xmlm uri ezjsonm omd"
 archive(byte) = "cow.cma"
 archive(native) = "cow.cmxa"
 plugin(byte) = "cow.cma"
