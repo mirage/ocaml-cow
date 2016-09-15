@@ -8,6 +8,7 @@
   module-level aliases.
 * Switch build system to use `topkg` instead of `oasis`, and adhere
   to the `opkg` layout format.
+
 2.1.0 (21-May-2016):
 * Add description lists (dl/dt/dd)
 * Add ~licls/~dtcls/~ddcls to Html.ul/ol/dl. Setting classes of child
