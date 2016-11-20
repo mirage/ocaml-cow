@@ -358,7 +358,7 @@ val section: node
 val article: node
 val address: node
 
-val script: ?src:string -> ?typ:string -> ?charset:string -> t -> t
+val script: ?src:Uri.t -> ?ty:string -> ?charset:string -> t -> t
 
 
 (* val map : name:string -> t -> t *)

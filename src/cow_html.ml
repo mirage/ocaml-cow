@@ -550,17 +550,8 @@ module Create = struct
 
 end
 
-let script ?src ?typ ?charset body =
-  let attrs = match src with
-    | None   -> []
-    | Some s -> ["src",s]
-  in
-  let attrs = match typ with
-    | None   -> attrs
-    | Some t -> ("type", t) :: attrs
-  in
-  let attrs = match charset with
-    | None   -> attrs
-    | Some c -> ("charset", c) :: attrs
-  in
+let script ?src ?ty ?charset body =
+  let attrs = add_uattr "src" src []
+              |> add_oattr "type" ty
+              |> add_oattr "charset" charset in
   tag "script" ~attrs body

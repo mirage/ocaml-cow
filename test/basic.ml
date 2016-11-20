@@ -13,7 +13,7 @@ Html.output_doc (`Channel (open_out "basic.html"))
         link ~rel:"stylesheet alternate"
              ~title:"Big text"
              (Uri.of_string "big.css");
-        script ~src:"support.js" empty;
+        script ~src:(Uri.of_string "support.js") empty;
         meta ~name:"application-name"
              ~content:"Long headed application"
              []
