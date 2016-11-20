@@ -377,7 +377,8 @@ val script: ?src:string -> ?typ:string -> ?charset:string -> t -> t
 val head: node
 
 val link: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
-  ?title:string -> ?rel:string -> ?media:string -> Uri.t -> t
+          ?title:string -> ?media:string ->
+          ?ty:string -> ?rel:string -> Uri.t -> t
 (** [link uri] returns a <link href="[uri]"> element to be put in the
     <head>. *)
 

@@ -151,10 +151,11 @@ let aside = tag "aside"
 let pre = tag "pre"
 let main = tag "main"
 
-let link ?cls ?id ?(attrs=[]) ?title ?rel ?media href =
+let link ?cls ?id ?(attrs=[]) ?title ?media ?ty ?rel href =
   let attrs = add_oattr "media" media attrs
+              |> add_oattr "title" title
               |> add_oattr "rel" rel
-              |> add_oattr "title" title in
+              |> add_oattr "type" ty in
   tag "link" empty ?cls ?id ~attrs:(("href", Uri.to_string href) :: attrs)
 
 let base ?cls ?id ?(attrs=[]) ?target href =
