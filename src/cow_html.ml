@@ -441,6 +441,9 @@ module Create = struct
   let stylesheet css =
     Cow_xml.tag "style" ~attrs:["type","text/css"] (string css)
 
+  let thead t = Cow_xml.tag "thead" t
+  let tbody t = Cow_xml.tag "tbody" t
+
   let table ?(flags = [Headings_fst_row]) =
     let h_fst_col = ref false in
     let h_fst_row = ref false in
@@ -464,20 +467,23 @@ module Create = struct
         else
           rows in
       let cellify rows = List.map (fun r -> List.map (fun x -> td x) r) rows in
+      let tr1 row = tr(List.flatten row) in
+      let tr rows = List.concat (List.map tr1 rows) in
       let rows =
         match !h_fst_row,!h_fst_col with
         | false,false ->
-            cellify rows
+            tbody (tr (cellify rows))
         | true,false ->
             let hrow = List.hd rows |> List.map (fun x -> th x) in
             let rest = cellify (List.tl rows) in
-            hrow :: rest
+            thead (tr1 hrow) @ tbody (tr rest)
         | false,true ->
             List.map (fun r ->
               let h = List.hd r in
               let rest = List.map (fun x -> td x) (List.tl r) in
               th h :: rest
-            ) rows
+              ) rows
+            |> tr
         | true,true ->
             let hrow = List.hd rows |> List.map (fun x -> th x) in
             let rest =
@@ -486,11 +492,9 @@ module Create = struct
                   let hcell = List.hd r in
                   let rest = List.flatten @@ cellify [List.tl r] in
                   th hcell:: rest)
-            in hrow :: rest
+            in thead(tr1 hrow) @ tbody(tr rest)
       in
-      let rows = List.map (fun r -> let r = List.flatten r in tr r) rows in
-      let rows = concat rows in
-      Cow_xml.tag "table"rows
+      Cow_xml.tag "table" rows
     in aux
 
 end
