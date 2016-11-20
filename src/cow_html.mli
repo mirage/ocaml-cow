@@ -78,8 +78,8 @@ type rel =
 type target = [ `blank | `parent | `self | `top | `Frame of string ]
 
 val a:
-  ?hreflang: string -> ?rel:rel ->  ?target:target ->  ?ty: string ->
-  ?title: string -> ?cls: string ->  href:Uri.t -> t -> t
+  ?hreflang:string -> ?rel:rel -> ?target:target -> ?ty:string ->
+  ?title:string -> ?cls:string -> href:Uri.t -> t -> t
 (** [a href html] generate a link from [html] to [href].
 
     @param title specifies extra information about the element that is
@@ -218,11 +218,18 @@ end
 type node = ?cls:string -> ?id:string -> ?attrs:(string * string) list -> t -> t
 (** The type for nodes. *)
 
+val tag: string -> node
+(** [tag name t] returns [<name>t</name>] where [<name>] can have
+    attributes "class" (if [cls] is given), "id" (if [id] is given)
+    and other attributes specified by [attrs].  You are encouraged not
+    to use [tag] but prefer the specialized versions below whenever
+    possible. *)
+
 val div: node
-(** [div ~cls t] is [<div class="cls">t</div>]. *)
+(** [div ~cls:"cl" t] is [<div class="cl">t</div>]. *)
 
 val span: node
-(** [div ~cls: t] is [<div class="cls">t</div>]. *)
+(** [div ~cls:"cl" t] is [<div class="cl">t</div>]. *)
 
 val input: node
 val link: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
@@ -251,8 +258,6 @@ val h4: node
 val h5: node
 val h6: node
 
-val small: node
-
 val li: node
 val dt: node
 val dd: node
@@ -269,11 +274,8 @@ val dl: ?add_dtdd:bool ->
   ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
   ?dtcls:string -> ?ddcls:string -> (t * t) list -> t
 
-val tag: string -> node
-
-val i: node
 val p: node
-val tt: node
+
 val blockquote : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
   ?cite:Uri.t -> t -> t
 val pre : node
@@ -281,9 +283,11 @@ val figure : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
   ?figcaption:t -> t -> t
 val main : node
 
-val em : node
-val strong : node
 val s : node
+(** The [<s>] tag specifies text that is no longer correct, accurate
+    or relevant.  The [<s>] tag should not be used to define replaced
+    or deleted text, use the [<del>] for that purpose.  *)
+
 val cite : node
 val q : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
   ?cite:Uri.t -> t -> t
@@ -296,9 +300,6 @@ val data : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
 val time : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
   ?datetime:string -> t -> t
 val code : node
-val var : node
-val samp : node
-val kbd : node
 val sub : node
 val sup : node
 val b : node
@@ -332,3 +333,25 @@ val article: node
 val address: node
 
 val script: ?src:string -> ?typ:string -> ?charset:string -> t -> t
+
+
+(** {1 Discouraged HTML tags}
+
+    Most of the tags below are not deprecated in HTML5 but are
+    discouraged in favor of using CSS stylesheets.  *)
+
+val small: node
+
+val i: node
+(** In HTML5, it is not guaranteed that it will render text in italics.
+    @deprecated Use CSS instead. *)
+
+val tt: node
+(** The [<tt>] tag is {i not} supported in HTML5.
+    @deprecated Use CSS instead. *)
+
+val em : node
+val strong : node
+val var : node
+val kbd : node
+val samp : node
