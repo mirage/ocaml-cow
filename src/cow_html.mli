@@ -102,6 +102,7 @@ val img : ?alt: string ->
           ?ismap: Uri.t ->
           ?title: string ->
           ?cls: string ->
+          ?attrs: (string * string) list ->
           Uri.t -> t
 
 val interleave : string array -> t list -> t list
@@ -231,25 +232,51 @@ val div: node
 val span: node
 (** [div ~cls:"cl" t] is [<div class="cl">t</div>]. *)
 
-val input: node
-val link: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
-  ?title:string -> ?href:Uri.t -> ?rel:string -> ?media:string -> t -> t
-val meta: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
-  ?name:string -> ?content:string -> ?charset:string -> t -> t
-val br: node
-val hr: node
-val source: node
-val wbr: node
-val param: node
-val embed: node
-val col: node
-val track: node
-val keygen: node
+val input: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+           ?ty:string -> string -> t
+(** [input v] returns a button with value "v".
+    @param ty the type of the input.  Default: ["button"]. *)
+
+val br: t
+val hr: t
+
+val wbr: t
+(** A "Word Break Opportunity" node. *)
+
+val param: name:string -> string -> t
+(** [param name value] return a [<param>] node to be used in [<object>]. *)
+
+val embed: ?width:int -> ?height:int -> ?ty:string ->
+           ?attrs:(string * string) list ->
+           Uri.t -> t
+(** [embed uri] returns an [<embed>] node for [uri]. *)
+
+
+val col: ?cls:string -> ?style:string -> ?attrs:(string * string) list ->
+         int -> t
+(** [col n] return a <col span="[n]"/> tag to specify properties of
+    columns in a <colgroup>. *)
+
+val source: ?media:string -> ?ty:string -> Uri.t -> t
+(** [source uri] returns a <source> tag to be used in an <audio> or
+    <video> tag.  It specifies an alternative location [uri] and its
+    type [ty] for the browser to choose from. *)
+
+val track: ?default:bool -> ?label:string ->
+           [`Captions | `Chapters | `Descriptions | `Metadata
+            | `Subtitles of string ] ->
+           Uri.t -> t
+(** [track uri] returns a <track> node to insert in an <audio> or
+    <video> tag.  The argument of [`Subtitles] is the language of the
+    track. *)
+
+val keygen: ?autofocus:bool -> ?disabled:bool -> ?form:string ->
+            ?challenge:bool -> ?keytype:[`RSA | `DSA | `EC] ->
+            string -> t
+(** [keygen name] return a <keygen> tag that specifies a key-pair
+    generator field used for forms. *)
+
 val anchor: string -> t
-val base: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
-           ?href:Uri.t -> ?target:string -> t -> t
-val style: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
-           ?media:string -> ?typ:string -> t -> t
 
 val h1: node
 val h2: node
@@ -324,7 +351,6 @@ val del : ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
 val html: node
 val footer: node
 val title: node
-val head: node
 val header: node
 val body: node
 val nav: node
@@ -335,7 +361,50 @@ val address: node
 val script: ?src:string -> ?typ:string -> ?charset:string -> t -> t
 
 
-(** {1 Discouraged HTML tags}
+(* val map : name:string -> t -> t *)
+
+(* type area_shape = [ *)
+(*   | `Rect of int * int * int * int *)
+(*   | `Circle of int * int * int *)
+(*   | `Poly of (int * int) list ] *)
+
+(* val area : ?download:string -> ?ty:string -> *)
+(*            area_shape -> ?target:string -> Uri.t -> t *)
+
+
+(** {2 Head elements} *)
+
+val head: node
+
+val link: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+  ?title:string -> ?rel:string -> ?media:string -> Uri.t -> t
+(** [link uri] returns a <link href="[uri]"> element to be put in the
+    <head>. *)
+
+val meta: ?cls:string -> ?id:string ->
+          ?name:string -> ?content:string -> ?charset:string ->
+          (string * string) list -> t
+(** [meta attrs] returns a <meta> tag to be put in the <head>. *)
+
+val base: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
+          ?target:string -> Uri.t -> t
+(** [base uri] returns a <base href="[uri]" /> tag that specifies
+    the base URI for all relative URLs in the HTML document.  *)
+
+val style: ?media:string -> ?scoped:bool ->
+           string -> t
+(** [style css] return a <style> tag giving the [css] directives.
+    This tag is typically found in the <head>.  In the <body> of the
+    document, [scoped] must be set to [true].
+
+    @param scoped Specifies that the styles only apply to this
+           element's parent element and that element's child elements.
+           Only for HTML5.  Default: [false].
+    @param media Specifies what media/device the media resource is
+           optimized for. *)
+
+
+(** {2 Discouraged HTML tags}
 
     Most of the tags below are not deprecated in HTML5 but are
     discouraged in favor of using CSS stylesheets.  *)
