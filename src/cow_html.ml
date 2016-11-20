@@ -353,8 +353,9 @@ let string_of_target = function
   | `top    -> "_top"
   | `Frame n -> n
 
-let a ?hreflang ?rel ?target ?ty ?title ?cls ~href html =
-  let attrs = [(("", "href"), Uri.to_string href)] in
+let a ?cls ?(attrs=[]) ?hreflang ?rel ?target ?ty ?title ~href html =
+  let attrs = List.map (fun (n,v) -> (("",n), v)) attrs in
+  let attrs = (("", "href"), Uri.to_string href) :: attrs in
   let attrs = match hreflang with
     | Some h -> (("", "hreflang"), h) :: attrs
     | None -> attrs

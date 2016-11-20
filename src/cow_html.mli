@@ -77,9 +77,9 @@ type rel =
 
 type target = [ `blank | `parent | `self | `top | `Frame of string ]
 
-val a:
-  ?hreflang:string -> ?rel:rel -> ?target:target -> ?ty:string ->
-  ?title:string -> ?cls:string -> href:Uri.t -> t -> t
+val a : ?cls:string -> ?attrs: (string * string) list ->
+        ?hreflang:string -> ?rel:rel -> ?target:target -> ?ty:string ->
+        ?title:string -> href:Uri.t -> t -> t
 (** [a href html] generate a link from [html] to [href].
 
     @param title specifies extra information about the element that is
