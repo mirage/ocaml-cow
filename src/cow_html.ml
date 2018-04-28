@@ -53,18 +53,80 @@ let tag name ?cls ?id ?(attrs=[]) t =
   in
   Cow_xml.tag name ~attrs t
 
+let empty: t = []
 let div = tag "div"
 let span = tag "span"
-let input = tag "input"
-let br = tag "br"
-let hr = tag "hr"
-let source = tag "source"
-let wbr = tag "wbr"
-let param = tag "param"
-let embed = tag "embed"
-let col = tag "col"
-let track = tag "track"
-let keygen = tag "keygen"
+
+let add_oattr name attr attrs =
+  match attr with
+  | None   -> attrs
+  | Some i -> (name, i) :: attrs
+
+let add_uattr name attr attrs =
+  match attr with
+  | None   -> attrs
+  | Some i -> (name, Uri.to_string i) :: attrs
+
+let add_iattr name attr attrs =
+  match attr with
+  | None   -> attrs
+  | Some i -> (name, string_of_int i) :: attrs
+
+let add_battr name attr attrs =
+  if attr then (name, name) :: attrs else attrs
+
+let input ?cls ?id ?(attrs=[]) ?ty v =
+  let attrs = ("value", v)
+              :: add_oattr "type" ty attrs in
+  tag "input" ?cls ?id ~attrs empty
+
+let br = tag "br" empty
+let hr = tag "hr" empty
+
+let source ?media ?ty uri =
+  let attrs = add_oattr "media" media []
+              |> add_oattr "type" ty in
+  tag "source" empty ~attrs:(("src", Uri.to_string uri) :: attrs)
+
+let wbr = tag "wbr" empty
+
+let param ~name v =
+  tag "param" empty ~attrs:[("name", name); ("value", v)]
+
+let embed ?width ?height ?ty ?(attrs=[]) uri =
+  let attrs = attrs
+              |> add_iattr "width" width
+              |> add_iattr "height" height
+              |> add_oattr "type" ty in
+  tag "embed" empty ~attrs:(("src", Uri.to_string uri) :: attrs)
+
+let col ?cls ?style ?(attrs=[]) n =
+  tag "col" empty ?cls ~attrs:(add_oattr "style" style attrs)
+
+let track ?(default=false) ?label kind uri =
+  let attrs = add_battr "default" default []
+              |> add_oattr "label" label in
+  let attrs = match kind with
+    | `Captions -> ("kind", "captions") :: attrs
+    | `Chapters -> ("kind", "chapters") :: attrs
+    | `Descriptions-> ("kind", "descriptions") :: attrs
+    | `Metadata-> ("kind", "metadata") :: attrs
+    | `Subtitles lang-> ("kind", "subtitles") :: ("srclang", lang) :: attrs in
+  let attrs = ("src", Uri.to_string uri) :: attrs in
+  tag "track" empty ~attrs
+
+let keygen ?(autofocus=false) ?(disabled=false) ?form ?(challenge=true)
+      ?(keytype=`RSA) name =
+  let attrs = add_battr "autofocus" autofocus []
+              |> add_battr "disabled" disabled
+              |> add_oattr "form" form
+              |> add_battr "challenge" challenge in
+  let attrs = match keytype with
+    | `RSA -> ("keytype", "rsa") :: attrs
+    | `DSA -> ("keytype", "dsa") :: attrs
+    | `EC  -> ("keytype", "ec")  :: attrs in
+  tag "keygen" empty ~attrs:(("name", name) :: attrs)
+
 let html = tag "html"
 let footer = tag "footer"
 let header = tag "header"
@@ -79,7 +141,6 @@ let article = tag "article"
 let section = tag "section"
 let address = tag "address"
 
-let empty: t = []
 let list = List.concat
 let some = function None -> empty | Some x -> x
 
@@ -90,33 +151,22 @@ let aside = tag "aside"
 let pre = tag "pre"
 let main = tag "main"
 
-let add_oattr name attr attrs =
-  match attr with
-  | None   -> attrs
-  | Some i -> (name, i) :: attrs
+let link ?cls ?id ?(attrs=[]) ?title ?media ?ty ?rel href =
+  let attrs = add_oattr "media" media attrs
+              |> add_oattr "title" title
+              |> add_oattr "rel" rel
+              |> add_oattr "type" ty in
+  tag "link" empty ?cls ?id ~attrs:(("href", Uri.to_string href) :: attrs)
 
-let add_uattr name attr attrs =
-  match attr with
-  | None   -> attrs
-  | Some i -> (name, Uri.to_string i) :: attrs
+let base ?cls ?id ?(attrs=[]) ?target href =
+  tag "base" empty ?cls ?id
+    ~attrs:(("href", Uri.to_string href) :: add_oattr "target" target attrs)
 
-let link ?cls ?id ?(attrs=[]) ?title ?href ?rel ?media x =
-  tag "link" ?cls ?id
-    ~attrs:(add_oattr "title" title
-           (add_uattr "href" href
-           (add_oattr "rel" rel
-           (add_oattr "media" media attrs)))) x
-
-let base ?cls ?id ?(attrs=[]) ?href ?target x =
-  tag "base" ?cls ?id
-    ~attrs:(add_uattr "href" href
-           (add_oattr "target" target attrs)) x
-
-let meta ?cls ?id ?(attrs=[]) ?name ?content ?charset x =
-  tag "meta" ?cls ?id
+let meta ?cls ?id ?name ?content ?charset attrs =
+  tag "meta" empty ?cls ?id
     ~attrs:(add_oattr "name" name
            (add_oattr "content" content
-           (add_oattr "charset" charset attrs))) x
+           (add_oattr "charset" charset attrs)))
 
 let blockquote ?cls ?id ?(attrs=[]) ?cite x =
   tag "blockquote" ?cls ?id
@@ -303,8 +353,9 @@ let string_of_target = function
   | `top    -> "_top"
   | `Frame n -> n
 
-let a ?hreflang ?rel ?target ?ty ?title ?cls ~href html =
-  let attrs = [(("", "href"), Uri.to_string href)] in
+let a ?cls ?(attrs=[]) ?hreflang ?rel ?target ?ty ?title ?href html =
+  let attrs = add_uattr "href" href attrs in
+  let attrs = List.map (fun (n,v) -> (("",n), v)) attrs in
   let attrs = match hreflang with
     | Some h -> (("", "hreflang"), h) :: attrs
     | None -> attrs
@@ -331,8 +382,9 @@ let a ?hreflang ?rel ?target ?ty ?title ?cls ~href html =
   in
   [`El((("", "a"), attrs), html)]
 
-let img ?alt ?width ?height ?ismap ?title ?cls src =
-  let attrs = [("", "src"), Uri.to_string src] in
+let img ?alt ?width ?height ?ismap ?title ?cls ?(attrs=[]) src =
+  let attrs = List.map (fun (n,v) -> (("", n), v)) attrs in
+  let attrs = (("", "src"), Uri.to_string src) :: attrs in
   let attrs = match alt with
     | Some t -> (("", "alt"), t) :: attrs
     | None -> attrs in
@@ -355,10 +407,10 @@ let img ?alt ?width ?height ?ismap ?title ?cls src =
 
 let anchor name = tag "a" ~attrs:["name", name] empty
 
-let style ?cls ?id ?(attrs=[]) ?media ?typ x =
-  tag "style" ?cls ?id
-    ~attrs:(add_oattr "type" typ
-           (add_oattr "media" media attrs)) x
+let style ?media ?(scoped=false) css =
+  let attrs = add_oattr "media" media []
+              |> add_battr "scoped" scoped in
+  tag "style" (Cow_xml.string css) ~attrs
 
 (* color tweaks for lists *)
 let interleave classes l =
@@ -441,6 +493,9 @@ module Create = struct
   let stylesheet css =
     Cow_xml.tag "style" ~attrs:["type","text/css"] (string css)
 
+  let thead t = Cow_xml.tag "thead" t
+  let tbody t = Cow_xml.tag "tbody" t
+
   let table ?(flags = [Headings_fst_row]) =
     let h_fst_col = ref false in
     let h_fst_row = ref false in
@@ -464,20 +519,23 @@ module Create = struct
         else
           rows in
       let cellify rows = List.map (fun r -> List.map (fun x -> td x) r) rows in
+      let tr1 row = tr(List.flatten row) in
+      let tr rows = List.concat (List.map tr1 rows) in
       let rows =
         match !h_fst_row,!h_fst_col with
         | false,false ->
-            cellify rows
+            tbody (tr (cellify rows))
         | true,false ->
             let hrow = List.hd rows |> List.map (fun x -> th x) in
             let rest = cellify (List.tl rows) in
-            hrow :: rest
+            thead (tr1 hrow) @ tbody (tr rest)
         | false,true ->
             List.map (fun r ->
               let h = List.hd r in
               let rest = List.map (fun x -> td x) (List.tl r) in
               th h :: rest
-            ) rows
+              ) rows
+            |> tr
         | true,true ->
             let hrow = List.hd rows |> List.map (fun x -> th x) in
             let rest =
@@ -486,26 +544,15 @@ module Create = struct
                   let hcell = List.hd r in
                   let rest = List.flatten @@ cellify [List.tl r] in
                   th hcell:: rest)
-            in hrow :: rest
+            in thead(tr1 hrow) @ tbody(tr rest)
       in
-      let rows = List.map (fun r -> let r = List.flatten r in tr r) rows in
-      let rows = concat rows in
-      Cow_xml.tag "table"rows
+      Cow_xml.tag "table" rows
     in aux
 
 end
 
-let script ?src ?typ ?charset body =
-  let attrs = match src with
-    | None   -> []
-    | Some s -> ["src",s]
-  in
-  let attrs = match typ with
-    | None   -> attrs
-    | Some t -> ("type", t) :: attrs
-  in
-  let attrs = match charset with
-    | None   -> attrs
-    | Some c -> ("charset", c) :: attrs
-  in
+let script ?src ?ty ?charset body =
+  let attrs = add_uattr "src" src []
+              |> add_oattr "type" ty
+              |> add_oattr "charset" charset in
   tag "script" ~attrs body

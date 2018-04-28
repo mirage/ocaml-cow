@@ -7,14 +7,16 @@ set -e
 OCAMLBUILD=${OCAMLBUILD:="ocamlbuild -use-ocamlfind -classic-display \
                                      -tag debug"}
 
+TOPKG=./pkg/pkg.ml
+
 action ()
 {
     case $1 in
-        default)    topkg build ;;
-        test|tests) topkg build && topkg test ;;
-        doc)        shift; topkg doc --dev $* ;;
-        api-doc)    shift; topkg doc $* ;;
-        clean)      topkg clean ;;
+        default)    $TOPKG build ;;
+        test|tests) $TOPKG build && $TOPKG test ;;
+        doc)        shift; $TOPKG doc --dev $* ;;
+        api-doc)    shift; $TOPKG doc $* ;;
+        clean)      $TOPKG clean ;;
         *)          $OCAMLBUILD $* ;;
     esac
 }
