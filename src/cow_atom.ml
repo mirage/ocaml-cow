@@ -154,7 +154,7 @@ let xml_of_feed ? self f =
     | None   -> Cow_xml.empty
     | Some s -> Cow_xml.tag "link" ~attrs:["rel","self"; "href",s] Cow_xml.empty
   in
-  Cow_xml.(tag "tag" ~attrs:["xmlns","http://www.w3.org/2005/Atom"] (
+  Cow_xml.(tag "feed" ~attrs:["xmlns","http://www.w3.org/2005/Atom"] (
       self
       ++ xml_of_meta f.feed
       ++ list (List.map xml_of_contributor (contributors f.entries))
