@@ -14,11 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type t = Cow_html.t
+type t = Html.t
 
-let to_string = Cow_html.to_string
+let to_string = Html.to_string
 
 let of_string s =
   let omd =  Omd.of_string s in
   let html = Omd.to_html omd in
-  Cow_html.of_string html
+  Html.of_string html

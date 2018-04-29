@@ -16,7 +16,7 @@
 
 (** Markdown library *)
 
-type t = Cow_html.t
+type t = Html.t
 (** The type of a Markdown document, represented as an (X)HTML tree *)
 
 val to_string: t -> string

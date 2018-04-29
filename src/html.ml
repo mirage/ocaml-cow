@@ -20,7 +20,7 @@ let (@@) f x = f x
 
 let (|>) x f = f x
 
-type t = Cow_xml.t
+type t = Xml.t
 
 let void_elements = [
   "img";
@@ -51,7 +51,7 @@ let tag name ?cls ?id ?(attrs=[]) t =
     | None   -> attrs
     | Some c -> ("class", c) :: attrs
   in
-  Cow_xml.tag name ~attrs t
+  Xml.tag name ~attrs t
 
 let empty: t = []
 let div = tag "div"
@@ -101,6 +101,7 @@ let embed ?width ?height ?ty ?(attrs=[]) uri =
   tag "embed" empty ~attrs:(("src", Uri.to_string uri) :: attrs)
 
 let col ?cls ?style ?(attrs=[]) n =
+  let attrs = ("span", string_of_int n) :: attrs in
   tag "col" empty ?cls ~attrs:(add_oattr "style" style attrs)
 
 let track ?(default=false) ?label kind uri =
@@ -175,7 +176,7 @@ let blockquote ?cls ?id ?(attrs=[]) ?cite x =
 let figure ?cls ?id ?(attrs=[]) ?figcaption x =
   let x = match figcaption with
     | None   -> x
-    | Some i -> tag "figcaption" Cow_xml.(i ++ x)
+    | Some i -> tag "figcaption" Xml.(i ++ x)
   in
   tag "figure" ?cls ?id ~attrs x
 
@@ -285,9 +286,9 @@ let rec generate_signals signals = function
 let output ?(nl=false) ?(indent=None) ?(ns_prefix=fun _ -> None) dest t =
   let append tree =
     let signals = generate_signals [] tree in
-    let out = Cow_xml.make_output ~decl:false ~nl ~indent ~ns_prefix dest in
-    Cow_xml.output out (`Dtd None);
-    List.(iter (Cow_xml.output out) (rev signals))
+    let out = Xml.make_output ~decl:false ~nl ~indent ~ns_prefix dest in
+    Xml.output out (`Dtd None);
+    List.(iter (Xml.output out) (rev signals))
   in
   List.iter append t
 
@@ -309,7 +310,7 @@ let to_string t =
   Buffer.contents buf
 
 let of_string ?enc str =
-  Cow_xml.of_string ~entity:Cow_xhtml.entity ?enc str
+  Xml.of_string ~entity:Xhtml.entity ?enc str
 
 type rel =
   [ `alternate
@@ -410,7 +411,7 @@ let anchor name = tag "a" ~attrs:["name", name] empty
 let style ?media ?(scoped=false) css =
   let attrs = add_oattr "media" media []
               |> add_battr "scoped" scoped in
-  tag "style" (Cow_xml.string css) ~attrs
+  tag "style" (Xml.string css) ~attrs
 
 (* color tweaks for lists *)
 let interleave classes l =
@@ -420,15 +421,15 @@ let interleave classes l =
     let res = classes.(!i mod n) in
     incr i;
     res in
-  List.map (Cow_xml.tag "div" ~attrs:["class", get ()]) l
+  List.map (Xml.tag "div" ~attrs:["class", get ()]) l
 
-let html_of_string s = Cow_xml.string s
+let html_of_string s = Xml.string s
 let string = html_of_string
 
-let html_of_int i = Cow_xml.int i
+let html_of_int i = Xml.int i
 let int = html_of_int
 
-let html_of_float f = Cow_xml.float f
+let html_of_float f = Xml.float f
 let float = html_of_float
 
 type table = t array array
@@ -446,7 +447,7 @@ let html_of_table ?(headings=false) t =
     else
       List.map Array.to_list (Array.to_list t) in
   let tl = List.map (fun l -> tr (list @@ List.map (fun x -> td x) l)) tl in
-  Cow_xml.(tag "table" (some hd ++ list tl))
+  Xml.(tag "table" (some hd ++ list tl))
 
 let append (_to : t) (el : t) = _to @ el
 let (++) = append
@@ -460,7 +461,7 @@ module Create = struct
       | Rgb of char * char * char
 
   let color_of_string ?(fmt = `Hex) s =
-    let s = String.lowercase s in
+    let s = String.lowercase_ascii s in
     let coi = char_of_int in
     let rval = match fmt with
       | `Hex ->
@@ -488,13 +489,13 @@ module Create = struct
 
   open Tags
 
-  type t = Cow_xml.t
+  type t = Xml.t
 
   let stylesheet css =
-    Cow_xml.tag "style" ~attrs:["type","text/css"] (string css)
+    Xml.tag "style" ~attrs:["type","text/css"] (string css)
 
-  let thead t = Cow_xml.tag "thead" t
-  let tbody t = Cow_xml.tag "tbody" t
+  let thead t = Xml.tag "thead" t
+  let tbody t = Xml.tag "tbody" t
 
   let table ?(flags = [Headings_fst_row]) =
     let h_fst_col = ref false in
@@ -546,7 +547,7 @@ module Create = struct
                   th hcell:: rest)
             in thead(tr1 hrow) @ tbody(tr rest)
       in
-      Cow_xml.tag "table" rows
+      Xml.tag "table" rows
     in aux
 
 end
