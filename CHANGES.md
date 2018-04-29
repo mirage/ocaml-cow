@@ -1,4 +1,17 @@
-2.2.0:
+### 2.3.0 (29-04-2018)
+
+* Port to jbuilder/dune (@samoht, #102)
+* Fix atom feeds (@hannesm, #101)
+* Improve the functions generating HTML tags with no content (@Chris00, #100)
+* Improve documentation (@Chris00, #99)
+* Add a "ty" (type) argument to `Html.link` (@Chris00, #99)
+* Update `Html.script` to take a Uri.t for "src" (@Chris00, #99)
+* `Html.a`: make ~href optional (also used for anchors) (@Chris00, #99)
+* Add the optional argument ?attrs to `Html.a` (@Chris00, #99)
+* Use <thead> and <tbody> for table construction (when appropriate) (@Chris00, #99)
+
+### 2.2.0 (15-09-2017)
+
 * Port to use module aliases, so there are now `Cow_xml` `Cow_html`
   `Cow_xhtml` `Cow_markdown` `Cow_json` and  `Cow_atom` modules,
   with aliases to the old scheme under the `Cow` module (e.g. `Cow.Xml`).
