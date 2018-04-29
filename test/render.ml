@@ -37,7 +37,7 @@ let xml_expanders = [
   true, "label_xml_fn_assignment", make_xml, make_xml_result;
 ]
 
-let suite name decl prefix: Alcotest.test_case list =
+let suite name decl prefix: unit Alcotest.test_case list =
   let suite = List.fold_left (fun acc (v, n, x, s) ->
       let aux t xml =
         let name = Printf.sprintf "%s.%s-%s" name n t in
@@ -64,3 +64,5 @@ let suite name decl prefix: Alcotest.test_case list =
 let suite =
   suite "xml_expander+dtd" true  xml_decl @
   suite "xml_expander"     false ""
+
+let () = Alcotest.run "cow" ["xml", suite]

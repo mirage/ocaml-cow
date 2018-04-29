@@ -1,4 +1,3 @@
-
 open Cow
 
 let _ =
@@ -39,4 +38,3 @@ Html.output_doc (`Channel (open_out "basic.html"))
       ])
     ])
   )
-

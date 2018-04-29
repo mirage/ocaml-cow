@@ -20,9 +20,9 @@
     such as XML, XHTML, JSON, Markdown and Atom.  In many cases, you can
     also use the constitutent libraries directly. *)
 
-module Xml = Cow_xml
-module Json = Cow_json
-module Markdown = Cow_markdown
-module Html = Cow_html
-module Xhtml = Cow_xhtml
-module Atom = Cow_atom
+module Xml = Xml
+module Json = Json
+module Markdown = Markdown
+module Html = Html
+module Xhtml = Xhtml
+module Atom = Atom
