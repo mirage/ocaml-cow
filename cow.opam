@@ -3,7 +3,7 @@ maintainer: "Anil Madhavapeddy <anil@recoil.org>"
 authors: ["Anil Madhavapeddy" "Thomas Gazagnaire" "David Sheets"
           "Rudi Grinberg" "Timothy Bourke"]
 homepage: "https://github.com/mirage/ocaml-cow"
-doc: "http://mirage.github.io/ocaml-cow"
+doc: "http://mirage.github.io/ocaml-cow/"
 license: "ISC"
 dev-repo: "https://github.com/mirage/ocaml-cow.git"
 bug-reports: "https://github.com/mirage/ocaml-cow/issues"
