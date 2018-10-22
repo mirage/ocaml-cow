@@ -1,6 +1,0 @@
-(jbuild_version 1)
-
-(library
- ((name        cow)
-  (public_name cow)
-  (libraries   (uri omd ezjsonm xmlm))))
