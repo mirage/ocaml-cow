@@ -1,4 +1,7 @@
-(* Copyright <the author>
+(* 
+ * ISC License
+ *
+ * Copyright (c) 2012-2018 The ocaml-cow contributors
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
