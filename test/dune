@@ -1,0 +1,13 @@
+(executables
+ (names     basic render)
+ (libraries cow alcotest))
+
+(alias
+ (name    runtest)
+ (package cow)
+ (action  (run ./basic.exe)))
+
+(alias
+ (name    runtest)
+ (package cow)
+ (action  (run ./render.exe -q --color=always)))
