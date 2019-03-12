@@ -1,3 +1,8 @@
+### v2.4.0 (10-03-2019)
+
+* Port to dune fully (#105 @emillon)
+* Upgrade opam metadata to 2.0 (@avsm)
+
 ### 2.3.0 (29-04-2018)
 
 * Port to jbuilder/dune (@samoht, #102)
