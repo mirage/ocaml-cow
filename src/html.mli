@@ -96,12 +96,19 @@ val a : ?cls:string -> ?attrs: (string * string) list ->
 
     @param ty Specifies the media type of the linked document.  *)
 
+type cors = [ `anonymous | `use_credentials ]
+(** Cross Origin Resource Sharing (CORS)
+
+    @see <https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes> The crossorigin attribute
+ *)
+
 val img : ?alt: string ->
           ?width: int ->
           ?height: int ->
           ?ismap: Uri.t ->
           ?title: string ->
           ?cls: string ->
+          ?crossorigin: cors ->
           ?attrs: (string * string) list ->
           Uri.t -> t
 
@@ -358,8 +365,13 @@ val section: node
 val article: node
 val address: node
 
-val script: ?src:Uri.t -> ?ty:string -> ?charset:string -> t -> t
-
+val script: ?src:Uri.t ->
+            ?ty:string ->
+            ?charset:string ->
+            ?integrity:string ->
+            ?crossorigin:cors ->
+            t ->
+            t
 
 (* val map : name:string -> t -> t *)
 
@@ -377,8 +389,9 @@ val script: ?src:Uri.t -> ?ty:string -> ?charset:string -> t -> t
 val head: node
 
 val link: ?cls:string -> ?id:string -> ?attrs:(string * string) list ->
-          ?title:string -> ?media:string ->
-          ?ty:string -> ?rel:string -> Uri.t -> t
+          ?title:string -> ?media:string -> ?ty:string ->
+          ?rel:string -> ?integrity:string -> ?crossorigin:cors ->
+          Uri.t -> t
 (** [link uri] returns a <link href="[uri]"> element to be put in the
     <head>. *)
 
