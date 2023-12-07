@@ -152,11 +152,26 @@ let aside = tag "aside"
 let pre = tag "pre"
 let main = tag "main"
 
-let link ?cls ?id ?(attrs=[]) ?title ?media ?ty ?rel href =
+type cors = [ `anonymous | `use_credentials ]
+
+let string_of_cors c =
+  match c with
+  | `anonymous -> "anonymous"
+  | `use_credentials -> "use-credentials"
+
+let add_ocrossorigin co attrs =
+  match co with
+  | Some s -> ("crossorigin", string_of_cors s) :: attrs
+  | None -> attrs
+
+let link ?cls ?id ?(attrs=[]) ?title ?media ?ty ?rel ?integrity ?crossorigin href =
   let attrs = add_oattr "media" media attrs
               |> add_oattr "title" title
               |> add_oattr "rel" rel
-              |> add_oattr "type" ty in
+              |> add_oattr "type" ty
+              |> add_oattr "integrity" integrity
+              |> add_ocrossorigin crossorigin
+  in
   tag "link" empty ?cls ?id ~attrs:(("href", Uri.to_string href) :: attrs)
 
 let base ?cls ?id ?(attrs=[]) ?target href =
@@ -383,7 +398,7 @@ let a ?cls ?(attrs=[]) ?hreflang ?rel ?target ?ty ?title ?href html =
   in
   [`El((("", "a"), attrs), html)]
 
-let img ?alt ?width ?height ?ismap ?title ?cls ?(attrs=[]) src =
+let img ?alt ?width ?height ?ismap ?title ?cls ?crossorigin ?(attrs=[]) src =
   let attrs = List.map (fun (n,v) -> (("", n), v)) attrs in
   let attrs = (("", "src"), Uri.to_string src) :: attrs in
   let attrs = match alt with
@@ -400,6 +415,9 @@ let img ?alt ?width ?height ?ismap ?title ?cls ?(attrs=[]) src =
     | None -> attrs in
   let attrs = match cls with
     | Some c -> (("", "class"), c) :: attrs
+    | None -> attrs in
+  let attrs = match crossorigin with
+    | Some c -> (("", "crossorigin"), string_of_cors c) :: attrs
     | None -> attrs in
   match ismap with
   | Some u -> a ~href:u ~target:`self
@@ -552,8 +570,10 @@ module Create = struct
 
 end
 
-let script ?src ?ty ?charset body =
+let script ?src ?ty ?charset ?integrity ?crossorigin body =
   let attrs = add_uattr "src" src []
               |> add_oattr "type" ty
-              |> add_oattr "charset" charset in
+              |> add_oattr "charset" charset
+              |> add_oattr "integrity" integrity
+              |> add_ocrossorigin crossorigin in
   tag "script" ~attrs body
