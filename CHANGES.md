@@ -1,3 +1,8 @@
+### v2.5.0 (10-03-2019)
+
+* Add integrity and crossorigin attributes (#108, @tbrk)
+* Dune packaging fixes and updates (#109, #112, @CraiFe, @samoht)
+
 ### v2.4.0 (10-03-2019)
 
 * Port to dune fully (#105 @emillon)
