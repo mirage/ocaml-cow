@@ -18,27 +18,28 @@
 
 include Xmlm
 
-type t = (('a frag as 'a) frag) list
+type t = ('a frag as 'a) frag list
 
 let id x = x
 
-let to_string ?(decl=false) = function
-  | []   -> ""
-  | h::t ->
-    let buf = Buffer.create 1024 in
-    let append decl elt =
-      let o = make_output ~decl (`Buffer buf) in
-      output o (`Dtd None);
-      output_tree id o elt in
-    append decl h;
-    List.iter (append false) t;
-    Buffer.contents buf
+let to_string ?(decl = false) = function
+  | [] -> ""
+  | h :: t ->
+      let buf = Buffer.create 1024 in
+      let append decl elt =
+        let o = make_output ~decl (`Buffer buf) in
+        output o (`Dtd None);
+        output_tree id o elt
+      in
+      append decl h;
+      List.iter (append false) t;
+      Buffer.contents buf
 
 (* XXX: do a proper input_subtree integration *)
 (*** XHTML parsing (using Xml) ***)
 let _input_tree input : t =
   let el (name, attrs) body : t = [ `El ((name, attrs), List.concat body) ] in
-  let data str : t = [`Data str] in
+  let data str : t = [ `Data str ] in
   input_tree ~el ~data input
 
 let of_string ?entity ?enc str =
@@ -49,22 +50,24 @@ let of_string ?entity ?enc str =
     let decl_len = String.length xml_decl in
     if len >= decl_len && String.sub str 0 decl_len = xml_decl then
       String.sub str decl_len (len - decl_len)
-    else
-      str in
+    else str
+  in
 
   (* Here, we want to be able to deal with a forest of possible XML
      trees. To do so correctly, we root the forest with a dummy
      node. *)
   let root str =
     let str = Printf.sprintf "<xxx>%s</xxx>" str in
-    let i = make_input ~enc ?entity (`String (0,str)) in
-    begin match peek i with
-      | `Dtd _ -> let _ = input i in ()
-      | _      -> ()
-    end;
+    let i = make_input ~enc ?entity (`String (0, str)) in
+    (match peek i with
+    | `Dtd _ ->
+        let _ = input i in
+        ()
+    | _ -> ());
     match _input_tree i with
-    | [`El (_, childs)] -> childs
-    | _                 -> raise Parsing.Parse_error in
+    | [ `El (_, childs) ] -> childs
+    | _ -> raise Parsing.Parse_error
+  in
 
   (* It is illegal to write <:html<<b>foo</b>>> so we use a small trick
      and write <:html<<b>foo</b>&>> *)
@@ -76,22 +79,21 @@ let of_string ?entity ?enc str =
 
   try root (remove_trailing_amp (remove_dtd str))
   with Error (pos, e) ->
-    Printf.eprintf "[XMLM:%d-%d] %s: %s\n"(fst pos) (snd pos) str (error_message e);
+    Printf.eprintf "[XMLM:%d-%d] %s: %s\n" (fst pos) (snd pos) str
+      (error_message e);
     raise Parsing.Parse_error
 
-let empty: t = []
-let string s: t = [`Data s]
+let empty : t = []
+let string s : t = [ `Data s ]
 let int i = string @@ string_of_int i
 let float f = string @@ string_of_float f
-let (++) = List.append
+let ( ++ ) = List.append
 let list = List.concat
 let some = function None -> empty | Some x -> x
 let uri x = string (Uri.to_string x)
 
-let tag t ?(attrs=[]) body : t =
-  let attrs = List.map (fun (k,v) -> ("",k), v) attrs in
-  [`El ((("",t), attrs), body)]
+let tag t ?(attrs = []) body : t =
+  let attrs = List.map (fun (k, v) -> (("", k), v)) attrs in
+  [ `El ((("", t), attrs), body) ]
 
-let tago t ?attrs = function
-  | None   -> empty
-  | Some b -> tag t ?attrs b
+let tago t ?attrs = function None -> empty | Some b -> tag t ?attrs b

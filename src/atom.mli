@@ -18,39 +18,31 @@
 (** The Atom Syndication format. See RFC4287 for the full specification.
     @deprecated Please use the [Syndic] package instead. *)
 
-type author = {
-  name  : string;
-  uri   : string option;
-  email : string option;
-}
+type author = { name : string; uri : string option; email : string option }
 
-(** year, month, date, hour, minute *)
 type date = int * int * int * int * int
+(** year, month, date, hour, minute *)
 
 val compare : date -> date -> int
 
+type link = { rel : [ `self | `alternate ]; href : Uri.t; typ : string option }
 (** An Atom URI. There are lots of rules on which combinations of links
     are permitted in one feed. See RFC4287 Sec 4.1.1 for the gory details.
   *)
-type link = {
-  rel : [`self|`alternate];
-  href: Uri.t;
-  typ : string option;
-}
 
+val mk_link : ?rel:[ `self | `alternate ] -> ?typ:string -> Uri.t -> link
 (** [mk_link ~rel ~typ uri] builds a {!link}. [rel] defaults to [`self],
     and [typ] represents the optional MIME type (e.g. [text/html]).
     The [uri] should usually be a fully qualified URI. *)
-val mk_link : ?rel:[`self|`alternate] -> ?typ:string -> Uri.t -> link
 
 type meta = {
-  id      : string;
-  title   : string;
-  subtitle: string option;
-  author  : author option;
-  rights  : string option;
+  id : string;
+  title : string;
+  subtitle : string option;
+  author : author option;
+  rights : string option;
   updated : date;
-  links   : link list;
+  links : link list;
 }
 
 type summary = string option
@@ -59,15 +51,12 @@ type summary = string option
     href for the contents of the feed, in case it has relative links. *)
 
 type entry = {
-  entry   : meta;
+  entry : meta;
   summary : summary;
   content : Xml.t;
-  base    : string option;
+  base : string option;
 }
 
-type feed = {
-  feed    : meta;
-  entries : entry list;
-}
+type feed = { feed : meta; entries : entry list }
 
 val xml_of_feed : ?self:string -> feed -> Xml.t

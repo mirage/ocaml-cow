@@ -1,3 +1,1 @@
-let () = Alcotest.run "cow" [
-    "render", Render.suite
-  ]
+let () = Alcotest.run "cow" [ ("render", Render.suite) ]

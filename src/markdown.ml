@@ -19,6 +19,6 @@ type t = Html.t
 let to_string = Html.to_string
 
 let of_string s =
-  let omd =  Omd.of_string s in
+  let omd = Omd.of_string s in
   let html = Omd.to_html omd in
   Html.of_string html
