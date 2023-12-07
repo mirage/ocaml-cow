@@ -20,4 +20,3 @@
 val entity : string -> string option
 (** [entity s] converts the HTML entity [s] to its corresponding UTF-8
     symbol.  For example [entity "amp" = "&"]. *)
-

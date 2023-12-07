@@ -1,6 +1,0 @@
-PKG bytes
-PKG uri
-PKG xmlm
-S src
-S test
-B _build/**

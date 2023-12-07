@@ -20,15 +20,13 @@
 
 include module type of Xmlm
 
-type t = (('a frag as 'a) frag) list
+type t = ('a frag as 'a) frag list
 (** The type for XML fragments. *)
 
 val to_string : ?decl:bool -> t -> string
 
 val of_string :
-  ?entity:(string -> string option) ->
-  ?enc:encoding ->
-  string -> t
+  ?entity:(string -> string option) -> ?enc:encoding -> string -> t
 (** [of_string s] returns the XML tree described by [s].
 
     @param entity is called to resolve non predefined entity
@@ -43,32 +41,32 @@ val of_string :
 
 (** {1 Combinators} *)
 
-val empty: t
+val empty : t
 (** [empty] is the empty XML fragment. *)
 
-val string: string -> t
+val string : string -> t
 (** [string s] is the XML fragment [s]. *)
 
-val int: int -> t
+val int : int -> t
 (** [int i] is the XML fragment [i]. *)
 
-val float: float -> t
+val float : float -> t
 (** [float f] is the XML fragment [f]. *)
 
-val list: t list -> t
+val list : t list -> t
 (** [list xs] is the XML fragment [x1 ... xn]. *)
 
-val some: t option -> t
+val some : t option -> t
 (** [some t] is [t] if it's not empty, {!empty} otherwise. *)
 
-val uri: Uri.t -> t
+val uri : Uri.t -> t
 (** [uri t] is [t]. *)
 
-val tag: string -> ?attrs:(string * string) list -> t -> t
+val tag : string -> ?attrs:(string * string) list -> t -> t
 (** [tag k v] is [<k>v</k>] *)
 
-val tago: string -> ?attrs:(string * string) list -> t option -> t
+val tago : string -> ?attrs:(string * string) list -> t option -> t
 (** [tago k v] is [k v] if [v] is not [None], otherwise it's {!empty}. *)
 
-val (++): t -> t -> t
+val ( ++ ) : t -> t -> t
 (** [x ++ y] is [x y] *)
