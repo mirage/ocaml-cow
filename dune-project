@@ -1,2 +1,2 @@
-(lang dune 1.1)
+(lang dune 3.1)
 (name cow)
